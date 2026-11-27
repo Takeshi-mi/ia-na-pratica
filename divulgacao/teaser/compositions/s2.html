@@ -1,0 +1,27 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s2-bg { position: absolute; inset: 0; background: #ffffff; }
+    #s2-row { position: absolute; left: 110px; top: 420px; display: flex; align-items: baseline; gap: 30px; }
+    #s2-one { display: inline-block; font-family: "Archivo Black"; font-size: 440px; line-height: 1; color: #8800ff; transform-origin: 50% 80%; }
+    #s2-word { display: inline-block; font-family: "Archivo Black"; font-size: 124px; letter-spacing: -0.02em; color: #12061f; }
+    #s2-sub { position: absolute; left: 120px; top: 990px; width: 820px; font-family: "Inter"; font-weight: 700; font-size: 72px; line-height: 1.15; color: #12061f; }
+    #s2-sub .w { display: inline-block; }
+    #s2-sub .acc { color: #8800ff; }
+  </style>
+  <div id="root" data-composition-id="s2" data-width="1080" data-height="1920">
+    <div id="s2-stage" class="clip" data-start="0" data-duration="3.93">
+      <div id="s2-bg"></div>
+      <div id="s2-row"><span id="s2-one">1</span><span id="s2-word">bilhão</span></div>
+      <p id="s2-sub"><span class="w">de</span> <span class="w">pessoas</span> <span class="w">já</span> <span class="w">usam</span> <span class="w acc">IA.</span></p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s2-one", { scale: 0.35, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.452, ease: "back.out(1.7)" }, 0.099);
+    tl.fromTo("#s2-word", { opacity: 0, filter: "blur(10px)", x: -40 }, { opacity: 1, filter: "blur(0px)", x: 0, duration: 0.329, ease: "expo.out" }, 0.452);
+    tl.fromTo("#s2-sub .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.123, ease: "power4.out", stagger: 0.07 }, 1.94);
+    tl.to(["#s2-row", "#s2-sub"], { opacity: 0, filter: "blur(10px)", duration: 0.181, ease: "power3.in" }, 3.7);
+    window.__timelines["s2"] = tl;
+  </script>
+</template>

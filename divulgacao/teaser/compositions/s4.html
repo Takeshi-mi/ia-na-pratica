@@ -1,0 +1,27 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s4-bg { position: absolute; inset: 0; background: #8800ff; }
+    #s4-wrap { position: absolute; left: 120px; top: 560px; width: 820px; }
+    #s4-chat { position: relative; display: inline-block; font-family: "Archivo Black"; font-size: 84px; letter-spacing: -0.02em; color: #d9c2ff; }
+    #s4-strike { position: absolute; left: -8px; right: -8px; top: 52%; height: 12px; background: #ffffff; transform-origin: left center; }
+    #s4-agente { margin-top: 80px; font-family: "Archivo Black"; font-size: 186px; line-height: 1; letter-spacing: -0.02em; color: #ffffff; transform-origin: left center; }
+  </style>
+  <div id="root" data-composition-id="s4" data-width="1080" data-height="1920">
+    <div id="s4-stage" class="clip" data-start="0" data-duration="2.02" data-layout-allow-overlap>
+      <div id="s4-bg"></div>
+      <div id="s4-wrap">
+        <div id="s4-chat">Chat responde.<span id="s4-strike"></span></div>
+        <div id="s4-agente">Agente<br />faz.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s4-chat", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.151, ease: "power4.out" }, 0.042);
+    tl.fromTo("#s4-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.21, ease: "power3.inOut" }, 0.486);
+    tl.fromTo("#s4-agente", { opacity: 0, scale: 1.25, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.184, ease: "power4.out" }, 0.981);
+    tl.to("#s4-wrap", { y: -320, opacity: 0, filter: "blur(12px)", duration: 0.21, ease: "power3.in" }, 1.86);
+    window.__timelines["s4"] = tl;
+  </script>
+</template>

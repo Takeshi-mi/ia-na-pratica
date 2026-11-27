@@ -1,0 +1,32 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s1-bg { position: absolute; inset: 0; background: #8800ff; }
+    #s1-title {
+      position: absolute; left: 120px; top: 540px; width: 820px;
+      font-family: "Archivo Black"; font-size: 108px; line-height: 1.04; letter-spacing: -0.02em; color: #ffffff;
+    }
+    #s1-ia { position: relative; display: inline-block; padding: 0 14px; margin-left: -14px; }
+    #s1-ia-box { position: absolute; left: 0; right: 0; top: 10px; bottom: 2px; background: #ffffff; transform-origin: left center; }
+    #s1-ia-txt { position: relative; }
+    #s1-sub { position: absolute; left: 120px; top: 1080px; font-family: "Inter"; font-weight: 700; font-size: 80px; color: #ffffff; }
+    #s1-sub .w { display: inline-block; }
+    #s1-flood { position: absolute; inset: 0; background: #ffffff; transform-origin: center bottom; }
+  </style>
+  <div id="root" data-composition-id="s1" data-width="1080" data-height="1920">
+    <div id="s1-stage" class="clip" data-start="0" data-duration="3.94" data-layout-allow-overlap>
+      <div id="s1-bg"></div>
+      <h1 id="s1-title">Este vídeo foi feito por uma <span id="s1-ia"><span id="s1-ia-box"></span><span id="s1-ia-txt">IA.</span></span></h1>
+      <p id="s1-sub"><span class="w">Eu</span> <span class="w">só</span> <span class="w">pedi.</span></p>
+      <div id="s1-flood"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s1-ia-box", { scaleX: 0 }, { scaleX: 1, duration: 0.288, ease: "power4.out" }, 0.411);
+    tl.fromTo("#s1-ia-txt", { color: "#ffffff" }, { color: "#8800ff", duration: 0.099, ease: "none" }, 0.494);
+    tl.fromTo("#s1-sub .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.123, ease: "power4.out", stagger: 0.07 }, 1.917);
+    tl.fromTo("#s1-flood", { scaleY: 0 }, { scaleY: 1, duration: 0.329, ease: "power2.inOut" }, 3.586);
+    window.__timelines["s1"] = tl;
+  </script>
+</template>

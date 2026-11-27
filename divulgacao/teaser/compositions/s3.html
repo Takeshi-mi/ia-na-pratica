@@ -1,0 +1,41 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s3-bg { position: absolute; inset: 0; background: #ffffff; }
+    #s3-text { position: absolute; left: 120px; top: 280px; width: 820px; }
+    #s3-a, #s3-b { font-family: "Inter"; font-weight: 700; font-size: 60px; color: #12061f; }
+    #s3-hero { font-family: "Archivo Black"; font-size: 150px; line-height: 1.05; letter-spacing: -0.02em; color: #8800ff; }
+    #s3-circle {
+      position: absolute; left: 260px; top: 720px; width: 560px; height: 560px; border-radius: 50%;
+      background: #e9ddff; display: flex; align-items: center; justify-content: center;
+    }
+    #s3-circle-label { font-family: "Inter"; font-weight: 700; font-size: 54px; color: #12061f; text-align: center; line-height: 1.1; }
+    #s3-dot { position: absolute; left: 860px; top: 1222px; width: 56px; height: 56px; border-radius: 50%; background: #8800ff; }
+    #s3-dot-label { position: absolute; left: 760px; top: 1142px; width: 172px; text-align: right; font-family: "Inter"; font-weight: 700; font-size: 42px; color: #8800ff; }
+  </style>
+  <div id="root" data-composition-id="s3" data-width="1080" data-height="1920">
+    <div id="s3-stage" class="clip" data-start="0" data-duration="3.88" data-layout-allow-overflow>
+      <div id="s3-bg"></div>
+      <div id="s3-text">
+        <p id="s3-a">Desse 1 bilhão, só</p>
+        <p id="s3-hero">1 em 100</p>
+        <p id="s3-b">usa agentes.</p>
+      </div>
+      <div id="s3-circle"><p id="s3-circle-label">1 bilhão<br />no chat</p></div>
+      <p id="s3-dot-label" data-layout-allow-overlap>agentes</p>
+      <div id="s3-dot"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s3-circle", { scale: 0 }, { scale: 1, duration: 0.484, ease: "expo.out" }, 0.04);
+    tl.fromTo("#s3-a", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.145, ease: "power4.out" }, 0.363);
+    tl.fromTo("#s3-hero", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.161, ease: "power4.out" }, 0.726);
+    tl.fromTo("#s3-b", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.145, ease: "power4.out" }, 1.21);
+    tl.fromTo("#s3-dot", { scale: 0 }, { scale: 1, duration: 0.282, ease: "back.out(2.2)" }, 1.92);
+    tl.fromTo("#s3-dot-label", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.145, ease: "power4.out" }, 2.057);
+    tl.to(["#s3-text", "#s3-circle", "#s3-dot-label"], { opacity: 0, filter: "blur(8px)", duration: 0.161, ease: "power3.in" }, 3.428);
+    tl.to("#s3-dot", { scale: 60, duration: 0.363, ease: "power3.in" }, 3.493);
+    window.__timelines["s3"] = tl;
+  </script>
+</template>

@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estúdio de Vídeo com IA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: coluna única de leitura (máx. 1040px). A abertura cita a ideia da pessoa; o protótipo ao vivo é o único bloco tratado como "objeto"; o resto é texto, linhas finas e listas. */
+:root {
+  --bg: #100C18; --surface: #1E1830; --surface-2: #281F3F; --line: #362C52;
+  --fg: #F3F1F8; --muted: #A7A2B8; --faint: #7D7896;
+  --accent: #8800FF; --accent-text: #B97AFF; --on-accent: #FFFFFF;
+  --chart: #9A4DFF; --chart-soft: rgba(154, 77, 255, .16); --grid: #2E2646;
+  --good: #4CC38A; --warn: #F2B544; --bad: #FF7070;
+  --good-bg: rgba(76, 195, 138, .14); --warn-bg: rgba(242, 181, 68, .14); --bad-bg: rgba(255, 112, 112, .14);
+  --code-bg: #0B0812; --ph: #E6C8FF; --ph-bg: rgba(154, 77, 255, .22);
+  --shadow: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 18px 40px -24px rgba(0, 0, 0, .7);
+  --f-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F5FC; --surface: #FFFFFF; --surface-2: #F1ECFA; --line: #E1D9F0;
+    --fg: #17121F; --muted: #5E5770; --faint: #8A83A0;
+    --accent: #8800FF; --accent-text: #6E00D0; --on-accent: #FFFFFF;
+    --chart: #8800FF; --chart-soft: rgba(136, 0, 255, .10); --grid: #ECE6F6;
+    --good: #17804D; --warn: #985F00; --bad: #C42B2B;
+    --good-bg: rgba(23, 128, 77, .10); --warn-bg: rgba(152, 95, 0, .10); --bad-bg: rgba(196, 43, 43, .09);
+    --code-bg: #F5F1FC; --ph: #5B00AD; --ph-bg: rgba(136, 0, 255, .12);
+    --shadow: 0 1px 2px rgba(40, 20, 80, .06), 0 16px 36px -24px rgba(40, 20, 80, .28);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F5FC; --surface: #FFFFFF; --surface-2: #F1ECFA; --line: #E1D9F0;
+  --fg: #17121F; --muted: #5E5770; --faint: #8A83A0;
+  --accent: #8800FF; --accent-text: #6E00D0; --on-accent: #FFFFFF;
+  --chart: #8800FF; --chart-soft: rgba(136, 0, 255, .10); --grid: #ECE6F6;
+  --good: #17804D; --warn: #985F00; --bad: #C42B2B;
+  --good-bg: rgba(23, 128, 77, .10); --warn-bg: rgba(152, 95, 0, .10); --bad-bg: rgba(196, 43, 43, .09);
+  --code-bg: #F5F1FC; --ph: #5B00AD; --ph-bg: rgba(136, 0, 255, .12);
+  --shadow: 0 1px 2px rgba(40, 20, 80, .06), 0 16px 36px -24px rgba(40, 20, 80, .28);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 1rem/1.6 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+img, svg { max-width: 100%; }
+a { color: var(--accent-text); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; border-radius: 4px; }
+::selection { background: var(--ph-bg); }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+h1 { font-size: clamp(2.1rem, 5.6vw, 3.4rem); line-height: 1.04; font-weight: 700; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.85rem); line-height: 1.15; font-weight: 700; }
+h3 { font-size: 1.08rem; line-height: 1.3; font-weight: 600; }
+p { margin: 0; }
+.lede { color: var(--muted); max-width: 64ch; }
+.small { font-size: .875rem; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--f-mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* rótulo com ponto, como no deck */
+.kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 .74rem/1 var(--f-body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent-text); }
+.kicker::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* abertura */
+.hero { display: grid; gap: 22px; padding-bottom: 34px; border-bottom: 1px solid var(--line); }
+.hero h1 .acc { color: var(--accent-text); }
+.idea { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: start; max-width: 760px; }
+.idea .q { font: 700 3.4rem/0.8 var(--f-display); color: var(--accent); margin-top: 4px; }
+.idea blockquote { margin: 0; font: 500 clamp(1.1rem, 2.4vw, 1.35rem)/1.45 var(--f-display); color: var(--fg); }
+.idea cite { grid-column: 2; font-style: normal; font-size: .85rem; color: var(--faint); }
+
+.verdict { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.verdict > div { padding: 16px 18px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.verdict > div + div { border-left: 1px solid var(--line); }
+.verdict .lab { font-size: .78rem; color: var(--muted); }
+.verdict .val { font: 600 1.15rem/1.25 var(--f-display); }
+.verdict .val.yes { color: var(--good); }
+.verdict .sub { font-size: .82rem; color: var(--muted); }
+@media (max-width: 760px) {
+  .verdict { grid-template-columns: 1fr 1fr; }
+  .verdict > div:nth-child(3) { border-left: 0; }
+  .verdict > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--muted); font-size: .85rem; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; }
+.toc a:hover { color: var(--fg); border-color: var(--accent-text); }
+
+/* seções */
+section.block { display: grid; gap: 18px; padding-top: 52px; scroll-margin-top: 16px; }
+.block-head { display: grid; gap: 8px; }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+@media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+
+/* protótipo */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: clamp(16px, 3vw, 26px); display: grid; gap: 20px; min-width: 0; }
+.demo-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.demo-bar .tag { font: 600 .72rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.panel { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel h3 { margin-bottom: 8px; }
+.note { font-size: .82rem; color: var(--muted); }
+.note b { color: var(--fg); font-weight: 600; }
+
+/* KPIs */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.kpi { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.kpi .lab { font-size: .78rem; color: var(--muted); }
+.kpi .val { font: 600 1.45rem/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
+.kpi .sub { font-size: .78rem; color: var(--muted); }
+@media (max-width: 760px) { .kpis { grid-template-columns: 1fr 1fr; } }
+
+/* formulário */
+label.f { display: grid; gap: 6px; font-size: .85rem; color: var(--muted); min-width: 0; }
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  font: inherit; font-size: .95rem; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; width: 100%; min-width: 0;
+}
+textarea { font-family: var(--f-mono); font-size: .8rem; line-height: 1.55; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent-text); outline-offset: 0; border-color: transparent; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+
+.btn { font: 600 .9rem/1 var(--f-body); border-radius: 10px; padding: 10px 14px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: var(--accent-text); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.12); }
+.btn.sm { padding: 7px 10px; font-size: .8rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 .85rem/1.2 var(--f-body); padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; text-align: left; }
+.chip:hover { border-color: var(--accent-text); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* ferramentas (texto, sem logotipo) */
+.tool { display: inline-block; font: 600 .74rem/1 var(--f-body); padding: 5px 8px; border-radius: 6px; background: var(--surface-2); color: var(--fg); border: 1px solid var(--line); white-space: nowrap; }
+.tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.tools-grid > div { display: grid; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line); align-content: start; min-width: 0; }
+.tools-grid .who { display: flex; flex-wrap: wrap; gap: 6px; }
+.tools-grid p { color: var(--muted); }
+.tools-grid p b { color: var(--fg); font-weight: 600; }
+@media (max-width: 760px) { .tools-grid { grid-template-columns: 1fr; } }
+
+/* oficina: linha do tempo com horário */
+.steps { display: grid; gap: 0; }
+.step { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 4px 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+.step .t { font: 500 .95rem/1.3 var(--f-mono); color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.step .t small { display: block; color: var(--faint); font-size: .75rem; margin-top: 2px; }
+.step .c { display: grid; gap: 10px; min-width: 0; }
+.step .c > p { color: var(--muted); }
+.step .c > p b { color: var(--fg); font-weight: 600; }
+@media (max-width: 560px) { .step { grid-template-columns: 1fr; } }
+.deliver { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; padding: 16px 18px; border-radius: 12px; background: var(--chart-soft); }
+.deliver b { font-family: var(--f-display); color: var(--accent-text); }
+
+/* prompt pronto */
+.prompt { border: 1px solid var(--line); border-radius: 12px; background: var(--code-bg); overflow: hidden; min-width: 0; }
+.prompt-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px 9px 14px; border-bottom: 1px solid var(--line); }
+.prompt-head .lbl { font: 600 .7rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text); }
+.prompt-head .who { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.prompt pre { margin: 0; padding: 14px; white-space: pre-wrap; word-break: break-word; font: 400 .82rem/1.65 var(--f-mono); color: var(--fg); max-height: 420px; overflow: auto; }
+.ph { color: var(--ph); background: var(--ph-bg); border-radius: 4px; padding: 0 3px; }
+
+/* roteiro de fases */
+.phases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; counter-reset: fase; }
+.phase { display: grid; gap: 8px; align-content: start; padding: 16px; border-radius: 14px; border: 1px solid var(--line); min-width: 0; }
+.phase .when { font: 500 .78rem/1.2 var(--f-mono); color: var(--accent-text); }
+.phase p { color: var(--muted); font-size: .92rem; }
+.phase .who { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+@media (max-width: 900px) { .phases { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .phases { grid-template-columns: 1fr; } }
+
+/* cuidados */
+.cares { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.cares li { padding: 14px 0 14px 30px; border-top: 1px solid var(--line); position: relative; color: var(--muted); }
+.cares li b { color: var(--fg); font-weight: 600; }
+.cares li::before { content: "!"; position: absolute; left: 0; top: 15px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 700 .72rem/1 var(--f-body); color: var(--warn); background: var(--warn-bg); }
+@media (max-width: 760px) { .cares { grid-template-columns: 1fr; } }
+
+/* status */
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 .78rem/1 var(--f-body); padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill::before { font: 700 .72rem/1 var(--f-body); }
+.pill.good { color: var(--good); background: var(--good-bg); }
+.pill.good::before { content: "✓"; }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+.pill.warn::before { content: "!"; }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.pill.bad::before { content: "×"; }
+
+/* tabelas */
+.scroll { overflow-x: auto; min-width: 0; -webkit-overflow-scrolling: touch; }
+table.tbl { border-collapse: collapse; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: .76rem; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 9px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td.wrap-cell { white-space: normal; min-width: 220px; }
+.tbl th.r, .tbl td.r { text-align: right; }
+.tbl tr:last-child td { border-bottom: 0; }
+
+/* gráficos */
+.chart { width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--f-body); }
+.chart-title { font: 600 .92rem/1.3 var(--f-body); margin-bottom: 2px; }
+.chart-sub { font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .78rem; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 14px; height: 0; border-top: 2px solid var(--muted); vertical-align: middle; margin-right: 6px; }
+.legend i.box { width: 10px; height: 10px; border: 0; border-radius: 3px; background: var(--chart); }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--fg); color: var(--bg); font-size: .8rem; line-height: 1.4; padding: 8px 10px; border-radius: 8px; max-width: 260px; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+.tip b { font-weight: 600; }
+
+/* diagrama de fluxo simples */
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.flow .node { flex: 1 1 130px; min-width: 0; padding: 12px; border-radius: 12px; background: var(--surface-2); display: grid; gap: 4px; align-content: start; }
+.flow .node b { font-family: var(--f-display); font-size: .95rem; }
+.flow .node span { font-size: .8rem; color: var(--muted); }
+.flow .arrow { align-self: center; color: var(--faint); font-family: var(--f-mono); }
+@media (max-width: 760px) { .flow .arrow { display: none; } }
+
+footer.foot { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: .82rem; color: var(--faint); }
+
+.ask { display: grid; gap: 16px; }
+.ask .q { display: grid; gap: 8px; }
+.ask .q > span { font-size: .85rem; color: var(--muted); }
+.route { display: grid; gap: 14px; }
+.route-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.route-head h3 { font-size: 1.3rem; }
+.route-head .est { font: 500 .82rem/1.3 var(--f-mono); color: var(--accent-text); }
+.frame-shape { display: inline-block; border: 2px solid var(--muted); border-radius: 4px; vertical-align: middle; margin-right: 6px; }
+.board td.t { font-family: var(--f-mono); color: var(--accent-text); }
+.board td b { font-weight: 600; }
+.three { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.three > div { display: grid; gap: 6px; align-content: start; padding: 16px; border: 1px solid var(--line); border-radius: 14px; min-width: 0; }
+.three > div p { color: var(--muted); font-size: .92rem; }
+.three .lab { font: 600 .7rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text); }
+@media (max-width: 900px) { .three { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .three { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="hero">
+  <span class="kicker">IA na Prática · REN Jovens · Ideia da sala</span>
+  <h1>Estúdio de <span class="acc">vídeo</span> com IA</h1>
+  <div class="idea">
+    <span class="q" aria-hidden="true">“</span>
+    <blockquote>Fazer vídeo usando IA.</blockquote>
+    <cite>Resposta do formulário de inscrição</cite>
+  </div>
+  <div class="verdict">
+    <div><span class="lab">Dá para fazer?</span><span class="val yes">Sim</span><span class="sub">É a ideia mais rápida de tirar do papel hoje</span></div>
+    <div><span class="lab">Primeiro vídeo</span><span class="val">45 minutos</span><span class="sub">Até 60 segundos, pronto para postar</span></div>
+    <div><span class="lab">Virar rotina</span><span class="val">2 a 4 semanas</span><span class="sub">Estimativa: roteiro, visual e edição padronizados</span></div>
+    <div><span class="lab">Precisa programar?</span><span class="val">Não</span><span class="sub">Só para automatizar a edição, com Claude Code ou Codex</span></div>
+  </div>
+  <nav class="toc" aria-label="Nesta página">
+    <a href="#fazer">O que eu faria</a><a href="#prototipo">Planejador</a><a href="#ias">Que IA faz o quê</a><a href="#oficina">Oficina de 45 min</a><a href="#aplicacao">Virar rotina</a><a href="#cuidados">Cuidados</a>
+  </nav>
+</header>
+
+<section class="block" id="fazer">
+  <div class="block-head">
+    <span class="kicker">O que eu faria</span>
+    <h2>Primeiro decidir que tipo de vídeo é. São quatro caminhos diferentes</h2>
+    <p class="lede">“Vídeo com IA” junta coisas que usam ferramentas distintas. Escolher o caminho antes poupa a maior parte do tempo. Para um primeiro vídeo, eu começaria por explicar um tema ou editar algo gravado no celular: são os caminhos com resultado mais previsível hoje. Gerar cenas do zero funciona melhor em clipes curtos e imagens de apoio.</p>
+  </div>
+  <div class="three">
+    <div><span class="lab">Explicar</span><h3>Do PDF ao vídeo narrado</h3><p>Você sobe o material e a IA cria um vídeo explicativo, com narração em português.</p><span class="who"><span class="tool">NotebookLM</span></span></div>
+    <div><span class="lab">Divulgar</span><h3>Produto, evento ou serviço</h3><p>Roteiro com gancho, cenas do produto, legenda e chamada final.</p><span class="who"><span class="tool">ChatGPT</span><span class="tool">Gemini</span><span class="tool">CapCut</span></span></div>
+    <div><span class="lab">Gerar cenas</span><h3>Contar uma história</h3><p>Cada cena nasce de um prompt. Bom para abertura, clima e imagens que você não conseguiria filmar.</p><span class="who"><span class="tool">Veo (Gemini)</span><span class="tool">Sora</span><span class="tool">Kling</span></span></div>
+    <div><span class="lab">Editar</span><h3>O que você já gravou</h3><p>A IA tira pausas e erros, põe legenda palavra a palavra, zoom e música.</p><span class="who"><span class="tool">CapCut</span><span class="tool">Canva</span><span class="tool">Claude Code</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="prototipo">
+  <div class="block-head">
+    <span class="kicker">Protótipo ao vivo</span>
+    <h2>Planejador de vídeo</h2>
+    <p class="lede">Escolha o tipo, o formato e a duração. O planejador indica o caminho, monta o roteiro cena a cena com os tempos e escreve os prompts prontos para colar.</p>
+  </div>
+
+  <div class="demo">
+    <div class="ask">
+      <div class="q"><span>O que você quer fazer?</span><div class="chips" id="c-obj" role="group" aria-label="Objetivo"></div></div>
+      <div class="split">
+        <div class="q"><span>Formato</span><div class="chips" id="c-fmt" role="group" aria-label="Formato"></div></div>
+        <div class="q"><span>Duração</span><div class="chips" id="c-dur" role="group" aria-label="Duração"></div></div>
+      </div>
+      <div class="grid-f">
+        <label class="f" for="tema">Tema<input id="tema" type="text" value="Como funciona a energia solar"></label>
+        <label class="f" for="publico">Para quem<input id="publico" type="text" value="alunos do 6º ano"></label>
+        <label class="f" for="tom">Tom
+          <select id="tom">
+            <option>didático e leve</option>
+            <option>animado, para redes sociais</option>
+            <option>sério e institucional</option>
+            <option>bem-humorado</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="panel route" id="rota"></div>
+
+    <div>
+      <div class="chart-title">Roteiro cena a cena</div>
+      <div class="chart-sub" id="board-sub"></div>
+      <div class="scroll"><table class="tbl board" id="board"></table></div>
+    </div>
+
+    <div class="split" id="prompts"></div>
+  </div>
+</section>
+
+<section class="block" id="ias">
+  <div class="block-head">
+    <span class="kicker">Que IA faz o quê</span>
+    <h2>O caminho de um vídeo, etapa por etapa</h2>
+  </div>
+  <div class="flow" aria-label="Etapas de produção">
+    <div class="node"><b>Ideia</b><span>tema e público</span></div><span class="arrow">→</span>
+    <div class="node"><b>Roteiro</b><span>ChatGPT, Claude</span></div><span class="arrow">→</span>
+    <div class="node"><b>Voz</b><span>a sua, ou voz de IA</span></div><span class="arrow">→</span>
+    <div class="node"><b>Imagens e cenas</b><span>Veo, Sora, Kling, NotebookLM</span></div><span class="arrow">→</span>
+    <div class="node"><b>Edição e legenda</b><span>CapCut, Canva, Claude Code</span></div><span class="arrow">→</span>
+    <div class="node"><b>Publicar</b><span>título e legenda pela IA</span></div>
+  </div>
+  <div class="tools-grid">
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Roteiro, ganchos e textos.</b> Escrevem o roteiro com tempo por cena, sugerem títulos, legenda do post e as frases em destaque.</p></div>
+    <div><span class="who"><span class="tool">NotebookLM</span></span><p><b>Vídeo explicativo a partir de material.</b> PDF, site ou vídeo do YouTube viram um vídeo narrado em português. Ideal para aula e treinamento.</p></div>
+    <div><span class="who"><span class="tool">Veo (no Gemini)</span><span class="tool">Sora</span><span class="tool">Kling</span></span><p><b>Cenas geradas do zero.</b> Clipes curtos a partir de um texto ou de uma imagem. Bons para abertura, cenas de apoio e clima.</p></div>
+    <div><span class="who"><span class="tool">CapCut</span><span class="tool">Canva</span></span><p><b>Montagem.</b> Juntam os trechos, geram legenda automática, ajustam para 9:16 ou 16:9 e oferecem música liberada.</p></div>
+    <div><span class="who"><span class="tool">Claude Code</span><span class="tool">Codex</span></span><p><b>Edição automática.</b> Com ffmpeg e Whisper, um agente corta pausas, legenda palavra a palavra e dá zoom. Também cria vídeos de tipografia e gráficos a partir de HTML.</p></div>
+    <div><span class="who"><span class="tool">Vozes de IA</span></span><p><b>Narração.</b> Quando você não quer gravar a própria voz. Use sempre uma voz liberada pela ferramenta, nunca a voz de outra pessoa.</p></div>
+  </div>
+</section>
+
+<section class="block" id="oficina">
+  <div class="block-head">
+    <span class="kicker">Oficina · Trilha 3 · Vídeo</span>
+    <h2>Atividade de 45 minutos</h2>
+    <p class="lede">Dá para fazer tudo no celular. Se o caminho for o NotebookLM, comece a geração logo, porque ela leva alguns minutos.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="t">10h45<small>5 min</small></div><div class="c">
+      <h3>Escolha o caminho</h3>
+      <p>Use o planejador acima: tipo, formato, duração, tema e público. Ele já entrega o roteiro em blocos e os prompts.</p>
+    </div></div>
+    <div class="step"><div class="t">10h50<small>10 min</small></div><div class="c">
+      <h3>Escreva o roteiro com a IA</h3>
+      <p>Cole o prompt de roteiro no ChatGPT ou no Claude. Leia em voz alta: se travar, peça <b>“frases mais curtas, do jeito que se fala”</b>.</p>
+    </div></div>
+    <div class="step"><div class="t">11h00<small>15 min</small></div><div class="c">
+      <h3>Gere ou grave</h3>
+      <p><b>Explicar:</b> NotebookLM, Estúdio, resumo em vídeo, com as instruções do planejador. <b>Divulgar ou história:</b> 2 ou 3 cenas no Veo (app Gemini) ou no Sora. <b>Editar:</b> grave as falas no celular, em pé, perto da janela.</p>
+    </div></div>
+    <div class="step"><div class="t">11h15<small>10 min</small></div><div class="c">
+      <h3>Monte e legende</h3>
+      <p>No CapCut ou no Canva: junte os trechos, gere a legenda automática, corte as pausas e ponha uma música da biblioteca da ferramenta.</p>
+    </div></div>
+    <div class="step"><div class="t">11h25<small>5 min</small></div><div class="c">
+      <h3>Exporte e prepare a apresentação</h3>
+      <p>Exporte em 1080p. Na apresentação, mostre o vídeo e conte <b>qual parte a IA fez e qual parte foi sua</b>.</p>
+    </div></div>
+  </div>
+  <div class="deliver"><b>Entrega às 11h30</b><span>um vídeo de até 60 segundos, pronto para a aula ou para as redes.</span></div>
+</section>
+
+<section class="block" id="aplicacao">
+  <div class="block-head">
+    <span class="kicker">Do primeiro vídeo à rotina</span>
+    <h2>Quatro etapas para publicar toda semana</h2>
+    <p class="lede">Prazos estimados. A ideia é que cada vídeo novo dê menos trabalho que o anterior.</p>
+  </div>
+  <div class="phases">
+    <div class="phase"><span class="when">Semana 1</span><h3>Roteirista fixo</h3><p>Um projeto no ChatGPT ou no Claude com o tom da marca, o público e 3 roteiros que deram certo. Todo roteiro novo sai de lá.</p><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span></div>
+    <div class="phase"><span class="when">Semana 2</span><h3>Identidade visual</h3><p>Modelos de capa, legenda e letreiro com as cores e fontes da marca, para não recomeçar do zero.</p><span class="who"><span class="tool">Canva</span><span class="tool">CapCut</span></span></div>
+    <div class="phase"><span class="when">Semanas 3 e 4</span><h3>Edição automática</h3><p>Uma skill de edição: o agente corta, legenda, dá zoom e entrega para revisão. É assim que o palestrante edita os vídeos de evento.</p><span class="who"><span class="tool">Claude Code</span><span class="tool">Codex</span></span></div>
+    <div class="phase"><span class="when">Depois</span><h3>Calendário e métricas</h3><p>A IA lê os números de cada post e sugere os próximos temas e ganchos com base no que funcionou.</p><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="cuidados">
+  <div class="block-head">
+    <span class="kicker">Cuidados</span>
+    <h2>O que costuma dar errado</h2>
+  </div>
+  <ul class="cares">
+    <li><b>Rosto e voz de pessoas reais.</b> Só com autorização. Nunca gere vídeo ou voz imitando alguém, nem por brincadeira.</li>
+    <li><b>Avise que foi feito com IA.</b> Instagram, TikTok e YouTube têm rótulo para conteúdo gerado por IA. Usar o rótulo protege você e a conta.</li>
+    <li><b>Música e marcas.</b> Use músicas da biblioteca da própria ferramenta e evite personagens e logos de terceiros.</li>
+    <li><b>Confira os fatos.</b> O roteiro pode trazer número ou afirmação errada. Leia antes de gravar.</li>
+    <li><b>Alunos e menores.</b> Imagem de estudante só com autorização dos responsáveis e da escola.</li>
+    <li><b>Limites dos planos grátis.</b> A quantidade de vídeos gerados por dia muda com frequência. Planeje poucas cenas e escreva bem cada prompt.</li>
+  </ul>
+</section>
+
+<footer class="foot"><span>Oficina IA na Prática · REN Jovens · Brasília, 28/11/2026</span><span>Exemplos ilustrativos</span></footer>
+</div>
+
+<script>
+/* utilidades comuns às quatro páginas */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const nf = (v, d = 0) => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const brl = v => "R$ " + nf(v, 0);
+const brlk = v => Math.abs(v) >= 1e6 ? "R$ " + nf(v / 1e6, 1) + " mi" : Math.abs(v) >= 1e3 ? "R$ " + nf(v / 1e3, v >= 1e5 ? 0 : 1) + " mil" : "R$ " + nf(v, 0);
+const pct = (v, d = 0) => nf(v * 100, d) + "%";
+
+/* copiar: o texto do elemento indicado em data-copy */
+function flash(btn, msg) {
+  const old = btn.dataset.label || btn.textContent;
+  btn.dataset.label = old;
+  btn.textContent = msg;
+  clearTimeout(btn._t);
+  btn._t = setTimeout(() => { btn.textContent = old; }, 1800);
+}
+function selectEl(el) {
+  if (el.select) { el.focus(); el.select(); return; }
+  const r = document.createRange(); r.selectNodeContents(el);
+  const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  const el = document.getElementById(btn.dataset.copy);
+  if (!el) return;
+  const text = "value" in el && el.tagName !== "PRE" ? el.value : el.innerText;
+  try {
+    navigator.clipboard.writeText(text).then(() => flash(btn, "Copiado"), () => { selectEl(el); flash(btn, "Use Ctrl+C"); });
+  } catch (_) { selectEl(el); flash(btn, "Use Ctrl+C"); }
+});
+
+/* dica flutuante dos gráficos */
+const tip = (() => { const d = document.createElement("div"); d.className = "tip"; d.hidden = true; document.body.appendChild(d); return d; })();
+function showTip(e, html) {
+  tip.innerHTML = html; tip.hidden = false;
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  if (x + w > innerWidth - 8) x = e.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = e.clientY - h - pad;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+function bindTips(el, rows, html) {
+  const on = e => { const h = e.target.closest(".hit"); if (!h) return hideTip(); showTip(e, html(rows[+h.dataset.i])); };
+  el.onpointermove = on; el.onpointerdown = on; el.onpointerleave = hideTip;
+}
+
+function niceStep(max, n = 4) {
+  const raw = max / n, p = Math.pow(10, Math.floor(Math.log10(raw || 1))), f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+const roundRight = (x, y, w, h, r) => { r = Math.min(r, w, h / 2); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; };
+const roundTop = (x, y, w, h, r) => { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+
+/* barras horizontais: rows = [{label, value, ref?, tip?}] */
+function hbar(el, rows, o = {}) {
+  const fmt = o.fmt || (v => nf(v));
+  const draw = () => {
+    const W = Math.max(280, el.clientWidth || 600);
+    const rowH = 34, barH = 18, top = o.refLabel ? 24 : 6, bottom = 4;
+    const labW = Math.min(o.labW || 170, Math.round(W * 0.36));
+    const valW = o.valW || 72, x0 = labW + 10, x1 = W - valW;
+    const max = o.max || Math.max(1, ...rows.map(r => Math.max(r.value, r.ref || 0)), o.ref || 0);
+    const sx = v => x0 + (x1 - x0) * Math.max(0, v) / max;
+    const H = top + rows.length * rowH + bottom;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(o.aria || "")}">`;
+    rows.forEach((r, i) => {
+      const y = top + i * rowH + (rowH - barH) / 2, w = sx(r.value) - x0;
+      const lab = r.label.length > 24 ? r.label.slice(0, 23) + "…" : r.label;
+      s += `<text x="${labW}" y="${y + barH / 2}" text-anchor="end" dominant-baseline="central" font-size="12.5" fill="var(--fg)">${esc(lab)}</text>`;
+      if (w > 0.5) s += `<path d="${roundRight(x0, y, w, barH, 4)}" fill="${r.color || "var(--chart)"}"/>`;
+      if (r.ref != null) { const xr = sx(r.ref); s += `<line x1="${xr}" x2="${xr}" y1="${y - 4}" y2="${y + barH + 4}" stroke="var(--fg)" stroke-width="2" stroke-linecap="round"/>`; }
+      const xv = Math.max(sx(r.value), r.ref != null ? sx(r.ref) : 0) + 8;
+      s += `<text x="${xv}" y="${y + barH / 2}" dominant-baseline="central" font-size="12" fill="var(--muted)" style="font-variant-numeric:tabular-nums">${esc(r.valueLabel || fmt(r.value))}</text>`;
+    });
+    s += `<line x1="${x0}" x2="${x0}" y1="${top - 2}" y2="${H - bottom}" stroke="var(--line)" stroke-width="1"/>`;
+    if (o.ref != null) {
+      const x = sx(o.ref);
+      s += `<line x1="${x}" x2="${x}" y1="${top - 4}" y2="${H - bottom}" stroke="var(--muted)" stroke-width="1"/>`;
+      s += `<text x="${Math.min(x, W - 40)}" y="${top - 12}" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(o.refLabel || "")}</text>`;
+    }
+    rows.forEach((r, i) => { s += `<rect class="hit" data-i="${i}" x="0" y="${top + i * rowH}" width="${W}" height="${rowH}" fill="transparent"/>`; });
+    el.innerHTML = s + "</svg>";
+    bindTips(el, rows, r => r.tip || `<b>${esc(r.label)}</b><br>${esc(fmt(r.value))}`);
+  };
+  draw();
+  if (!el._ro) { let lw = el.clientWidth; el._ro = new ResizeObserver(() => { if (Math.abs(el.clientWidth - lw) > 4) { lw = el.clientWidth; el._draw(); } }); el._ro.observe(el); }
+  el._draw = draw;
+}
+
+/* colunas verticais: rows = [{label, value, tip?}] */
+function vbar(el, rows, o = {}) {
+  const fmt = o.fmt || (v => nf(v)), tick = o.tick || fmt;
+  const draw = () => {
+    const W = Math.max(280, el.clientWidth || 600), H = o.height || 230;
+    const padL = o.padL || 58, padR = 10, padT = 22, padB = 26;
+    const maxV = Math.max(1, ...rows.map(r => r.value)), step = niceStep(maxV, 5), max = Math.ceil(maxV / step) * step;
+    const sy = v => padT + (H - padT - padB) * (1 - v / max);
+    const band = (W - padL - padR) / rows.length, bw = Math.min(o.barW || 24, band * 0.6);
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(o.aria || "")}">`;
+    for (let v = 0; v <= max + 1e-9; v += step) {
+      const y = sy(v);
+      s += `<line x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}" stroke="${v === 0 ? "var(--line)" : "var(--grid)"}" stroke-width="1"/>`;
+      s += `<text x="${padL - 8}" y="${y}" text-anchor="end" dominant-baseline="central" font-size="11" fill="var(--muted)">${esc(tick(v))}</text>`;
+    }
+    const labelIdx = o.labelIdx || [rows.length - 1];
+    rows.forEach((r, i) => {
+      const cx = padL + band * i + band / 2, y = sy(r.value), h = sy(0) - y;
+      if (h > 0.5) s += `<path d="${roundTop(cx - bw / 2, y, bw, h, 4)}" fill="${r.color || "var(--chart)"}"/>`;
+      s += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>`;
+      if (labelIdx.includes(i)) s += `<text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--fg)">${esc(fmt(r.value))}</text>`;
+      s += `<rect class="hit" data-i="${i}" x="${padL + band * i}" y="${padT}" width="${band}" height="${H - padT - padB}" fill="transparent"/>`;
+    });
+    el.innerHTML = s + "</svg>";
+    bindTips(el, rows, r => r.tip || `<b>${esc(r.label)}</b><br>${esc(fmt(r.value))}`);
+  };
+  draw();
+  if (!el._ro) { let lw = el.clientWidth; el._ro = new ResizeObserver(() => { if (Math.abs(el.clientWidth - lw) > 4) { lw = el.clientWidth; el._draw(); } }); el._ro.observe(el); }
+  el._draw = draw;
+}
+
+/* lembrar pequenas preferências do visitante, sem depender disso */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (_) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { } }
+};
+
+
+const OBJ = [
+  { id: "explicar", t: "Explicar um tema" },
+  { id: "divulgar", t: "Divulgar produto ou evento" },
+  { id: "historia", t: "Contar uma história com cenas" },
+  { id: "editar", t: "Editar o que já gravei" }
+];
+const FMT = [
+  { id: "v", t: "Vertical 9:16 · Reels, TikTok, Shorts", res: "1080×1920", plat: "Reels, TikTok e Shorts", nome: "vertical 9:16" },
+  { id: "h", t: "Horizontal 16:9 · YouTube, aula", res: "1920×1080", plat: "YouTube ou aula", nome: "horizontal 16:9" }
+];
+const DUR = [{ s: 15, t: "15 s" }, { s: 30, t: "30 s" }, { s: 60, t: "60 s" }, { s: 180, t: "3 min" }];
+
+const BEATS = {
+  15: [["Gancho", 0, 2, "gancho"], ["Mensagem", 2, 11, "ponto"], ["Chamada", 11, 15, "chamada"]],
+  30: [["Gancho", 0, 3, "gancho"], ["Problema", 3, 10, "contexto"], ["Virada", 10, 20, "ponto"], ["Prova", 20, 26, "exemplo"], ["Chamada", 26, 30, "chamada"]],
+  60: [["Gancho", 0, 3, "gancho"], ["Contexto", 3, 12, "contexto"], ["Ideia 1", 12, 25, "ponto"], ["Ideia 2", 25, 38, "ponto"], ["Exemplo", 38, 50, "exemplo"], ["Fechamento", 50, 60, "chamada"]],
+  180: [["Gancho", 0, 10, "gancho"], ["Contexto", 10, 30, "contexto"], ["Parte 1", 30, 70, "ponto"], ["Parte 2", 70, 110, "ponto"], ["Parte 3", 110, 150, "ponto"], ["Resumo", 150, 170, "resumo"], ["Pergunta final", 170, 180, "chamada"]]
+};
+const FALA = {
+  gancho: "Uma pergunta ou afirmação que prende nos primeiros segundos",
+  contexto: "Por que isso importa para quem está assistindo",
+  ponto: "Uma ideia só, explicada com palavras simples",
+  exemplo: "Um caso concreto, número ou antes e depois",
+  resumo: "As ideias principais em uma frase cada",
+  chamada: "O que a pessoa deve fazer ou pensar agora"
+};
+const TELA = {
+  explicar: { gancho: "Pergunta em texto grande", contexto: "Ilustração simples do tema", ponto: "Esquema com uma ideia por vez", exemplo: "Situação do dia a dia do público", resumo: "Lista com os pontos", chamada: "Pergunta para o público responder" },
+  divulgar: { gancho: "O produto ou o resultado logo no 1º segundo", contexto: "A dor do cliente em uma cena", ponto: "O produto em uso, em close", exemplo: "Depoimento, número ou antes e depois", resumo: "Os benefícios em tela", chamada: "Link, data ou local, escritos na tela" },
+  historia: { gancho: "Cena de impacto, câmera em movimento", contexto: "Plano aberto do lugar e do personagem", ponto: "A ação principal do personagem", exemplo: "A virada da história", resumo: "Montagem rápida dos momentos", chamada: "Plano final e letreiro" },
+  editar: { gancho: "Sua melhor frase, com zoom e legenda grande", contexto: "Você falando, sem pausas", ponto: "Imagem de cobertura do que você fala", exemplo: "Print, tela ou demonstração", resumo: "Tópicos na tela enquanto você fala", chamada: "Chamada falada e letreiro final" }
+};
+const ROTA = {
+  explicar: { nome: "Explicar com o NotebookLM", est: "15 a 25 min · a geração leva alguns minutos", nodes: [["Material", "PDF, site ou YouTube"], ["NotebookLM", "resumo em vídeo com suas instruções"], ["CapCut ou Canva", "corte, legenda e formato"]], porque: "O NotebookLM monta o vídeo narrado a partir do material que você subir. Você controla o foco e o público pelas instruções. Se quiser um trecho curto para as redes, corte o melhor pedaço no CapCut." },
+  divulgar: { nome: "Roteiro, cenas e montagem", est: "35 a 45 min", nodes: [["ChatGPT ou Claude", "roteiro com gancho"], ["Veo, Sora ou fotos reais", "2 ou 3 cenas do produto"], ["Sua voz ou voz de IA", "locução"], ["CapCut ou Canva", "montagem, legenda e música"]], porque: "Vídeo de divulgação vive do gancho e da chamada final. A IA acelera o roteiro e as cenas de apoio. Sempre que existir, prefira imagem real do produto: passa mais confiança." },
+  historia: { nome: "Cenas geradas do zero", est: "40 a 60 min · exige várias tentativas", nodes: [["ChatGPT ou Claude", "roteiro dividido em cenas"], ["Veo, Sora ou Kling", "um clipe curto por cena"], ["CapCut", "montagem e trilha"]], porque: "Cada cena é um prompt. Para o personagem não mudar de rosto entre cenas, descreva-o sempre com as mesmas palavras ou parta da mesma imagem de referência." },
+  editar: { nome: "Editar o que você gravou", est: "20 a 40 min", nodes: [["Celular", "grave as falas"], ["CapCut ou Canva", "legenda automática e cortes"], ["Claude Code", "opcional: edição automática"]], porque: "É o caminho com resultado mais natural, porque a voz e o rosto são seus. A IA faz o trabalho chato: tirar pausas, legendar e dar ritmo." }
+};
+
+const st = { obj: store.get("video.obj", "explicar"), fmt: store.get("video.fmt", "v"), dur: store.get("video.dur", 60) };
+const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+const durTxt = s => s < 60 ? `${s} segundos` : s === 60 ? "1 minuto" : `${s / 60} minutos`;
+
+function chips(el, items, key, idOf, label) {
+  el.innerHTML = items.map(i => `<button type="button" class="chip" data-v="${idOf(i)}" aria-pressed="${String(idOf(i)) === String(st[key])}">${esc(label(i))}</button>`).join("");
+  el.onclick = e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    st[key] = key === "dur" ? +b.dataset.v : b.dataset.v; store.set("video." + key, st[key]);
+    $$(".chip", el).forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+    render();
+  };
+}
+
+function promptBox(id, lbl, tools, text) {
+  return `<div class="prompt"><div class="prompt-head"><span class="lbl">${lbl}</span><span class="who">${tools.map(t => `<span class="tool">${t}</span>`).join("")}<button class="btn sm" type="button" data-copy="${id}">Copiar</button></span></div><pre id="${id}">${text}</pre></div>`;
+}
+const ph = t => `<span class="ph">${esc(t)}</span>`;
+
+function render() {
+  const tema = $("#tema").value.trim() || "seu tema", pub = $("#publico").value.trim() || "seu público", tom = $("#tom").value;
+  const fmt = FMT.find(f => f.id === st.fmt), r = ROTA[st.obj], beats = BEATS[st.dur];
+  const shape = fmt.id === "v" ? `<span class="frame-shape" style="width:9px;height:16px"></span>` : `<span class="frame-shape" style="width:16px;height:9px"></span>`;
+
+  $("#rota").innerHTML = `<div class="route-head"><h3>${esc(r.nome)}</h3><span class="est">${esc(r.est)}</span></div>
+    <div class="flow">${r.nodes.map(([b, s]) => `<div class="node"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('<span class="arrow">→</span>')}</div>
+    <p class="note">${esc(r.porque)}</p>`;
+
+  $("#board-sub").innerHTML = `${shape}${esc(fmt.nome)} · ${durTxt(st.dur)} · ${beats.length} partes` + (st.obj === "historia" ? ` · cerca de ${Math.ceil(st.dur / 8)} clipes de 8 s` : "");
+  $("#board").innerHTML = `<thead><tr><th>Tempo</th><th>Parte</th><th>O que falar</th><th>O que aparece</th></tr></thead><tbody>` +
+    beats.map(([n, a, b, k]) => `<tr><td class="t">${mmss(a)}–${mmss(b)}</td><td><b>${esc(n)}</b></td><td class="wrap-cell">${esc(FALA[k])}</td><td class="wrap-cell">${esc(TELA[st.obj][k])}</td></tr>`).join("") + "</tbody>";
+
+  const estrutura = beats.map(([n, a, b, k]) => `- ${mmss(a)}–${mmss(b)} · ${n}: ${FALA[k].toLowerCase()}`).join("\n");
+  const roteiro = `Escreva o roteiro de um vídeo de ${ph(durTxt(st.dur))}, formato ${ph(fmt.nome)}, sobre ${ph(tema)} para ${ph(pub)}. Tom: ${ph(tom)}.
+
+Use esta estrutura, respeitando o tempo de cada parte:
+${esc(estrutura)}
+
+Para cada parte, escreva: a fala (frases curtas, do jeito que se fala), o que aparece na tela e a palavra que deve ficar em destaque na legenda.
+
+Regras: gancho nos 3 primeiros segundos, sem “olá, pessoal”, uma ideia por cena, linguagem de ${ph(pub)}. No fim, sugira 3 títulos e uma legenda para o post com até 3 hashtags.`;
+
+  let segundo;
+  if (st.obj === "explicar") {
+    segundo = promptBox("p-b", "Instruções para o NotebookLM", ["NotebookLM"], `No caderno: Estúdio › Resumo em vídeo › personalizar. Cole no campo de instruções:
+
+Foque em ${ph(tema)}. O público é ${ph(pub)}. Explique com linguagem simples, use um exemplo do dia a dia e termine com uma pergunta para o público pensar. Explique qualquer termo técnico na primeira vez que aparecer. Tom ${ph(tom)}.`);
+  } else if (st.obj === "divulgar") {
+    segundo = promptBox("p-b", "Prompt de cena", ["Veo (Gemini)", "Sora"], `Cena de 8 segundos, ${ph(fmt.nome)}. ${ph(tema)} em uso por ${ph("uma pessoa jovem")} em ${ph("um ambiente real, ex.: cozinha de casa")}. Câmera: aproxima devagar até um close no produto. Luz natural de fim de tarde. Estilo: comercial realista, cores quentes. Áudio: som ambiente, sem fala. Sem texto na tela.
+
+Anatomia: assunto + ação + cenário + câmera + luz + estilo + áudio. Mude uma coisa por vez entre as tentativas.`);
+  } else if (st.obj === "historia") {
+    const n = Math.min(6, Math.ceil(st.dur / 8));
+    segundo = promptBox("p-b", "Prompts de cena", ["Veo (Gemini)", "Sora", "Kling"], `Personagem (repita igual em todas as cenas): ${ph("mulher de 25 anos, cabelo curto preto, jaqueta amarela, mochila verde")}.
+Estilo (repita igual): ${ph("cinematográfico, cores quentes, lente 35 mm")}, formato ${ph(fmt.nome)}.
+
+` + Array.from({ length: n }, (_, i) => `Cena ${i + 1} (8 s): ${ph(i === 0 ? "abertura: o personagem chega a um lugar marcante, câmera acompanha por trás" : i === n - 1 ? "final: plano aberto, o personagem olha para o horizonte" : "o que acontece nesta cena")}.`).join("\n") + `
+
+Gere uma cena por vez. Se o rosto mudar, envie a primeira imagem como referência.`);
+  } else {
+    segundo = promptBox("p-b", "Para automatizar a edição", ["Claude Code", "Codex"], `Tenho o arquivo ${ph("bruto.mp4")}, gravado no celular, formato ${ph(fmt.nome)}. Usando ffmpeg e Whisper:
+
+1. Transcreva com tempo por palavra.
+2. Corte pausas maiores que 0,6 s e os trechos em que eu disse “corta”.
+3. Gere legenda palavra a palavra, estilo reels, com as palavras-chave em destaque.
+4. Exporte em ${ph(fmt.res)} para ${ph(fmt.plat)}.
+
+Mostre a lista de cortes antes de renderizar, para eu aprovar.
+
+Sem programar: no CapCut, use Legendas automáticas e Remover pausas.`);
+  }
+  $("#prompts").innerHTML = promptBox("p-a", "Prompt de roteiro", ["ChatGPT", "Claude"], roteiro) + segundo;
+}
+
+chips($("#c-obj"), OBJ, "obj", i => i.id, i => i.t);
+chips($("#c-fmt"), FMT, "fmt", i => i.id, i => i.t);
+chips($("#c-dur"), DUR, "dur", i => i.s, i => i.t);
+["#tema", "#publico", "#tom"].forEach(s => $(s).addEventListener("input", render));
+render();
+</script>
+</body>
+</html>

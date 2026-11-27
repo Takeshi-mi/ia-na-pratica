@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #8800ff;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="21.64" data-width="1080" data-height="1920">
+      <!-- Cenas, cortadas nos compassos de "Voxel Revolution" (121,8 BPM, compasso de 1,97 s) -->
+      <div id="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="3.94" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3.94" data-duration="3.93" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="7.87" data-duration="3.88" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="s4" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="11.75" data-duration="2.02" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="13.77" data-duration="3.94" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="s7" data-composition-id="s7" data-composition-src="compositions/s7.html" data-start="17.71" data-duration="3.93" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+
+      <!-- Música: "Voxel Revolution", Kevin MacLeod (incompetech.com), CC BY 4.0: o crédito vai na legenda da postagem. Instrumental, conferido por transcrição (0 palavras). Entra no downbeat de 11,835 s -->
+      <audio id="music" class="clip" src="assets/audio/voxel-revolution.mp3" data-start="0" data-duration="21.64" data-media-start="11.835" data-volume="0.5" data-fade-in="0.15" data-fade-out="1.5" data-track-index="10"></audio>
+
+      <!-- Efeitos: cada pico cai um quadro depois da imagem -->
+      <audio id="sfx-whoosh-1" class="clip" src="assets/sfx/whoosh.mp3" data-start="3.62" data-duration="0.6" data-volume="0.9" data-track-index="11"></audio>
+      <audio id="sfx-pop-dot" class="clip" src="assets/sfx/pop.mp3" data-start="9.7" data-duration="0.7" data-volume="0.85" data-track-index="11"></audio>
+      <audio id="sfx-whoosh-2" class="clip" src="assets/sfx/whoosh.mp3" data-start="11.53" data-duration="0.6" data-volume="0.8" data-track-index="12"></audio>
+      <audio id="sfx-riser" class="clip" src="assets/sfx/riser.mp3" data-start="14.54" data-duration="3.44" data-volume="0.5" data-track-index="13"></audio>
+      <audio id="sfx-pop-logo" class="clip" src="assets/sfx/pop.mp3" data-start="18.17" data-duration="0.6" data-volume="0.8" data-track-index="12"></audio>
+      <audio id="sfx-impact" class="clip" src="assets/sfx/impact.mp3" data-start="17.94" data-duration="2.1" data-volume="1" data-track-index="14"></audio>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

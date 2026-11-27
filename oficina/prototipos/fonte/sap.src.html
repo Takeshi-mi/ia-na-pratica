@@ -1,0 +1,336 @@
+<title>Copiloto SAP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/*@BASE_CSS*/
+.tcode { display: inline-block; font: 500 .8rem/1 var(--f-mono); padding: 4px 7px; border-radius: 6px; background: var(--ph-bg); color: var(--ph); margin: 2px 4px 2px 0; white-space: nowrap; }
+.search { display: grid; gap: 12px; }
+.search input[type="search"] { font-size: 1.05rem; padding: 12px 14px; }
+.res { display: grid; gap: 10px; }
+.err { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); min-width: 0; }
+.err > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; gap: 6px; }
+.err > summary::-webkit-details-marker { display: none; }
+.err > summary .top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.err > summary .m { font-weight: 600; }
+.err > summary .where { font-size: .82rem; color: var(--muted); }
+.err .body { padding: 0 14px 14px; display: grid; gap: 8px; font-size: .92rem; }
+.err .body ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.err .body p { color: var(--muted); }
+.err .body p b { color: var(--fg); font-weight: 600; }
+.badge { font: 600 .7rem/1 var(--f-body); letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
+.warnbox { padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn); font-size: .86rem; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.empty { color: var(--muted); font-size: .92rem; padding: 6px 0; }
+.tab-row { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
+.tab-row button { font: 600 .9rem/1 var(--f-body); padding: 10px 14px; border: 0; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab-row button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+</style>
+<!--/head-->
+<div class="wrap">
+
+<header class="hero">
+  <span class="kicker">IA na Prática · REN Jovens · Ideia da sala</span>
+  <h1>Copiloto <span class="acc">SAP</span> para pesquisa e solução de problemas</h1>
+  <div class="idea">
+    <span class="q" aria-hidden="true">“</span>
+    <blockquote>Otimização de pesquisa e resolução de problemas SAP.</blockquote>
+    <cite>Resposta do formulário de inscrição</cite>
+  </div>
+  <div class="verdict">
+    <div><span class="lab">Dá para fazer?</span><span class="val yes">Sim</span><span class="sub">E rende rápido: o SAP é muito documentado e as IAs conhecem bem</span></div>
+    <div><span class="lab">Primeiro protótipo</span><span class="val">45 minutos</span><span class="sub">Um consultor SAP configurado no Claude ou no ChatGPT</span></div>
+    <div><span class="lab">Base da equipe</span><span class="val">2 a 4 semanas</span><span class="sub">Estimativa, a partir do histórico de chamados</span></div>
+    <div><span class="lab">Precisa programar?</span><span class="val">Para começar, não</span><span class="sub">Para ABAP, bot e integração, sim, com Codex ou Claude Code</span></div>
+  </div>
+  <nav class="toc" aria-label="Nesta página">
+    <a href="#fazer">O que eu faria</a><a href="#prototipo">Protótipo</a><a href="#ias">Que IA faz o quê</a><a href="#oficina">Oficina de 45 min</a><a href="#aplicacao">Até a equipe</a><a href="#cuidados">Cuidados</a>
+  </nav>
+</header>
+
+<section class="block" id="fazer">
+  <div class="block-head">
+    <span class="kicker">O que eu faria</span>
+    <h2>Primeiro ensinar a perguntar, depois montar a base, por último ligar no SAP</h2>
+  </div>
+  <div class="split">
+    <p class="lede">São dois problemas diferentes. <b>Pesquisar</b> é achar a transação, a tabela ou o procedimento certo. <b>Resolver</b> é entender um erro e saber o que fazer. Nos dois casos, a IA acerta muito mais quando recebe o contexto completo: sistema, módulo, transação e a mensagem com classe e número.</p>
+    <p class="lede">O maior ganho costuma estar no histórico de chamados: ele já tem as perguntas e as respostas da empresa. A IA transforma isso numa base de conhecimento. Só depois vale um agente conectado ao SAP, e sempre em modo de leitura.</p>
+  </div>
+</section>
+
+<section class="block" id="prototipo">
+  <div class="block-head">
+    <span class="kicker">Protótipo ao vivo</span>
+    <h2>Busca de erros e transações, e o montador de pergunta</h2>
+    <p class="lede">Uma base de exemplo com erros comuns e as transações mais procuradas. Quando a base não resolve, o montador prepara uma pergunta completa para colar no ChatGPT ou no Claude.</p>
+  </div>
+
+  <div class="demo">
+    <div class="tab-row" role="tablist">
+      <button type="button" role="tab" id="t-busca" aria-selected="true" aria-controls="pn-busca">Buscar na base</button>
+      <button type="button" role="tab" id="t-perg" aria-selected="false" aria-controls="pn-perg">Montar pergunta para a IA</button>
+    </div>
+
+    <div id="pn-busca" role="tabpanel" aria-labelledby="t-busca" class="search">
+      <label class="f" for="q">Descreva o erro ou o que você quer fazer<input id="q" type="search" value="estoque insuficiente na MIGO" autocomplete="off"></label>
+      <div class="chips" id="exemplos"></div>
+      <div class="chips" id="mods" role="group" aria-label="Módulo"></div>
+      <div class="res" id="res-err"></div>
+      <div id="res-tc"></div>
+      <p class="note"><b>Base de exemplo</b> com erros comuns do SAP ECC e do S/4HANA. Texto e número das mensagens podem variar conforme a versão e o idioma de logon: confira no seu sistema. Na versão da empresa, essa base sai do histórico de chamados e dos manuais internos.</p>
+    </div>
+
+    <div id="pn-perg" role="tabpanel" aria-labelledby="t-perg" class="search" hidden>
+      <p class="note">Para ver a classe e o número de uma mensagem, clique na mensagem da barra de status. Na janela de ajuda, o botão de informações técnicas mostra algo como <b>M7 021</b>.</p>
+      <div class="grid-f">
+        <label class="f" for="f-sis">Sistema<select id="f-sis"><option>SAP ECC</option><option selected>S/4HANA (on-premise)</option><option>S/4HANA Cloud</option><option>Não sei</option></select></label>
+        <label class="f" for="f-mod">Módulo<select id="f-mod"><option selected>MM (materiais e compras)</option><option>SD (vendas e faturamento)</option><option>FI (financeiro)</option><option>CO (custos)</option><option>PP (produção)</option><option>PM (manutenção)</option><option>Técnico (Basis, autorização, integração)</option></select></label>
+        <label class="f" for="f-tx">Transação<input id="f-tx" type="text" value="MIGO"></label>
+        <label class="f" for="f-id">Classe e número da mensagem<input id="f-id" type="text" value="M7 021"></label>
+      </div>
+      <label class="f" for="f-msg">Mensagem completa, como aparece na tela<input id="f-msg" type="text" value="Deficit of SL Unrestricted-use 12 UN : 100234 1010 0001"></label>
+      <div class="split">
+        <label class="f" for="f-fazia">O que eu estava fazendo<textarea id="f-fazia" rows="4">Saída de mercadoria para centro de custo (movimento 201) de 12 unidades do material 100234, centro 1010, depósito 0001. A nota do fornecedor CNPJ 12.345.678/0001-90 chegou ontem.</textarea></label>
+        <label class="f" for="f-tentei">O que eu já tentei<textarea id="f-tentei" rows="4">Conferi na MMBE e aparecem 15 unidades no centro, mas não sei em qual depósito.</textarea></label>
+      </div>
+      <div class="warnbox" id="sens" hidden></div>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Pergunta pronta</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p-perg">Copiar</button></span></div><pre id="p-perg"></pre></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="ias">
+  <div class="block-head">
+    <span class="kicker">Que IA faz o quê</span>
+    <h2>Cada ferramenta resolve uma parte</h2>
+  </div>
+  <div class="tools-grid">
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Explicam erros e sugerem passos.</b> Traduzem mensagem técnica e dump para a linguagem do negócio. Um projeto com instruções fixas vira o “consultor SAP” da equipe.</p></div>
+    <div><span class="who"><span class="tool">NotebookLM</span></span><p><b>Base de manuais e procedimentos.</b> Suba POPs, treinamentos e manuais internos. Ele responde “como fazemos isso aqui” citando o documento e a página.</p></div>
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><span class="tool">planilha</span></span><p><b>Histórico de chamados vira FAQ.</b> Anexe a exportação dos chamados e peça os problemas que mais se repetem, com causa e solução.</p></div>
+    <div><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span><p><b>Código.</b> Relatórios ABAP, CDS views, consultas, scripts que leem dados por OData ou RFC e o bot de suporte.</p></div>
+    <div><span class="who"><span class="tool">Joule (SAP)</span></span><p><b>O copiloto da própria SAP.</b> Funciona dentro de algumas soluções, como o S/4HANA Cloud. Depende da versão e da licença da empresa.</p></div>
+    <div><span class="who"><span class="tool">Pesquisa na web</span></span><p><b>Notas e KBAs.</b> A IA com busca ajuda a achar a nota SAP certa. A nota em si se confere no portal da SAP, com o usuário da empresa.</p></div>
+  </div>
+</section>
+
+<section class="block" id="oficina">
+  <div class="block-head">
+    <span class="kicker">Oficina · Trilha 1 · Estudar, aplicada ao SAP</span>
+    <h2>Atividade de 45 minutos</h2>
+    <p class="lede">Traga 3 problemas reais do seu dia. Não precisa de acesso ao SAP durante a oficina.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="t">10h45<small>10 min</small></div><div class="c">
+      <h3>Liste 3 problemas reais</h3>
+      <p>Os erros que mais aparecem ou as buscas que mais tomam seu tempo. <b>Tire nomes, CPF, CNPJ e valores</b> antes de usar em qualquer IA.</p>
+    </div></div>
+    <div class="step"><div class="t">10h55<small>10 min</small></div><div class="c">
+      <h3>Crie o seu consultor SAP</h3>
+      <p>Um projeto no Claude ou no ChatGPT (ou um GPT personalizado) com as instruções abaixo. Se tiver manual interno liberado, suba no projeto ou num caderno do NotebookLM.</p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Instruções do projeto</span><span class="who"><span class="tool">Claude</span><span class="tool">ChatGPT</span><button class="btn sm" type="button" data-copy="p1">Copiar</button></span></div>
+<pre id="p1">Você é um consultor SAP sênior em <span class="ph">[MM, SD e FI/CO]</span>, no <span class="ph">[S/4HANA]</span>. Você atende usuários de negócio da <span class="ph">[empresa]</span>, que não são técnicos.
+
+Regras:
+1. Se faltar, pergunte antes de responder: transação, mensagem completa (classe e número) e o que o usuário estava fazendo.
+2. Responda em passos numerados, com o código da transação entre parênteses.
+3. Separe o que o usuário pode fazer sozinho do que depende de Basis, segurança, controladoria ou consultoria.
+4. Nunca sugira mudar configuração, abrir período ou apagar bloqueio em produção sem aprovação.
+5. Quando a resposta vier dos documentos do projeto, cite o documento. Quando for conhecimento geral, avise que precisa ser confirmado no sistema.
+6. Se não tiver certeza de uma transação ou de uma nota SAP, diga isso em vez de inventar.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h05<small>15 min</small></div><div class="c">
+      <h3>Teste com perguntas completas</h3>
+      <p>Use o montador desta página para os 3 problemas. Anote para cada um: <b>acertou, errou ou inventou</b> alguma transação? Ajuste as instruções e teste de novo.</p>
+    </div></div>
+    <div class="step"><div class="t">11h20<small>10 min</small></div><div class="c">
+      <h3>Transforme em FAQ</h3>
+      <p>Peça: <b>“Transforme as 3 soluções numa página de FAQ para a equipe: sintoma, causa, passos e quem chamar.”</b> No Claude, peça como artefato e já tem um link para mostrar.</p>
+    </div></div>
+  </div>
+  <div class="deliver"><b>Entrega às 11h30</b><span>um consultor SAP configurado e uma FAQ com 3 problemas reais resolvidos ou bem encaminhados.</span></div>
+
+  <div class="split" style="margin-top:8px">
+    <div class="prompt"><div class="prompt-head"><span class="lbl">Depois · chamados viram FAQ</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p2">Copiar</button></span></div>
+<pre id="p2">Anexei <span class="ph">[500]</span> chamados de suporte SAP dos últimos <span class="ph">[6 meses]</span>, sem nomes de pessoas. Colunas: data, módulo, descrição do problema, solução aplicada.
+
+1. Agrupe em no máximo 15 problemas recorrentes e mostre quantos chamados cada um teve.
+2. Para cada problema: o sintoma como o usuário descreve, a causa mais comum, os passos de solução e quem resolve.
+3. Diga quais 3 problemas poderiam ser evitados com treinamento ou ajuste de processo.
+
+Entregue primeiro como tabela e depois como FAQ em linguagem simples.</pre></div>
+    <div class="prompt"><div class="prompt-head"><span class="lbl">Para quem programa · ABAP</span><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><button class="btn sm" type="button" data-copy="p3">Copiar</button></span></div>
+<pre id="p3">Escreva um relatório ABAP com ALV que liste itens de pedido de compra com entrada de mercadorias lançada e sem fatura há mais de <span class="ph">[30]</span> dias.
+
+- Tabelas: EKKO, EKPO e o histórico do pedido em EKBE (entrada: VGABE 1; fatura: VGABE 2).
+- Filtros: empresa, centro, fornecedor e data da entrada.
+- Colunas: pedido, item, fornecedor, material, quantidade recebida, quantidade faturada, valor pendente e dias desde a entrada.
+
+Siga o padrão da empresa: <span class="ph">[pacote e prefixo Z]</span>. Explique cada SELECT e diga se precisa de índice.</pre></div>
+  </div>
+</section>
+
+<section class="block" id="aplicacao">
+  <div class="block-head">
+    <span class="kicker">Do protótipo à equipe</span>
+    <h2>Quatro etapas, da pergunta ao agente</h2>
+    <p class="lede">Prazos estimados. As duas primeiras etapas não precisam de TI nem de acesso ao sistema.</p>
+  </div>
+  <div class="phases">
+    <div class="phase"><span class="when">Semana 1</span><h3>Pergunta padrão</h3><p>Todo mundo pergunta do mesmo jeito: sistema, módulo, transação, mensagem e o que já tentou. O consultor pessoal da oficina já resolve boa parte.</p><span class="who"><span class="tool">Claude</span><span class="tool">ChatGPT</span></span></div>
+    <div class="phase"><span class="when">Semanas 2 a 4</span><h3>Base da equipe</h3><p>Histórico de chamados vira FAQ; manuais e POPs vão para um caderno ou projeto compartilhado, no plano corporativo da empresa.</p><span class="who"><span class="tool">NotebookLM</span><span class="tool">Claude</span><span class="tool">ChatGPT</span></span></div>
+    <div class="phase"><span class="when">Meses 2 e 3</span><h3>Agente no suporte</h3><p>No Teams ou no portal de chamados: responde com base na FAQ e, quando não sabe, abre o chamado já com tudo preenchido.</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span></div>
+    <div class="phase"><span class="when">Depois</span><h3>Ligado ao SAP</h3><p>Consulta status de pedido, estoque e IDoc por OData ou RFC, só leitura, com aprovação da TI. Ou o Joule, se a empresa tiver a licença.</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><span class="tool">Joule</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="cuidados">
+  <div class="block-head">
+    <span class="kicker">Cuidados</span>
+    <h2>O que costuma dar errado</h2>
+  </div>
+  <ul class="cares">
+    <li><b>Dados sensíveis.</b> CPF, CNPJ, valores e nomes de clientes e fornecedores ficam fora de IA em conta pessoal. Use o plano corporativo ou anonimize, como o montador acima sugere.</li>
+    <li><b>A IA inventa transação e nota.</b> Confira no sistema antes de seguir o passo a passo. A regra 6 das instruções ajuda, mas não elimina o risco.</li>
+    <li><b>Produção não é laboratório.</b> Mudança de configuração, abertura de período e exclusão de bloqueio seguem o processo de mudança da empresa.</li>
+    <li><b>Diga a versão.</b> ECC e S/4HANA têm diferenças: no S/4HANA, cliente e fornecedor se cadastram pela BP, por exemplo.</li>
+    <li><b>Prints com dados.</b> Recorte ou borre antes de anexar uma tela do SAP.</li>
+    <li><b>Quem lança responde.</b> A IA sugere; a pessoa que lança no SAP continua responsável pelo lançamento.</li>
+  </ul>
+</section>
+
+<footer class="foot"><span>Oficina IA na Prática · REN Jovens · Brasília, 28/11/2026</span><span>Base de exemplo, para estudo</span></footer>
+</div>
+
+<script>
+/*@BASE_JS*/
+
+const ERROS = [
+  { mod: "MM", msg: "Deficit of SL Unrestricted-use (saldo insuficiente em estoque de utilização livre)", id: "M7 021", onde: "MIGO e saída de mercadoria na remessa (VL02N)", kw: "estoque insuficiente saldo falta deficit migo saida baixa", causa: "Não há saldo livre no depósito ou lote informado. Comum quando a entrada ainda não foi lançada, quando o estoque está em qualidade ou bloqueado, ou quando está em outro depósito.", passos: ["Confira o saldo por depósito, lote e tipo de estoque (MMBE).", "Veja as últimas movimentações do material (MB51).", "Se o material está em outro depósito, peça a transferência (MIGO, movimento 311) a quem tem permissão.", "Se a mercadoria chegou e a entrada não foi lançada, a entrada vem primeiro."], equipe: "Almoxarifado ou key user de MM" },
+  { mod: "MM", msg: "Posting only possible in periods AAAA/MM and AAAA/MM (só é possível lançar nos períodos…)", id: "M7 053", onde: "MIGO, MIRO e outros lançamentos de material", kw: "periodo fechado mes fechado lancamento data competencia", causa: "O período de materiais está fechado para a empresa.", passos: ["Veja quais períodos estão abertos (MMRV).", "Não abra o período por conta própria: a abertura (MMPV) segue o calendário de fechamento da controladoria.", "Se o lançamento é do mês anterior, confirme com a controladoria se ainda dá tempo."], equipe: "Controladoria" },
+  { mod: "FI/CO", msg: "Account XXXX requires an assignment to a CO object (a conta exige objeto de custo)", id: "KI 235", onde: "MIRO, FB60 e saídas para consumo", kw: "centro de custo objeto co conta despesa atribuicao ordem", causa: "A conta de despesa exige centro de custo, ordem ou outro objeto de CO, e ele não foi informado na linha.", passos: ["Informe o centro de custo ou a ordem na linha do lançamento.", "Se sempre falta na mesma conta, peça à consultoria de CO para avaliar uma atribuição padrão (OKB9)."], equipe: "Controladoria" },
+  { mod: "Técnico", msg: "You are not authorized… (sem autorização para a transação ou objeto)", id: "Autorização", onde: "Qualquer transação", kw: "sem autorizacao acesso permissao perfil negado", causa: "O seu perfil não tem a autorização para aquela transação, empresa, centro ou tipo de documento.", passos: ["Logo depois do erro, rode a SU53 e tire um print da tela.", "Abra chamado para a equipe de segurança com o print e a tarefa que você precisa fazer.", "Não use o acesso de um colega."], equipe: "Segurança ou Basis" },
+  { mod: "Técnico", msg: "Erro de execução ABAP (tela de dump)", id: "Dump", onde: "Qualquer transação ou relatório", kw: "dump erro de execucao runtime error programa parou tela de erro", causa: "Um programa parou com erro. Pode ser um dado inesperado, um programa customizado com defeito ou falta de memória.", passos: ["Abra a ST22 e ache o dump pelo horário e pelo usuário.", "Anote a categoria do erro, o programa e a seção que explica o que aconteceu.", "Mande para o time de desenvolvimento ou sustentação. A IA ajuda a entender o texto do dump, sem dados sensíveis."], equipe: "Desenvolvimento ABAP ou sustentação" },
+  { mod: "Técnico", msg: "Registro bloqueado por outro usuário (… is locked by user …)", id: "Bloqueio", onde: "Alteração de pedido, material ou ordem", kw: "bloqueado bloqueio outro usuario travado processado por", causa: "Outra pessoa está com o mesmo documento ou cadastro aberto em modo de alteração.", passos: ["Veja quem está com o bloqueio (SM12).", "Peça para a pessoa sair da transação.", "Bloqueio esquecido só deve ser apagado pela equipe Basis."], equipe: "Basis" },
+  { mod: "Técnico", msg: "IDoc com status 51 (documento da aplicação não lançado)", id: "IDoc 51", onde: "Integrações: EDI, pedidos e notas vindos de outro sistema", kw: "idoc integracao edi status 51 interface nao integrou", causa: "O IDoc chegou, mas o SAP não conseguiu criar o documento. Quase sempre é cadastro faltando ou dado inválido.", passos: ["Abra o IDoc (WE02) e leia a mensagem de status.", "Corrija o cadastro ou o dado indicado.", "Reprocesse o IDoc (BD87)."], equipe: "Key user do processo ou equipe de integração" },
+  { mod: "Técnico", msg: "Job em background cancelado", id: "Job", onde: "Relatórios e rotinas agendadas", kw: "job background agendado cancelado rotina noturna nao rodou", causa: "Erro no programa, variante com parâmetro inválido ou usuário do job sem autorização.", passos: ["Ache o job (SM37) e abra o log.", "Confira a variante e o usuário do job.", "Se o log apontar dump, siga para a ST22."], equipe: "Basis ou sustentação" },
+  { mod: "MM", msg: "Saldo da fatura diferente de zero na MIRO", id: "MIRO", onde: "MIRO", kw: "miro fatura saldo diferente nota fiscal fornecedor nao bate", causa: "A fatura não bate com o pedido ou com a entrada: quantidade, preço, imposto ou frete.", passos: ["Compare pedido, entrada e nota fiscal (histórico do pedido na ME23N).", "Confira o código de imposto e os valores de frete ou custos adicionais.", "Se a entrada ainda não foi lançada, ela vem primeiro (MIGO)."], equipe: "Fiscal ou contas a pagar" },
+  { mod: "SD", msg: "Condição de preço obrigatória ausente (ex.: PR00 ou PPR0)", id: "Preço", onde: "VA01 e VA02", kw: "preco condicao pr00 ppr0 ordem de venda sem preco pricing", causa: "Não existe registro de preço válido para aquele cliente, material e data.", passos: ["Consulte os registros de condição do material para a data (VK13).", "Se não houver, peça a criação (VK11) a quem cuida de preços.", "Depois, refaça a determinação de preço na ordem."], equipe: "Comercial ou preços" },
+  { mod: "SD", msg: "Fatura não foi para a contabilidade (erro na determinação de conta)", id: "Contabilização", onde: "VF01, VF02 e VFX3", kw: "fatura faturamento contabilidade determinacao de conta nao contabilizou bloqueada", causa: "Falta a regra que define em qual conta contábil a venda entra, ou o grupo de classificação contábil do cliente ou do material está vazio.", passos: ["Liste as faturas bloqueadas para a contabilidade (VFX3) e leia a mensagem.", "Confira o grupo de classificação contábil no cadastro do cliente e do material.", "Se o cadastro estiver certo, a regra (VKOA) é com a consultoria de SD e FI."], equipe: "Consultoria SD e FI" },
+  { mod: "MM", msg: "Material não cadastrado para o centro", id: "Cadastro", onde: "ME21N, MIGO e VA01", kw: "material nao cadastrado centro ampliar visao organizacao", causa: "O material existe, mas não foi ampliado para o centro, depósito ou organização de vendas usados.", passos: ["Confira as visões do material para o centro (MM03).", "Peça a ampliação ao time de cadastro (a MM50 lista o que pode ser ampliado)."], equipe: "Cadastro de materiais" }
+];
+
+const TCODES = [
+  ["MM", "Ver estoque por centro, depósito e lote", ["MMBE", "MB52"], "estoque saldo quantidade deposito lote"],
+  ["MM", "Histórico de movimentações de um material", ["MB51"], "historico movimento movimentacao entrada saida"],
+  ["MM", "Lançar entrada, saída ou transferência de mercadoria", ["MIGO"], "entrada saida transferencia mercadoria recebimento baixa"],
+  ["MM", "Criar, alterar ou exibir pedido de compra", ["ME21N", "ME22N", "ME23N"], "pedido de compra criar alterar exibir"],
+  ["MM", "Listar pedidos por fornecedor, material ou comprador", ["ME2L", "ME2M", "ME2N"], "listar pedidos fornecedor material lista relatorio compras"],
+  ["MM", "Requisições de compra", ["ME51N", "ME5A"], "requisicao solicitacao compra"],
+  ["MM", "Lançar fatura de fornecedor", ["MIRO"], "fatura nota fiscal fornecedor lancar"],
+  ["MM", "Ver cadastro de material", ["MM03"], "cadastro material visao dados mestre"],
+  ["SD", "Criar, alterar ou exibir ordem de venda", ["VA01", "VA02", "VA03"], "ordem de venda pedido de venda cliente"],
+  ["SD", "Lista de ordens de venda", ["VA05"], "lista ordens de venda relatorio"],
+  ["SD", "Remessa (entrega)", ["VL01N", "VL02N", "VL03N"], "remessa entrega expedicao picking"],
+  ["SD", "Faturamento", ["VF01", "VF02", "VF03"], "fatura faturamento nota de venda"],
+  ["SD", "Consultar ou criar preço (registro de condição)", ["VK13", "VK11"], "preco condicao tabela de preco"],
+  ["FI/CO", "Exibir documento contábil", ["FB03"], "documento contabil lancamento exibir"],
+  ["FI/CO", "Partidas de fornecedor, cliente e razão", ["FBL1N", "FBL5N", "FBL3N"], "partidas em aberto fornecedor cliente razao conta pagar receber"],
+  ["FI/CO", "Abrir e fechar períodos contábeis", ["OB52"], "periodo contabil abrir fechar"],
+  ["FI/CO", "Centro de custo: real × plano", ["S_ALR_87013611"], "centro de custo real plano orcamento despesas relatorio"],
+  ["FI/CO", "Cadastro de cliente e fornecedor no S/4HANA", ["BP"], "business partner cadastro cliente fornecedor"],
+  ["Técnico", "Jobs em background", ["SM37"], "job background agendado"],
+  ["Técnico", "Analisar dump", ["ST22"], "dump erro programa"],
+  ["Técnico", "Ver bloqueios de registro", ["SM12"], "bloqueio travado"],
+  ["Técnico", "Última verificação de autorização que falhou", ["SU53"], "autorizacao acesso permissao"],
+  ["Técnico", "Impressões e spool", ["SP01"], "impressao spool imprimir"],
+  ["Técnico", "Ver e reprocessar IDocs", ["WE02", "BD87"], "idoc integracao reprocessar"],
+  ["Técnico", "Consultar uma tabela e ver sua estrutura", ["SE16N", "SE11"], "tabela consulta campo dados"],
+  ["Técnico", "Procurar uma transação pelo nome no menu", ["SEARCH_SAP_MENU"], "procurar transacao menu achar codigo"]
+];
+
+const EXEMPLOS = ["estoque insuficiente na MIGO", "período fechado", "sem autorização", "fatura não contabilizou", "pedidos de um fornecedor", "IDoc com erro"];
+const MODS = ["Todos", "MM", "SD", "FI/CO", "Técnico"];
+let modSel = "Todos";
+
+const STOP = new Set("a o e de da do das dos na no nas nos em um uma para por com que nao sem ao as os eu meu minha ver".split(" "));
+const toks = s => norm(s).split(/[^a-z0-9_/]+/).filter(t => t.length > 1 && !STOP.has(t));
+function score(qt, hay) {
+  const h = norm(hay); let s = 0;
+  qt.forEach(t => { if (h.includes(t)) s += t.length > 3 ? 2 : 1; else if (t.length > 4 && h.includes(t.slice(0, -1))) s += 1; });
+  return s;
+}
+
+function renderBusca() {
+  const qt = toks($("#q").value);
+  const ok = m => modSel === "Todos" || m === modSel;
+  let errs = ERROS.filter(e => ok(e.mod)).map(e => ({ e, s: qt.length ? score(qt, [e.msg, e.id, e.onde, e.kw, e.causa].join(" ")) : 1 })).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+  let tcs = TCODES.filter(t => ok(t[0])).map(t => ({ t, s: qt.length ? score(qt, t[1] + " " + t[2].join(" ") + " " + t[3]) : 1 })).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+  if (qt.length) { errs = errs.slice(0, 4); tcs = tcs.slice(0, 6); }
+  const tc = s => s.replace(/\(([A-Z0-9_]{2,})(, movimento \d+)?\)/g, (m, c, mv) => `<span class="tcode">${c}</span>${mv ? esc(mv) : ""}`);
+  $("#res-err").innerHTML = errs.length
+    ? `<div class="chart-title">Erros parecidos</div>` + errs.map(({ e }, i) => `<details class="err"${i === 0 && qt.length ? " open" : ""}><summary><span class="top"><span class="badge">${esc(e.mod)}</span><span class="badge">${esc(e.id)}</span></span><span class="m">${esc(e.msg)}</span><span class="where">Onde aparece: ${esc(e.onde)}</span></summary><div class="body"><p><b>Causa provável.</b> ${esc(e.causa)}</p><ol>${e.passos.map(p => `<li>${tc(esc(p))}</li>`).join("")}</ol><p><b>Quem resolve, se não der:</b> ${esc(e.equipe)}</p></div></details>`).join("")
+    : `<p class="empty">Nenhum erro da base parece com isso. Use a aba <b>Montar pergunta para a IA</b>.</p>`;
+  $("#res-tc").innerHTML = tcs.length
+    ? `<div class="chart-title" style="margin-bottom:6px">Transações relacionadas</div><div class="scroll"><table class="tbl"><thead><tr><th>O que fazer</th><th>Transação</th><th>Módulo</th></tr></thead><tbody>${tcs.map(({ t }) => `<tr><td class="wrap-cell">${esc(t[1])}</td><td>${t[2].map(c => `<span class="tcode">${esc(c)}</span>`).join("")}</td><td>${esc(t[0])}</td></tr>`).join("")}</tbody></table></div>`
+    : "";
+}
+
+$("#exemplos").innerHTML = EXEMPLOS.map(x => `<button type="button" class="chip" data-q="${esc(x)}">${esc(x)}</button>`).join("");
+$("#exemplos").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; $("#q").value = b.dataset.q; renderBusca(); };
+$("#mods").innerHTML = MODS.map(m => `<button type="button" class="chip" data-m="${m}" aria-pressed="${m === modSel}">${m}</button>`).join("");
+$("#mods").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; modSel = b.dataset.m; $$(".chip", $("#mods")).forEach(c => c.setAttribute("aria-pressed", String(c === b))); renderBusca(); };
+$("#q").addEventListener("input", renderBusca);
+
+/* montador de pergunta */
+const SENS = [
+  [/\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g, "[CNPJ]", "CNPJ"],
+  [/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, "[CPF]", "CPF"],
+  [/[\w.+-]+@[\w-]+\.[\w.]+/g, "[E-MAIL]", "e-mail"],
+  [/R\$\s?[\d.,]+/g, "[VALOR]", "valor em reais"]
+];
+const CAMPOS = ["#f-tx", "#f-id", "#f-msg", "#f-fazia", "#f-tentei"];
+function achados() {
+  const txt = CAMPOS.map(s => $(s).value).join("\n"), f = [];
+  SENS.forEach(([re, , nome]) => { const n = (txt.match(re) || []).length; if (n) f.push(`${n} ${nome}`); });
+  return f;
+}
+function renderPerg() {
+  const v = s => $(s).value.trim();
+  const f = achados(), box = $("#sens");
+  box.hidden = !f.length;
+  if (f.length) box.innerHTML = `<span>Encontrei dado sensível nos campos: ${esc(f.join(", "))}. Troque antes de colar numa IA fora da conta da empresa.</span><button class="btn sm" type="button" id="anon">Anonimizar</button>`;
+  $("#p-perg").textContent = `Contexto: ${v("#f-sis")}, módulo ${v("#f-mod")}.
+Transação: ${v("#f-tx") || "(não informada)"}.
+Mensagem: "${v("#f-msg") || "(sem mensagem)"}"${v("#f-id") ? ` (classe e número: ${v("#f-id")})` : ""}.
+
+O que eu estava fazendo: ${v("#f-fazia") || "(não informado)"}
+O que já tentei: ${v("#f-tentei") || "nada ainda"}
+
+Quero:
+1. A causa mais provável, em linguagem simples.
+2. O que verificar, em ordem, com o código de cada transação.
+3. O que eu consigo resolver sozinho e o que depende de outra equipe (Basis, segurança, controladoria ou consultoria).
+4. O que eu NÃO devo fazer em produção.
+Se faltar alguma informação, pergunte antes de responder. Se não tiver certeza de uma transação, diga.`;
+}
+document.addEventListener("click", e => {
+  if (e.target.id !== "anon") return;
+  CAMPOS.forEach(s => { let t = $(s).value; SENS.forEach(([re, rep]) => { t = t.replace(re, rep); }); $(s).value = t; });
+  renderPerg();
+});
+[...CAMPOS, "#f-sis", "#f-mod"].forEach(s => $(s).addEventListener("input", renderPerg));
+
+/* abas */
+function aba(id) {
+  ["busca", "perg"].forEach(k => { const on = k === id; $("#t-" + k).setAttribute("aria-selected", String(on)); $("#pn-" + k).hidden = !on; });
+  store.set("sap.aba", id);
+}
+$("#t-busca").onclick = () => aba("busca");
+$("#t-perg").onclick = () => aba("perg");
+
+renderBusca();
+renderPerg();
+aba(store.get("sap.aba", "busca"));
+</script>

@@ -1,0 +1,372 @@
+<title>Monitor de MTBF</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/*@BASE_CSS*/
+.formula { display: flex; flex-wrap: wrap; gap: 8px 22px; font: 500 .85rem/1.4 var(--f-mono); color: var(--muted); }
+.formula b { color: var(--fg); font-weight: 500; }
+.insights { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; counter-reset: ins; }
+.insights li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; counter-increment: ins; }
+.insights li::before { content: counter(ins); width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 600 .78rem/24px var(--f-body); text-align: center; }
+.insights li p { color: var(--muted); font-size: .92rem; }
+.insights li p b { color: var(--fg); font-weight: 600; }
+.errs { color: var(--warn); font-size: .85rem; }
+details.data > summary { cursor: pointer; font-weight: 600; font-size: .92rem; padding: 4px 0; }
+details.data[open] > summary { margin-bottom: 12px; }
+.file { position: relative; overflow: hidden; }
+.file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+</style>
+<!--/head-->
+<div class="wrap">
+
+<header class="hero">
+  <span class="kicker">IA na Prática · REN Jovens · Ideia da sala</span>
+  <h1>Monitor de <span class="acc">MTBF</span> para máquinas industriais</h1>
+  <div class="idea">
+    <span class="q" aria-hidden="true">“</span>
+    <blockquote>Um projeto de monitoramento de MTBF de máquinas industriais.</blockquote>
+    <cite>Resposta do formulário de inscrição</cite>
+  </div>
+  <div class="verdict">
+    <div><span class="lab">Dá para fazer?</span><span class="val yes">Sim</span><span class="sub">A conta é simples. O desafio é registrar bem as paradas.</span></div>
+    <div><span class="lab">Primeiro protótipo</span><span class="val">45 minutos</span><span class="sub">Planilha + IA + painel, na oficina</span></div>
+    <div><span class="lab">Versão para a fábrica</span><span class="val">2 a 6 semanas</span><span class="sub">Estimativa, com apontamento no celular</span></div>
+    <div><span class="lab">Precisa programar?</span><span class="val">Para começar, não</span><span class="sub">Para ligar no SAP ou no CLP, sim, com Codex ou Claude Code</span></div>
+  </div>
+  <nav class="toc" aria-label="Nesta página">
+    <a href="#fazer">O que eu faria</a><a href="#prototipo">Protótipo</a><a href="#ias">Que IA faz o quê</a><a href="#oficina">Oficina de 45 min</a><a href="#aplicacao">Até a fábrica</a><a href="#cuidados">Cuidados</a>
+  </nav>
+</header>
+
+<section class="block" id="fazer">
+  <div class="block-head">
+    <span class="kicker">O que eu faria</span>
+    <h2>Começar pelo registro das paradas, não pelos sensores</h2>
+  </div>
+  <div class="split">
+    <p class="lede">MTBF é o tempo médio entre uma falha e a próxima. Para calcular, bastam três dados por parada: <b>qual máquina, quando parou e quando voltou</b>. Com um mês de registro bem feito, a IA já calcula, encontra a falha que se repete e escreve o relatório para o gerente.</p>
+    <p class="lede">Sensores, integração com o CLP e previsão de falha vêm depois, quando houver histórico. Quem começa pelo sensor costuma gastar meses em infraestrutura antes de ver o primeiro número útil.</p>
+  </div>
+  <div class="formula" aria-label="Fórmulas">
+    <span><b>MTBF</b> = horas operando ÷ nº de falhas</span>
+    <span><b>MTTR</b> = horas em reparo ÷ nº de falhas</span>
+    <span><b>Disponibilidade</b> = MTBF ÷ (MTBF + MTTR)</span>
+  </div>
+</section>
+
+<section class="block" id="prototipo">
+  <div class="block-head">
+    <span class="kicker">Protótipo ao vivo</span>
+    <h2>Painel de MTBF com dados de exemplo</h2>
+    <p class="lede">Os números abaixo vêm de um registro fictício de outubro de 2026 com 5 máquinas. Troque pelo seu CSV no fim do painel e tudo é recalculado aqui mesmo, no navegador.</p>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <span class="tag" id="tag-periodo">Exemplo · outubro/2026</span>
+      <div class="grid-f" style="flex:1 1 420px; max-width: 560px">
+        <label class="f" for="dias">Dias no período<input id="dias" type="number" min="1" max="366" value="31"></label>
+        <label class="f" for="hpd">Horas programadas por dia<input id="hpd" type="number" min="1" max="24" value="16"></label>
+        <label class="f" for="meta">Meta de MTBF (horas)<input id="meta" type="number" min="1" value="100"></label>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="split">
+      <div>
+        <div class="chart-title">MTBF por máquina</div>
+        <div class="chart-sub">Horas entre falhas. A linha vertical é a meta.</div>
+        <div class="chart" id="ch-mtbf"></div>
+      </div>
+      <div>
+        <div class="chart-title">Pareto das causas</div>
+        <div class="chart-sub">Horas paradas por causa, da maior para a menor</div>
+        <div class="chart" id="ch-causas"></div>
+      </div>
+    </div>
+
+    <div class="scroll"><table class="tbl" id="tbl"></table></div>
+
+    <div class="panel">
+      <h3>O que a IA apontaria</h3>
+      <ol class="insights" id="insights"></ol>
+      <p class="note" style="margin-top:12px"><b>Simulação.</b> Nesta página as frases saem de regras simples. No ChatGPT ou no Claude, a IA lê o mesmo registro e escreve a análise com as palavras dela. Copie o prompt com os seus dados logo abaixo.</p>
+    </div>
+
+    <details class="data" open>
+      <summary>Dados do registro (CSV): edite ou abra o seu</summary>
+      <div style="display:grid; gap:10px">
+        <p class="note">Colunas: <b>maquina; inicio; fim; causa; observacao</b>. Datas no formato 2026-10-02 08:10 ou 02/10/2026 08:10. Separador ponto e vírgula, vírgula ou tabulação.</p>
+        <label class="f" for="csv" style="color:var(--muted)">Registro de paradas<textarea id="csv" rows="10" spellcheck="false"></textarea></label>
+        <div class="row">
+          <span class="btn file">Abrir CSV do computador<input id="arquivo" type="file" accept=".csv,.txt,text/csv" aria-label="Abrir CSV do computador"></span>
+          <button class="btn" id="restaurar" type="button">Voltar ao exemplo</button>
+          <button class="btn primary" type="button" data-copy="prompt-dados">Copiar prompt com estes dados</button>
+        </div>
+        <div class="errs" id="errs" hidden></div>
+        <details>
+          <summary class="note" style="cursor:pointer">Ver o prompt que será copiado</summary>
+          <div class="prompt" style="margin-top:10px"><pre id="prompt-dados"></pre></div>
+        </details>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="block" id="ias">
+  <div class="block-head">
+    <span class="kicker">Que IA faz o quê</span>
+    <h2>Cada ferramenta entra numa parte do projeto</h2>
+  </div>
+  <div class="tools-grid">
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Analisam o registro.</b> Você anexa a planilha e eles calculam MTBF e MTTR, montam o Pareto e escrevem o resumo para o gerente.</p></div>
+    <div><span class="who"><span class="tool">Claude (artefatos)</span><span class="tool">Lovable</span></span><p><b>Constroem as telas.</b> Formulário de apontamento e painel nascem de um texto, sem programar. Dá para publicar um link no mesmo dia.</p></div>
+    <div><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span><p><b>Escrevem o código de verdade.</b> Leitura das notas do SAP PM ou do CLP, banco de dados, rotina diária e testes. É aqui que entra quem programa.</p></div>
+    <div><span class="who"><span class="tool">NotebookLM</span><span class="tool">Gemini</span></span><p><b>Leem os manuais das máquinas.</b> Suba os PDFs e pergunte o que significa um alarme ou como trocar uma peça. A resposta cita a página.</p></div>
+  </div>
+</section>
+
+<section class="block" id="oficina">
+  <div class="block-head">
+    <span class="kicker">Oficina · Trilha 4 · Construir</span>
+    <h2>Atividade de 45 minutos</h2>
+    <p class="lede">Funciona sozinho ou em dupla. Precisa de notebook para o passo 3; os passos 1 e 2 dão certo no celular.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="t">10h45<small>10 min</small></div><div class="c">
+      <h3>Monte a base</h3>
+      <p>Use o CSV de exemplo desta página ou escreva de 10 a 15 paradas reais de que você se lembra: <b>máquina, início, fim, causa</b>. Uma planilha no Google Planilhas ou no Excel, salva como CSV.</p>
+      <p>Sem dado real à mão? Peça à IA: <b>“Gere 20 paradas fictícias e realistas de 5 máquinas de uma fábrica de [plásticos], em CSV.”</b></p>
+    </div></div>
+    <div class="step"><div class="t">10h55<small>10 min</small></div><div class="c">
+      <h3>Peça a análise</h3>
+      <p>No ChatGPT ou no Claude, anexe o CSV e cole o prompt. Depois confira uma máquina na calculadora: o MTBF bate?</p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Prompt pronto · análise</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p1">Copiar</button></span></div>
+<pre id="p1">Você é engenheiro de manutenção industrial. Anexei o registro de paradas de <span class="ph">[outubro/2026]</span> em CSV. Cada linha é uma parada não planejada: máquina, início, fim, causa e observação. As máquinas trabalham <span class="ph">[16]</span> horas por dia, <span class="ph">[31]</span> dias no período.
+
+1. Confira os dados antes de calcular: linhas com fim antes do início, duplicadas ou sem máquina. Liste o que encontrar.
+2. Calcule por máquina: nº de falhas, horas paradas, MTBF, MTTR e disponibilidade. Mostre a fórmula e o cálculo de uma máquina, passo a passo.
+3. Faça um Pareto das causas por horas paradas.
+4. Aponte as 3 ações que mais aumentariam o MTBF, citando as linhas do registro que justificam cada uma.
+
+Responda em português, com uma tabela e um resumo de 5 linhas para o gerente.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h05<small>15 min</small></div><div class="c">
+      <h3>Construa o painel</h3>
+      <p>No Claude (peça um artefato) ou no Lovable, cole o prompt abaixo. Teste registrando uma parada nova e veja o MTBF mudar. <b>Peça um ajuste por vez.</b></p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Prompt pronto · painel</span><span class="who"><span class="tool">Claude</span><span class="tool">Lovable</span><button class="btn sm" type="button" data-copy="p2">Copiar</button></span></div>
+<pre id="p2">Crie um app web de uma página para monitorar o MTBF de <span class="ph">[5]</span> máquinas de uma fábrica. Em português, funcionando no celular.
+
+Tela 1 · Apontamento: formulário rápido de parada (máquina, início, fim, causa, observação), pensado para o operador usar no chão de fábrica.
+Tela 2 · Painel: MTBF, MTTR e disponibilidade por máquina; meta de MTBF configurável; máquinas abaixo da meta destacadas; Pareto de causas por horas paradas; filtro por mês.
+
+Considere <span class="ph">[16]</span> horas programadas por dia. Permita importar e exportar CSV. Comece com dados de exemplo e mostre a fórmula usada em cada indicador.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h20<small>10 min</small></div><div class="c">
+      <h3>Prepare a apresentação</h3>
+      <p>Três pontos: <b>o problema</b>, <b>o que a IA fez</b> (mostrando a tela) e <b>o que falta para usar na fábrica</b>: de onde vêm os dados, quem aponta as paradas e quem lê o painel.</p>
+    </div></div>
+  </div>
+  <div class="deliver"><b>Entrega às 11h30</b><span>um painel de MTBF funcionando com dados de exemplo e a lista do que falta para rodar na fábrica.</span></div>
+
+  <div class="prompt" style="margin-top:8px"><div class="prompt-head"><span class="lbl">Para quem já programa</span><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><button class="btn sm" type="button" data-copy="p3">Copiar</button></span></div>
+<pre id="p3">Crie um projeto Python para calcular indicadores de manutenção.
+
+- Entrada: CSV de paradas (maquina, inicio, fim, causa, observacao) ou o export de notas de manutenção do SAP PM.
+- Calcule MTBF, MTTR e disponibilidade por equipamento e por mês, usando o calendário de horas programadas de cada máquina (arquivo de configuração).
+- Guarde o histórico em SQLite e gere um relatório HTML com gráficos.
+- Escreva testes com um caso calculado à mão e um README explicando como agendar a execução diária às 7h.
+
+Antes de escrever o código, me mostre o plano e as dúvidas que você tem sobre os dados.</pre></div>
+</section>
+
+<section class="block" id="aplicacao">
+  <div class="block-head">
+    <span class="kicker">Do protótipo à fábrica</span>
+    <h2>Quatro etapas, cada uma útil sozinha</h2>
+    <p class="lede">Prazos estimados para uma pessoa dedicando parte da semana. Cada etapa já entrega valor; não é preciso chegar à última para ganhar.</p>
+  </div>
+  <div class="phases">
+    <div class="phase"><span class="when">Semana 1</span><h3>Registro confiável</h3><p>Formulário de apontamento no celular, com QR code colado em cada máquina. Combine com a equipe o que conta como falha.</p><span class="who"><span class="tool">Lovable</span><span class="tool">Claude</span><span class="tool">Planilhas</span></span></div>
+    <div class="phase"><span class="when">Semanas 2 a 4</span><h3>Painel e relatório</h3><p>Painel que se atualiza sozinho e relatório semanal com a análise escrita pela IA, enviado por e-mail ou WhatsApp.</p><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><span class="tool">Codex</span></span></div>
+    <div class="phase"><span class="when">Meses 2 e 3</span><h3>Integração</h3><p>Buscar as paradas onde elas já existem: notas e ordens do SAP PM, ou o sinal da máquina (CLP, gateway, MQTT ou OPC UA, banco de dados).</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span></div>
+    <div class="phase"><span class="when">Com histórico</span><h3>Prever a falha</h3><p>Com meses de dados de vibração, temperatura ou corrente, um modelo de detecção de anomalia avisa antes da quebra.</p><span class="who"><span class="tool">Claude Code</span><span class="tool">Python</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="cuidados">
+  <div class="block-head">
+    <span class="kicker">Cuidados</span>
+    <h2>O que costuma dar errado</h2>
+  </div>
+  <ul class="cares">
+    <li><b>Defina falha antes de medir.</b> Conta só parada não planejada. Setup, troca programada de molde e preventiva ficam fora, senão o MTBF fica baixo sem motivo.</li>
+    <li><b>Horário real, não estimado.</b> Início e fim anotados na hora. Apontamento feito no fim do turno vira chute.</li>
+    <li><b>Poucas falhas, número instável.</b> Com 1 ou 2 falhas no mês o MTBF oscila muito. Olhe a tendência de 3 a 6 meses.</li>
+    <li><b>Confira a conta da IA.</b> Peça a fórmula e refaça uma máquina na calculadora. A IA às vezes erra soma de horas.</li>
+    <li><b>Calendário de cada máquina.</b> Máquina de um turno e máquina 24 horas só se comparam com as horas programadas certas.</li>
+    <li><b>Dados da empresa.</b> Use a conta corporativa aprovada pela empresa. Nada de subir dado sigiloso em conta pessoal.</li>
+  </ul>
+</section>
+
+<footer class="foot"><span>Oficina IA na Prática · REN Jovens · Brasília, 28/11/2026</span><span>Dados de exemplo, fictícios</span></footer>
+</div>
+
+<script>
+/*@BASE_JS*/
+
+const EXEMPLO = `maquina;inicio;fim;causa;observacao
+Injetora 03;2026-10-02 08:10;2026-10-02 10:40;Elétrica;Resistência do canhão queimada
+Prensa 02;2026-10-03 07:30;2026-10-03 08:30;Pneumática;Válvula de segurança travada
+Torno CNC 01;2026-10-04 10:00;2026-10-04 11:30;Mecânica;Folga no castelo porta-ferramenta
+Injetora 03;2026-10-05 14:20;2026-10-05 15:05;Ferramental;Molde travando na extração
+Compressor 04;2026-10-07 06:00;2026-10-07 14:00;Mecânica;Superaquecimento, troca de óleo e separador
+Prensa 02;2026-10-08 11:00;2026-10-08 13:00;Mecânica;Embreagem patinando
+Injetora 03;2026-10-09 09:00;2026-10-09 12:30;Hidráulica;Vazamento na mangueira do cilindro de fechamento
+Torno CNC 01;2026-10-12 13:00;2026-10-12 14:00;Elétrica;Sensor da porta com mau contato
+Injetora 03;2026-10-13 07:40;2026-10-13 08:25;Ferramental;Molde travando na extração
+Prensa 02;2026-10-15 09:20;2026-10-15 10:00;Pneumática;Vazamento de ar na linha
+Injetora 03;2026-10-16 15:10;2026-10-16 17:40;Elétrica;Resistência do canhão queimada
+Esteira 05;2026-10-18 09:00;2026-10-18 09:30;Mecânica;Correia desalinhada
+Torno CNC 01;2026-10-20 08:30;2026-10-20 10:30;Mecânica;Ruído no cabeçote, ajuste de correia
+Injetora 03;2026-10-21 10:00;2026-10-21 11:00;Ferramental;Molde travando na extração
+Prensa 02;2026-10-22 14:00;2026-10-22 18:00;Mecânica;Embreagem patinando, troca de lona
+Compressor 04;2026-10-24 07:00;2026-10-24 13:30;Elétrica;Contator do motor queimado, aguardando peça
+Injetora 03;2026-10-26 13:30;2026-10-26 16:00;Hidráulica;Pressão baixa, troca de filtro
+Torno CNC 01;2026-10-27 16:00;2026-10-27 16:45;Operacional;Programa CNC errado carregado
+Prensa 02;2026-10-28 10:10;2026-10-28 10:50;Elétrica;Cortina de luz desalinhada
+Injetora 03;2026-10-29 08:15;2026-10-29 09:00;Ferramental;Pino extrator quebrado`;
+
+function parseDate(s) {
+  s = String(s || "").trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[ T]+(\d{1,2}):(\d{2})/);
+  if (m) return new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[ ,T]+(\d{1,2}):(\d{2})/);
+  if (m) return new Date(+m[3], m[2] - 1, +m[1], +m[4], +m[5]);
+  return null;
+}
+
+function parseCSV(txt) {
+  const lines = txt.replace(/\r/g, "").split("\n").filter(l => l.trim());
+  const errs = [];
+  if (lines.length < 2) return { rows: [], errs: ["O registro precisa de um cabeçalho e pelo menos uma parada."] };
+  const d = [";", "\t", ","].map(c => [c, lines[0].split(c).length]).sort((a, b) => b[1] - a[1])[0][0];
+  const head = lines[0].split(d).map(h => norm(h).trim());
+  const col = keys => head.findIndex(h => keys.some(k => h.startsWith(k)));
+  const iM = col(["maquina", "equipamento", "ativo"]), iI = col(["inicio", "comeco"]), iF = col(["fim", "termino", "final"]), iC = col(["causa", "tipo"]), iO = col(["obs", "descricao"]);
+  if (iM < 0 || iI < 0 || iF < 0) return { rows: [], errs: ["Não achei as colunas maquina, inicio e fim no cabeçalho."] };
+  const rows = [];
+  lines.slice(1).forEach((l, k) => {
+    const c = l.split(d).map(x => x.trim());
+    const n = k + 2, ini = parseDate(c[iI]), fim = parseDate(c[iF]);
+    if (!c[iM]) return errs.push(`Linha ${n}: sem máquina.`);
+    if (!ini || !fim) return errs.push(`Linha ${n}: data ou hora em formato que não reconheci.`);
+    if (fim <= ini) return errs.push(`Linha ${n}: o fim (${c[iF]}) é antes do início.`);
+    rows.push({ maq: c[iM], ini, fim, h: (fim - ini) / 36e5, causa: (iC >= 0 && c[iC]) || "Sem causa", obs: iO >= 0 ? (c[iO] || "") : "" });
+  });
+  const seen = new Set();
+  rows.forEach(r => { const k = r.maq + r.ini.getTime(); if (seen.has(k)) errs.push(`Parada duplicada: ${r.maq} em ${r.ini.toLocaleString("pt-BR")}.`); seen.add(k); });
+  return { rows, errs };
+}
+
+function calcular(rows, dias, hpd) {
+  const prog = dias * hpd, by = new Map(), causas = new Map();
+  rows.forEach(r => {
+    const m = by.get(r.maq) || { maq: r.maq, n: 0, h: 0, obs: new Map() };
+    m.n++; m.h += r.h;
+    const k = norm(r.obs);
+    if (k) m.obs.set(k, { t: r.obs, c: (m.obs.get(k)?.c || 0) + 1 });
+    by.set(r.maq, m);
+    const c = causas.get(r.causa) || { causa: r.causa, n: 0, h: 0 };
+    c.n++; c.h += r.h; causas.set(r.causa, c);
+  });
+  const maqs = [...by.values()].map(m => {
+    const op = Math.max(0, prog - m.h);
+    return Object.assign(m, { op, mtbf: op / m.n, mttr: m.h / m.n, disp: prog ? op / prog : 0 });
+  }).sort((a, b) => a.mtbf - b.mtbf);
+  return { prog, maqs, causas: [...causas.values()].sort((a, b) => b.h - a.h) };
+}
+
+const statusOf = (mtbf, meta) => mtbf < meta * 0.75 ? ["bad", "Crítico"] : mtbf < meta ? ["warn", "Atenção"] : ["good", "Na meta"];
+
+function insights(r, meta, hpd) {
+  const out = [], { maqs, causas } = r;
+  if (!maqs.length) return out;
+  const totH = maqs.reduce((s, m) => s + m.h, 0), totN = maqs.reduce((s, m) => s + m.n, 0);
+  const pior = maqs[0];
+  out.push(`<b>${esc(pior.maq)} tem o menor MTBF (${nf(pior.mtbf, 0)} h).</b> Com ${hpd} h de trabalho por dia, ela quebra em média a cada ${nf(pior.mtbf / hpd, 1)} dias. ${pior.mtbf < meta ? `Está ${nf(meta - pior.mtbf, 0)} h abaixo da meta.` : "Mesmo assim, está na meta."}`);
+  let rep = null;
+  maqs.forEach(m => m.obs.forEach(o => { if (o.c >= 2 && (!rep || o.c > rep.c)) rep = { ...o, maq: m.maq }; }));
+  if (rep) out.push(`<b>Falha que se repete: “${esc(rep.t)}” apareceu ${rep.c} vezes na ${esc(rep.maq)}.</b> Quando o mesmo defeito volta, a causa raiz não foi resolvida. Vale uma análise de 5 porquês antes do próximo reparo.`);
+  const mttrG = totH / totN, lento = [...maqs].sort((a, b) => b.mttr - a.mttr)[0];
+  if (lento && lento.mttr > mttrG * 2) {
+    const peca = [...lento.obs.values()].some(o => norm(o.t).includes("aguardando peca"));
+    out.push(`<b>${esc(lento.maq)} demora para voltar: ${nf(lento.mttr, 1)} h por reparo</b>, contra ${nf(mttrG, 1)} h na média da planta. ${peca ? "Uma das observações diz “aguardando peça”: estoque mínimo de peças críticas resolve parte disso." : "Vale olhar se falta peça, ferramenta ou gente treinada."}`);
+  }
+  if (causas.length) { const c = causas[0]; out.push(`<b>${esc(c.causa)} responde por ${pct(c.h / totH)} das horas paradas</b> (${nf(c.h, 1)} h em ${c.n} falhas). É por ela que o plano de ação deve começar.`); }
+  const perto = maqs.find(m => m.mtbf < meta && m.mtbf >= meta * 0.75);
+  if (perto) out.push(`<b>${esc(perto.maq)} está perto da meta</b> (${nf(perto.mtbf, 0)} h de ${nf(meta, 0)} h). Uma falha a menos no mês já a colocaria acima.`);
+  return out;
+}
+
+function promptDados(txt, dias, hpd) {
+  const linhas = txt.trim().split("\n");
+  const corpo = linhas.slice(0, 80).join("\n") + (linhas.length > 80 ? `\n(… mais ${linhas.length - 80} linhas: anexe o arquivo completo)` : "");
+  return `Você é engenheiro de manutenção industrial. Abaixo está o registro de paradas não planejadas em CSV: máquina, início, fim, causa e observação. As máquinas trabalham ${hpd} horas por dia, ${dias} dias no período.
+
+1. Confira os dados antes de calcular: linhas com fim antes do início, duplicadas ou sem máquina. Liste o que encontrar.
+2. Calcule por máquina: nº de falhas, horas paradas, MTBF, MTTR e disponibilidade. Mostre a fórmula e o cálculo de uma máquina, passo a passo.
+3. Faça um Pareto das causas por horas paradas.
+4. Aponte as 3 ações que mais aumentariam o MTBF, citando as linhas do registro que justificam cada uma.
+
+Responda em português, com uma tabela e um resumo de 5 linhas para o gerente.
+
+${corpo}`;
+}
+
+function render() {
+  const dias = Math.max(1, +$("#dias").value || 31), hpd = Math.min(24, Math.max(1, +$("#hpd").value || 16)), meta = Math.max(1, +$("#meta").value || 100);
+  const txt = $("#csv").value;
+  const { rows, errs } = parseCSV(txt);
+  const r = calcular(rows, dias, hpd);
+  const e = $("#errs");
+  e.hidden = !errs.length;
+  e.innerHTML = errs.slice(0, 6).map(esc).join("<br>") + (errs.length > 6 ? `<br>… e mais ${errs.length - 6}.` : "");
+
+  const totN = r.maqs.reduce((s, m) => s + m.n, 0), totH = r.maqs.reduce((s, m) => s + m.h, 0);
+  const progT = r.prog * r.maqs.length, mtbfG = totN ? (progT - totH) / totN : 0;
+  const abaixo = r.maqs.filter(m => m.mtbf < meta).length;
+  $("#kpis").innerHTML = [
+    ["Falhas no período", nf(totN), `${r.maqs.length} máquinas`],
+    ["Horas paradas", nf(totH, 1) + " h", `de ${nf(progT)} h programadas`],
+    ["MTBF da planta", nf(mtbfG, 0) + " h", `meta ${nf(meta)} h por máquina`],
+    ["Abaixo da meta", `${abaixo} de ${r.maqs.length}`, abaixo ? "máquinas pedindo atenção" : "todas na meta"]
+  ].map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
+
+  hbar($("#ch-mtbf"), r.maqs.map(m => ({ label: m.maq, value: m.mtbf, tip: `<b>${esc(m.maq)}</b><br>MTBF ${nf(m.mtbf, 1)} h · ${m.n} falhas<br>MTTR ${nf(m.mttr, 1)} h` })), { fmt: v => nf(v, 0) + " h", ref: meta, refLabel: `meta ${nf(meta)} h`, aria: "MTBF por máquina" });
+  hbar($("#ch-causas"), r.causas.map(c => ({ label: c.causa, value: c.h, tip: `<b>${esc(c.causa)}</b><br>${nf(c.h, 1)} h paradas · ${c.n} falhas<br>${pct(c.h / (totH || 1))} do total` })), { fmt: v => nf(v, 1) + " h", aria: "Horas paradas por causa" });
+
+  $("#tbl").innerHTML = `<thead><tr><th>Máquina</th><th class="r">Falhas</th><th class="r">Horas paradas</th><th class="r">MTBF</th><th class="r">MTTR</th><th class="r">Disponibilidade</th><th>Situação</th></tr></thead><tbody>` +
+    r.maqs.map(m => { const [k, t] = statusOf(m.mtbf, meta); return `<tr><td>${esc(m.maq)}</td><td class="r">${m.n}</td><td class="r">${nf(m.h, 1)} h</td><td class="r">${nf(m.mtbf, 1)} h</td><td class="r">${nf(m.mttr, 1)} h</td><td class="r">${pct(m.disp, 1)}</td><td><span class="pill ${k}">${t}</span></td></tr>`; }).join("") + "</tbody>";
+
+  const ins = insights(r, meta, hpd);
+  $("#insights").innerHTML = ins.length ? ins.map(t => `<li><p>${t}</p></li>`).join("") : `<li><p>Sem paradas válidas para analisar. Confira o CSV.</p></li>`;
+  $("#prompt-dados").textContent = promptDados(txt, dias, hpd);
+}
+
+let tmr;
+const later = () => { clearTimeout(tmr); tmr = setTimeout(render, 250); };
+["#dias", "#hpd", "#meta", "#csv"].forEach(s => $(s).addEventListener("input", later));
+$("#restaurar").addEventListener("click", () => { $("#csv").value = EXEMPLO; $("#dias").value = 31; $("#hpd").value = 16; $("#meta").value = 100; $("#tag-periodo").textContent = "Exemplo · outubro/2026"; render(); });
+$("#arquivo").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => { $("#csv").value = String(rd.result); $("#tag-periodo").textContent = "Seus dados · " + f.name; render(); };
+  rd.readAsText(f, "utf-8");
+});
+$("#csv").value = EXEMPLO;
+render();
+</script>

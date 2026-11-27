@@ -1,0 +1,38 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s5-bg { position: absolute; inset: 0; background: #12061f; }
+    #s5-lead { position: absolute; left: 120px; top: 580px; width: 820px; font-family: "Inter"; font-weight: 700; font-size: 72px; line-height: 1.15; color: #ffffff; }
+    #s5-lead .w { display: inline-block; }
+    #s5-slot { position: absolute; left: 120px; top: 810px; width: 840px; height: 170px; overflow: hidden; }
+    #s5-strip { position: absolute; left: 0; top: 0; width: 100%; }
+    #s5-strip p { height: 170px; display: flex; align-items: center; font-family: "Archivo Black"; font-size: 100px; letter-spacing: -0.02em; color: #ffffff; white-space: nowrap; }
+    #s5-strip p.last { color: #c9a4ff; }
+  </style>
+  <div id="root" data-composition-id="s5" data-width="1080" data-height="1920">
+    <div id="s5-stage" class="clip" data-start="0" data-duration="3.94" data-layout-allow-overflow>
+      <div id="s5-bg" data-layout-allow-occlusion></div>
+      <p id="s5-lead"><span class="w">Sábado</span> <span class="w">você</span> <span class="w">sai</span><br /><span class="w">de</span> <span class="w">lá</span> <span class="w">com</span></p>
+      <div id="s5-slot">
+        <div id="s5-strip">
+          <p>um tutor</p>
+          <p>um vídeo</p>
+          <p>uma rotina</p>
+          <p>um app</p>
+          <p class="last">algo pronto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s5-lead .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.123, ease: "power4.out", stagger: 0.07 }, 0.041);
+    tl.fromTo("#s5-slot", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.164, ease: "power4.out" }, 0.492);
+    // Caça-níquel: uma palavra por beat (0,599 s), rolagem de 0,12 s
+    const beats = [0.985, 1.478, 1.97, 2.462];
+    beats.forEach((t, i) => {
+      tl.fromTo("#s5-strip", { y: -170 * i }, { y: -170 * (i + 1), duration: 0.098, ease: "power2.inOut", immediateRender: false }, t - 0.06);
+    });
+    window.__timelines["s5"] = tl;
+  </script>
+</template>

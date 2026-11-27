@@ -1,0 +1,34 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s7-under { position: absolute; inset: 0; background: #12061f; }
+    #s7-bg { position: absolute; inset: 0; background: #8800ff; transform-origin: center bottom; }
+    #s7-sun { position: absolute; left: 560px; top: 1380px; width: 760px; height: 760px; border-radius: 50%; background: #9d33ff; }
+    #s7-logo { position: absolute; left: 120px; top: 310px; width: 400px; height: 250px; border-radius: 40px; background: #ffffff; display: flex; align-items: center; justify-content: center; }
+    #s7-logo img { width: 340px; height: auto; }
+    #s7-kicker { position: absolute; left: 120px; top: 650px; font-family: "Inter"; font-weight: 700; font-size: 48px; letter-spacing: 0.08em; color: #e9ddff; }
+    #s7-title { position: absolute; left: 114px; top: 720px; width: 830px; font-family: "Archivo Black"; font-size: 150px; line-height: 0.98; letter-spacing: -0.02em; color: #ffffff; transform-origin: left center; }
+    #s7-when { position: absolute; left: 120px; top: 1080px; width: 820px; font-family: "Inter"; font-weight: 700; font-size: 54px; line-height: 1.25; color: #ffffff; }
+  </style>
+  <div id="root" data-composition-id="s7" data-width="1080" data-height="1920">
+    <div id="s7-stage" class="clip" data-start="0" data-duration="3.93" data-layout-allow-overflow>
+      <div id="s7-under"></div>
+      <div id="s7-bg"></div>
+      <div id="s7-sun" data-layout-ignore></div>
+      <div id="s7-logo"><img src="assets/logos/ren-recorte.png" alt="REN · Rede Nikkei Brasil" /></div>
+      <p id="s7-kicker">REN JOVENS</p>
+      <h1 id="s7-title">IA NA<br />PRÁTICA</h1>
+      <p id="s7-when">Sábado, 28/11 · 10h<br />Brasília</p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s7-bg", { scaleY: 0 }, { scaleY: 1, duration: 0.245, ease: "power2.inOut" }, 0.0);
+    tl.fromTo("#s7-sun", { y: 500 }, { y: 0, duration: 0.572, ease: "expo.out" }, 0.163);
+    tl.fromTo("#s7-title", { opacity: 0, scale: 1.3, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.196, ease: "power4.out" }, 0.27);
+    tl.fromTo("#s7-kicker", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.147, ease: "power4.out" }, 0.78);
+    tl.fromTo("#s7-when", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.147, ease: "power4.out" }, 1.0);
+    tl.fromTo("#s7-logo", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 0.55);
+    window.__timelines["s7"] = tl;
+  </script>
+</template>

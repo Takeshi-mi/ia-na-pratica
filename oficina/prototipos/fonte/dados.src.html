@@ -1,0 +1,480 @@
+<title>Pergunte aos Dados</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/*@BASE_CSS*/
+.askrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.askrow input { font-size: 1.05rem; padding: 12px 14px; }
+@media (max-width: 560px) { .askrow { grid-template-columns: 1fr; } }
+.answer { font: 500 1.08rem/1.5 var(--f-display); }
+.answer b { color: var(--accent-text); font-weight: 600; }
+.understood { font-size: .82rem; color: var(--muted); }
+.sqlbox textarea { min-height: 150px; background: var(--code-bg); }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
+.status.ok::before { background: var(--good); }
+.status.err::before { background: var(--bad); }
+.errbox { padding: 10px 12px; border-radius: 10px; background: var(--bad-bg); color: var(--bad); font: 500 .85rem/1.5 var(--f-mono); white-space: pre-wrap; }
+.dict { display: grid; gap: 14px; }
+.dict h4 { margin: 0 0 4px; font: 600 .9rem/1.3 var(--f-mono); color: var(--accent-text); }
+.dict dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; font-size: .84rem; }
+.dict dt { font-family: var(--f-mono); color: var(--fg); }
+.dict dd { margin: 0; color: var(--muted); }
+.report { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.report li { color: var(--muted); }
+.report li b { color: var(--fg); font-weight: 600; }
+details.more > summary { cursor: pointer; font-weight: 600; font-size: .92rem; padding: 4px 0; }
+details.more[open] > summary { margin-bottom: 12px; }
+#csvbox textarea { min-height: 120px; }
+</style>
+<!--/head-->
+<div class="wrap">
+
+<header class="hero">
+  <span class="kicker">IA na Prática · REN Jovens · Ideia da sala</span>
+  <h1>IA na base de dados: <span class="acc">pergunte</span> em português</h1>
+  <div class="idea">
+    <span class="q" aria-hidden="true">“</span>
+    <blockquote>Implementar IA na base de dados da empresa para facilitar a geração de relatórios, acompanhamento de vendas e administração otimizada sobre controle de despesas.</blockquote>
+    <cite>Resposta do formulário de inscrição</cite>
+  </div>
+  <div class="verdict">
+    <div><span class="lab">Dá para fazer?</span><span class="val yes">Sim</span><span class="sub">Um dos usos de IA com retorno mais rápido numa empresa</span></div>
+    <div><span class="lab">Primeiro protótipo</span><span class="val">45 minutos</span><span class="sub">Planilha exportada + IA, sem mexer no banco</span></div>
+    <div><span class="lab">Versão conectada</span><span class="val">1 a 3 meses</span><span class="sub">Estimativa; depende da TI e da qualidade dos dados</span></div>
+    <div><span class="lab">Precisa programar?</span><span class="val">Para começar, não</span><span class="sub">Para ligar no banco, sim, com Codex ou Claude Code</span></div>
+  </div>
+  <nav class="toc" aria-label="Nesta página">
+    <a href="#fazer">O que eu faria</a><a href="#prototipo">Protótipo</a><a href="#ias">Que IA faz o quê</a><a href="#oficina">Oficina de 45 min</a><a href="#aplicacao">Até a empresa</a><a href="#cuidados">Cuidados</a>
+  </nav>
+</header>
+
+<section class="block" id="fazer">
+  <div class="block-head">
+    <span class="kicker">O que eu faria</span>
+    <h2>Começar pela planilha exportada. O banco de dados fica para quando as perguntas estiverem claras</h2>
+  </div>
+  <div class="split">
+    <p class="lede">A primeira versão não precisa de acesso ao banco: exporte vendas e despesas em planilha, entregue para a IA e faça as perguntas que hoje viram relatório manual. Em uma tarde dá para saber quais perguntas importam e se a IA acerta os números.</p>
+    <p class="lede">Depois vem o que faz a IA acertar de verdade: um <b>dicionário de dados</b> (o que é cada tabela, coluna e regra do negócio) e um <b>usuário só de leitura</b> no banco. Com isso, a pergunta em português vira SQL, o SQL roda e a resposta vem com o número e a conta. É o que o protótipo abaixo faz.</p>
+  </div>
+</section>
+
+<section class="block" id="prototipo">
+  <div class="block-head">
+    <span class="kicker">Protótipo ao vivo</span>
+    <h2>Pergunte, veja o SQL e confira o resultado</h2>
+    <p class="lede">Um banco SQLite de verdade, rodando no seu navegador, com seis meses de vendas e despesas de uma distribuidora fictícia de Brasília. Escolha uma pergunta ou edite o SQL e rode de novo.</p>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <span class="tag">Exemplo · distribuidora fictícia · mai a out/2026</span>
+      <span class="status" id="status">Carregando o banco de exemplo…</span>
+    </div>
+
+    <form class="askrow" id="form-q">
+      <label class="f" for="q">Pergunte em português<input id="q" type="text" value="Quem bateu a meta em outubro?" autocomplete="off"></label>
+      <button class="btn primary" type="submit">Perguntar</button>
+    </form>
+    <div class="chips" id="chips"></div>
+
+    <div class="panel" style="display:grid; gap:14px">
+      <span class="understood" id="understood"></span>
+      <p class="answer" id="answer">Carregando…</p>
+      <div class="chart" id="chart"></div>
+      <div class="legend" id="legend" hidden></div>
+      <div class="scroll"><table class="tbl" id="result"></table></div>
+    </div>
+
+    <div class="sqlbox" style="display:grid; gap:10px">
+      <label class="f" for="sql">SQL que a IA escreveria para essa pergunta (pode editar)<textarea id="sql" rows="8" spellcheck="false"></textarea></label>
+      <div class="row"><button class="btn" type="button" id="run">Rodar este SQL</button><span class="note">É SQL de verdade, executado aqui. Assim dá para conferir o que a IA fez.</span></div>
+      <div class="errbox" id="sqlerr" hidden></div>
+    </div>
+
+    <div class="split">
+      <div class="panel">
+        <h3>Relatório da segunda-feira</h3>
+        <ul class="report" id="report"><li>Carregando…</li></ul>
+        <p class="note" style="margin-top:10px"><b>Simulação.</b> Montado a partir de consultas a este banco. Na versão real, um agente roda as consultas toda segunda e envia o texto por e-mail ou WhatsApp.</p>
+      </div>
+      <div class="panel">
+        <h3>Leve os dados de exemplo para a sua IA</h3>
+        <p class="note" style="margin-bottom:10px">Copie e cole no ChatGPT ou no Claude, ou salve como .csv e anexe. É o material da atividade da oficina.</p>
+        <div class="row"><button class="btn" type="button" id="cp-vendas">Copiar vendas (CSV)</button><button class="btn" type="button" id="cp-desp">Copiar despesas (CSV)</button></div>
+        <div id="csvbox" hidden style="margin-top:10px"><label class="f" for="csvtxt">Selecione e copie (Ctrl+C)<textarea id="csvtxt" readonly></textarea></label></div>
+      </div>
+    </div>
+
+    <details class="more">
+      <summary>Por dentro: o dicionário de dados e o prompt que vira SQL</summary>
+      <div class="split">
+        <div class="dict" id="dict"></div>
+        <div class="prompt"><div class="prompt-head"><span class="lbl">Prompt de texto para SQL</span><span class="who"><span class="tool">Claude</span><span class="tool">GPT</span><button class="btn sm" type="button" data-copy="p-sql">Copiar</button></span></div><pre id="p-sql"></pre></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="block" id="ias">
+  <div class="block-head">
+    <span class="kicker">Que IA faz o quê</span>
+    <h2>Do relatório manual à pergunta em português</h2>
+  </div>
+  <div class="tools-grid">
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Análise de planilhas.</b> Leem a exportação, calculam, fazem gráfico e escrevem a análise. É por onde começar, hoje mesmo.</p></div>
+    <div><span class="who"><span class="tool">Conectores</span><span class="tool">MCP</span></span><p><b>A IA consulta a fonte direto.</b> Google Drive e planilhas já têm conector. Bancos de dados se conectam por MCP, sempre com usuário só de leitura.</p></div>
+    <div><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span><p><b>O sistema interno.</b> Constroem o “pergunte aos dados”: texto vira SQL com o dicionário, mostra a conta, guarda log e envia o relatório agendado.</p></div>
+    <div><span class="who"><span class="tool">Power BI + Copilot</span><span class="tool">Looker + Gemini</span></span><p><b>Se a empresa já tem BI.</b> Os próprios painéis ganharam perguntas em português. Vale testar antes de construir algo do zero.</p></div>
+    <div><span class="who"><span class="tool">Gemini nas Planilhas</span><span class="tool">Copilot no Excel</span></span><p><b>Dentro da planilha.</b> Fórmulas, tabelas dinâmicas e resumos sem sair do arquivo que a equipe já usa.</p></div>
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Controle de despesas.</b> Classificam lançamentos, acham duplicados e valores fora do padrão e explicam o motivo de cada alerta.</p></div>
+  </div>
+</section>
+
+<section class="block" id="oficina">
+  <div class="block-head">
+    <span class="kicker">Oficina · Trilha 2 · Conectar</span>
+    <h2>Atividade de 45 minutos</h2>
+    <p class="lede">Use uma exportação real <b>sem dados pessoais</b> ou os dados de exemplo desta página.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="t">10h45<small>10 min</small></div><div class="c">
+      <h3>Separe os dados</h3>
+      <p>Exporte vendas e despesas para planilha, ou copie os CSVs de exemplo acima. Escreva as <b>5 perguntas</b> que hoje dão mais trabalho para responder.</p>
+    </div></div>
+    <div class="step"><div class="t">10h55<small>15 min</small></div><div class="c">
+      <h3>Converse com os dados</h3>
+      <p>No ChatGPT ou no Claude, anexe os arquivos e cole o prompt. Escolha um número da resposta e <b>confira na planilha</b>.</p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Prompt pronto · analista</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p1">Copiar</button></span></div>
+<pre id="p1">Você é analista financeiro e comercial da <span class="ph">[empresa]</span>. Anexei <span class="ph">[vendas, metas e despesas de maio a outubro de 2026]</span>.
+
+Antes de responder, descreva as colunas que encontrou e qualquer problema nos dados: vazios, duplicados, datas estranhas.
+
+Depois responda, mostrando a conta de cada número:
+1. Quanto vendemos por mês e qual a tendência?
+2. Quem são os 5 maiores clientes e quanto cada um representa?
+3. Quais vendedores bateram a meta no último mês?
+4. Quais despesas passaram do orçamento?
+5. Existe algum pagamento que parece duplicado?
+
+Termine com 3 recomendações práticas.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h10<small>10 min</small></div><div class="c">
+      <h3>Monte o relatório da semana</h3>
+      <p>Com o conector do Google Drive ligado, aponte para a planilha. Se a sua IA tiver tarefas agendadas, agende para toda segunda às 8h.</p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Prompt pronto · relatório semanal</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p2">Copiar</button></span></div>
+<pre id="p2">Leia a planilha <span class="ph">[nome no Drive]</span> e escreva o relatório da semana em até 12 linhas para <span class="ph">[a diretoria]</span>:
+- vendas da semana e do mês contra a meta, por vendedor;
+- os 3 maiores clientes e quem não compra há mais de 30 dias;
+- despesas acima do orçamento e lançamentos suspeitos (duplicados ou muito acima da média);
+- uma recomendação.
+
+Use números, não adjetivos. Se faltar algum dado, diga qual.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h20<small>10 min</small></div><div class="c">
+      <h3>Prepare a apresentação</h3>
+      <p>Mostre uma pergunta, a resposta e o número que você conferiu. Liste o que falta para rodar na empresa: <b>quem libera o acesso, quais regras entram no dicionário e quem valida os números</b>.</p>
+    </div></div>
+  </div>
+  <div class="deliver"><b>Entrega às 11h30</b><span>5 perguntas de negócio respondidas com números conferidos e um modelo de relatório semanal.</span></div>
+
+  <div class="prompt" style="margin-top:8px"><div class="prompt-head"><span class="lbl">Para quem programa · a versão conectada</span><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><button class="btn sm" type="button" data-copy="p3">Copiar</button></span></div>
+<pre id="p3">Crie um “pergunte aos dados” interno em <span class="ph">[Python + FastAPI]</span>.
+
+- Conecte no banco <span class="ph">[PostgreSQL]</span> com um usuário SOMENTE LEITURA, restrito às views vendas, metas, despesas e orcamento.
+- A pergunta em português vira SQL usando o dicionário de dados em dicionario.yaml. Mostre o SQL junto com a resposta.
+- Bloqueie qualquer comando que não seja SELECT, aplique LIMIT e timeout de 10 s e registre em log quem perguntou o quê.
+- Tela simples: campo de pergunta, resposta, tabela, gráfico e um botão “este número está errado”.
+- Toda segunda às 8h, gere o relatório semanal e envie por e-mail.
+
+Escreva testes com 10 perguntas e as respostas esperadas. Antes de começar, me mostre o plano.</pre></div>
+</section>
+
+<section class="block" id="aplicacao">
+  <div class="block-head">
+    <span class="kicker">Do protótipo à empresa</span>
+    <h2>Quatro etapas, da planilha ao alerta automático</h2>
+    <p class="lede">Prazos estimados. A etapa 1 já acaba com boa parte do relatório feito à mão.</p>
+  </div>
+  <div class="phases">
+    <div class="phase"><span class="when">Semana 1</span><h3>Planilha + IA</h3><p>Exportação semanal em CSV; a IA calcula, compara com a meta e escreve o relatório. Ninguém mais monta tabela na mão.</p><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span></div>
+    <div class="phase"><span class="when">Semanas 2 e 3</span><h3>Dicionário de dados</h3><p>Cada tabela, coluna e regra escrita em português: “venda conta pela data do faturamento”, “despesa sem nota não entra”. É o que faz a IA acertar.</p><span class="who"><span class="tool">Claude</span><span class="tool">planilha</span></span></div>
+    <div class="phase"><span class="when">Mês 2</span><h3>Conectado, só leitura</h3><p>Usuário de banco só de leitura e views limpas. A IA consulta direto, por conector ou por um app interno, e o relatório sai sozinho.</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><span class="tool">MCP</span></span></div>
+    <div class="phase"><span class="when">Mês 3 em diante</span><h3>Alertas</h3><p>Aviso no WhatsApp ou no e-mail quando uma despesa sai do padrão, um cliente some ou a meta entra em risco. Qualquer ação continua com uma pessoa.</p><span class="who"><span class="tool">Claude Code</span><span class="tool">Codex</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="cuidados">
+  <div class="block-head">
+    <span class="kicker">Cuidados</span>
+    <h2>O que costuma dar errado</h2>
+  </div>
+  <ul class="cares">
+    <li><b>Só leitura, sempre.</b> A IA nunca recebe permissão de alterar, apagar ou criar dados no banco da empresa.</li>
+    <li><b>LGPD.</b> Dado pessoal de cliente e funcionário fica fora ou mascarado. Use a conta corporativa aprovada pela empresa.</li>
+    <li><b>Confira os números.</b> Antes de confiar, compare com um relatório que já existe. Peça sempre o SQL ou a conta.</li>
+    <li><b>Regras do negócio.</b> Venda é pedido ou faturamento? Despesa entra pela data da nota ou do pagamento? Sem dicionário, a IA chuta.</li>
+    <li><b>Quem vê o quê.</b> As permissões do banco valem para a IA: vendedor não deve ver despesa da diretoria só porque perguntou.</li>
+    <li><b>Consulta grande custa.</b> Limite linhas e tempo de cada consulta, para não pesar no sistema que a empresa usa para vender.</li>
+  </ul>
+</section>
+
+<footer class="foot"><span>Oficina IA na Prática · REN Jovens · Brasília, 28/11/2026</span><span>Empresa e dados fictícios</span></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm.js"></script>
+<script>
+/*@BASE_JS*/
+
+/* ---------- dados fictícios, sempre os mesmos ---------- */
+function rng(seed) { return () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(2611), ri = (a, b) => a + Math.floor(R() * (b - a + 1)), c2 = v => Math.round(v * 100) / 100;
+const MESES = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"];
+const NDIAS = { "2026-05": 31, "2026-06": 30, "2026-07": 31, "2026-08": 31, "2026-09": 30, "2026-10": 31 };
+const GROW = { "2026-05": 1, "2026-06": .97, "2026-07": 1.04, "2026-08": 1.06, "2026-09": 1.03, "2026-10": 1.12 };
+const PROD = [["Arroz 5 kg", 28], ["Feijão 1 kg", 9], ["Café 500 g", 22], ["Óleo 900 ml", 8], ["Açúcar 5 kg", 21]];
+const CLI = [["Mercado Bom Preço", "Taguatinga", "Ana", 40, 110], ["Atacadão Norte", "Sobradinho", "Diego", 90, 220], ["Padaria Pão de Ouro", "Plano Piloto", "Bruno", 15, 45], ["Restaurante Sabor do Cerrado", "Plano Piloto", "Bruno", 20, 60], ["Hotel Planalto", "Plano Piloto", "Carla", 30, 80], ["Mercadinho Águas Claras", "Águas Claras", "Ana", 25, 70], ["Cantina Escola Nova", "Águas Claras", "Carla", 20, 55], ["Lanchonete Ponto Certo", "Taguatinga", "Diego", 10, 35]];
+const day = (m, d) => `${m}-${String(d).padStart(2, "0")}`;
+
+const VENDAS = [], METAS = [], DESP = [], ORC = [];
+let pedido = 10400;
+MESES.forEach(m => CLI.forEach(([cli, reg, vend, lo, hi]) => {
+  const n = ri(3, 5), mid = (lo + hi) / 2, amp = (hi - lo) / 6;
+  for (let k = 0; k < n; k++) {
+    const d = day(m, ri(1, NDIAS[m])); pedido++;
+    PROD.forEach(([p, preco]) => {
+      const boost = p.startsWith("Café") && m === "2026-10" ? 1.4 : 1;
+      const q = Math.max(1, Math.round((mid + (R() * 2 - 1) * amp) * 4 / n * GROW[m] * boost));
+      VENDAS.push([pedido, d, vend, cli, reg, p, q, c2(q * preco)]);
+    });
+  }
+}));
+const FOUT = { Ana: .93, Bruno: 1.07, Carla: .88, Diego: 1.04 };
+MESES.forEach(m => Object.keys(FOUT).forEach(v => {
+  const real = VENDAS.filter(r => r[2] === v && r[1].startsWith(m)).reduce((s, r) => s + r[7], 0);
+  const f = m === "2026-10" ? FOUT[v] : .92 + R() * .16;
+  METAS.push([v, m, Math.round(real * f / 1000) * 1000]);
+}));
+const CAT = [["Combustível", 6000], ["Manutenção da frota", 3000], ["Aluguel", 9500], ["Energia", 2200], ["Marketing", 3000], ["Software", 1200], ["Viagens", 2000]];
+let did = 1;
+const gasto = (d, cat, forn, desc, v) => DESP.push([did++, d, cat, forn, desc, c2(v)]);
+MESES.forEach(m => {
+  CAT.forEach(([c, v]) => ORC.push([m, c, v]));
+  [3, 10, 17, 24].forEach(d => gasto(day(m, d), "Combustível", "Posto Cerrado", "Abastecimento da frota", (m === "2026-09" ? 2225 : 1400) + R() * 160 - 80));
+  if (m === "2026-10") { gasto(day(m, 14), "Manutenção da frota", "Oficina Rota Certa", "Troca de pneus", 2380); gasto(day(m, 14), "Manutenção da frota", "Oficina Rota Certa", "Troca de pneus", 2380); }
+  else { gasto(day(m, ri(5, 12)), "Manutenção da frota", "Oficina Rota Certa", "Revisão", 700 + R() * 600); if (R() > .4) gasto(day(m, ri(15, 26)), "Manutenção da frota", "Auto Peças Eixo", "Peças", 500 + R() * 1300); }
+  gasto(day(m, 5), "Aluguel", "Imobiliária Central", "Aluguel do galpão", 9500);
+  gasto(day(m, 15), "Energia", "Companhia de Energia", "Conta de energia", 1850 + R() * 330);
+  if (m === "2026-10") { gasto(day(m, 2), "Marketing", "Agência Pixel", "Anúncios do mês", 3000); gasto(day(m, 20), "Marketing", "Agência Pixel", "Campanha extra de outubro", 2400); }
+  else gasto(day(m, ri(2, 8)), "Marketing", "Agência Pixel", "Anúncios do mês", 2300 + R() * 650);
+  gasto(day(m, 1), "Software", "Sistema de Gestão", "Assinatura mensal", 890); gasto(day(m, 8), "Software", "Pacote de escritório", "Licenças", 260);
+  gasto(day(m, ri(6, 25)), "Viagens", "Agência Voar", "Passagens e hospedagem", 400 + R() * 1400);
+});
+
+/* ---------- perguntas prontas ---------- */
+const MN = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const mesTxt = s => MN[+s.slice(5, 7) - 1] + "/" + s.slice(2, 4);
+const lista = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " e " + a.at(-1);
+const PERG = [
+  { q: "Quanto vendemos por mês?", kw: "vendemos vendas mes mensal faturamento total evolucao tendencia",
+    sql: `SELECT strftime('%Y-%m', data) AS mes,\n       ROUND(SUM(valor), 2) AS total\nFROM vendas\nGROUP BY mes\nORDER BY mes;`,
+    chart: { t: "v", x: "mes", y: "total" },
+    ans: r => { const a = r.at(-1), b = r.at(-2), best = [...r].sort((x, y) => y.total - x.total)[0], d = a.total / b.total - 1; return `Outubro fechou em <b>${brl(a.total)}</b>, ${pct(Math.abs(d), 1)} ${d >= 0 ? "acima" : "abaixo"} de setembro. ${best.mes === a.mes ? "Foi o melhor mês do período." : `O melhor mês foi ${mesTxt(best.mes)}.`}`; } },
+  { q: "Quem são os 5 maiores clientes?", kw: "maiores clientes top melhores quem compra mais",
+    sql: `SELECT cliente,\n       ROUND(SUM(valor), 2) AS total,\n       COUNT(DISTINCT pedido) AS pedidos,\n       ROUND(100.0 * SUM(valor) / (SELECT SUM(valor) FROM vendas), 1) AS participacao_pct\nFROM vendas\nGROUP BY cliente\nORDER BY total DESC\nLIMIT 5;`,
+    chart: { t: "h", x: "cliente", y: "total" },
+    ans: r => `<b>${esc(r[0].cliente)}</b> é o maior cliente: ${brl(r[0].total)} em ${r[0].pedidos} pedidos, ${nf(r[0].participacao_pct, 1)}% de tudo o que foi vendido. Os 5 maiores somam ${nf(r.reduce((s, x) => s + x.participacao_pct, 0), 0)}% do faturamento.` },
+  { q: "Quem bateu a meta em outubro?", kw: "meta metas bateu atingiu vendedor vendedores desempenho",
+    sql: `SELECT m.vendedor,\n       m.meta,\n       ROUND(SUM(v.valor), 2) AS vendido,\n       ROUND(100.0 * SUM(v.valor) / m.meta, 1) AS atingido_pct\nFROM metas m\nJOIN vendas v ON v.vendedor = m.vendedor\n             AND strftime('%Y-%m', v.data) = m.mes\nWHERE m.mes = '2026-10'\nGROUP BY m.vendedor, m.meta\nORDER BY atingido_pct DESC;`,
+    chart: { t: "h", x: "vendedor", y: "vendido", ref: "meta", legend: ["vendido", "meta"] },
+    pill: { col: "atingido_pct", f: v => v >= 100 ? ["good", "Bateu"] : v >= 95 ? ["warn", "Quase"] : ["bad", "Abaixo"] },
+    ans: r => { const ok = r.filter(x => x.atingido_pct >= 100); return `${ok.length} de ${r.length} vendedores bateram a meta: ${lista(ok.map(x => `<b>${esc(x.vendedor)}</b> (${nf(x.atingido_pct, 0)}%)`)) || "nenhum"}. ${lista(r.filter(x => x.atingido_pct < 100).map(x => `${esc(x.vendedor)} ficou em ${nf(x.atingido_pct, 0)}%`))}.`; } },
+  { q: "Qual produto mais cresceu de setembro para outubro?", kw: "produto cresceu crescimento variacao setembro outubro subiu",
+    sql: `SELECT produto,\n       ROUND(SUM(CASE WHEN strftime('%Y-%m', data) = '2026-09' THEN valor END), 2) AS setembro,\n       ROUND(SUM(CASE WHEN strftime('%Y-%m', data) = '2026-10' THEN valor END), 2) AS outubro,\n       ROUND(100.0 * (SUM(CASE WHEN strftime('%Y-%m', data) = '2026-10' THEN valor END)\n             / SUM(CASE WHEN strftime('%Y-%m', data) = '2026-09' THEN valor END) - 1), 1) AS variacao_pct\nFROM vendas\nGROUP BY produto\nORDER BY variacao_pct DESC;`,
+    ans: r => `<b>${esc(r[0].produto)}</b> foi o que mais cresceu: ${r[0].variacao_pct >= 0 ? "+" : ""}${nf(r[0].variacao_pct, 1)}%, de ${brl(r[0].setembro)} para ${brl(r[0].outubro)}. ${esc(r.at(-1).produto)} teve a menor variação (${nf(r.at(-1).variacao_pct, 1)}%).` },
+  { q: "As despesas de outubro estão dentro do orçamento?", kw: "despesas despesa orcamento orcado gasto gastos estourou custo",
+    sql: `SELECT o.categoria,\n       o.valor AS orcado,\n       ROUND(COALESCE(SUM(d.valor), 0), 2) AS realizado,\n       ROUND(100.0 * COALESCE(SUM(d.valor), 0) / o.valor, 1) AS uso_pct\nFROM orcamento o\nLEFT JOIN despesas d ON d.categoria = o.categoria\n                    AND strftime('%Y-%m', d.data) = o.mes\nWHERE o.mes = '2026-10'\nGROUP BY o.categoria, o.valor\nORDER BY uso_pct DESC;`,
+    chart: { t: "h", x: "categoria", y: "realizado", ref: "orcado", legend: ["realizado", "orçado"] },
+    pill: { col: "uso_pct", f: v => v > 100 ? ["bad", "Estourou"] : v >= 90 ? ["warn", "No limite"] : ["good", "Dentro"] },
+    ans: r => { const est = r.filter(x => x.uso_pct > 100), tr = r.reduce((s, x) => s + x.realizado, 0), to = r.reduce((s, x) => s + x.orcado, 0); return `${est.length ? `${est.length} categorias estouraram: ${lista(est.map(x => `<b>${esc(x.categoria)}</b> (${nf(x.uso_pct, 0)}%)`))}.` : "Nenhuma categoria estourou."} No total, outubro gastou ${brl(tr)} de ${brl(to)} orçados.${est.some(x => x.categoria.startsWith("Manuten")) ? " Na manutenção, vale olhar a pergunta sobre pagamento duplicado." : ""}`; } },
+  { q: "Tem pagamento duplicado?", kw: "duplicado duplicidade repetido pago duas vezes pagamento suspeito",
+    sql: `SELECT data, fornecedor, descricao, valor,\n       COUNT(*) AS vezes\nFROM despesas\nGROUP BY data, fornecedor, valor\nHAVING COUNT(*) > 1\nORDER BY valor DESC;`,
+    ans: r => r.length ? `Sim: <b>${r.length} caso${r.length > 1 ? "s" : ""}</b>. ${r.map(x => `${esc(x.fornecedor)}, ${x.data.split("-").reverse().join("/")}, ${brl(x.valor)} lançado ${x.vezes} vezes`).join("; ")}. Confira se não é a mesma nota antes de pagar.` : "Nenhum lançamento repetido com o mesmo fornecedor, data e valor." },
+  { q: "Quanto cada região vendeu em outubro?", kw: "regiao regioes cidade local taguatinga plano piloto aguas claras sobradinho",
+    sql: `SELECT regiao,\n       ROUND(SUM(valor), 2) AS total\nFROM vendas\nWHERE strftime('%Y-%m', data) = '2026-10'\nGROUP BY regiao\nORDER BY total DESC;`,
+    chart: { t: "h", x: "regiao", y: "total" },
+    ans: r => `<b>${esc(r[0].regiao)}</b> liderou outubro com ${brl(r[0].total)}. ${esc(r.at(-1).regiao)} vendeu menos: ${brl(r.at(-1).total)}.` },
+  { q: "Como evoluiu o gasto com combustível?", kw: "combustivel gasolina diesel frota evolucao gasto",
+    sql: `SELECT strftime('%Y-%m', data) AS mes,\n       ROUND(SUM(valor), 2) AS total\nFROM despesas\nWHERE categoria = 'Combustível'\nGROUP BY mes\nORDER BY mes;`,
+    chart: { t: "v", x: "mes", y: "total", label: "max" },
+    ans: r => { const mx = [...r].sort((a, b) => b.total - a.total)[0], outros = r.filter(x => x !== mx), med = outros.reduce((s, x) => s + x.total, 0) / outros.length; return `O pico foi em <b>${mesTxt(mx.mes)}: ${brl(mx.total)}</b>, ${pct(mx.total / med - 1)} acima da média dos outros meses (${brl(med)}). Vale perguntar o que mudou na frota ou nas rotas.`; } },
+  { q: "Qual o ticket médio por vendedor?", kw: "ticket medio pedido valor medio vendedor",
+    sql: `SELECT vendedor,\n       COUNT(DISTINCT pedido) AS pedidos,\n       ROUND(SUM(valor) / COUNT(DISTINCT pedido), 2) AS ticket_medio\nFROM vendas\nGROUP BY vendedor\nORDER BY ticket_medio DESC;`,
+    chart: { t: "h", x: "vendedor", y: "ticket_medio" },
+    ans: r => `<b>${esc(r[0].vendedor)}</b> tem o maior ticket médio: ${brl(r[0].ticket_medio)} por pedido. ${esc(r.at(-1).vendedor)} tem o menor: ${brl(r.at(-1).ticket_medio)}.` }
+];
+
+const SQL_SUMIDO = `SELECT cliente, MAX(data) AS ultima FROM vendas GROUP BY cliente ORDER BY ultima LIMIT 1;`;
+/* Resultados das perguntas prontas, para quando o motor SQL não carregar.
+   Gerados a partir destes mesmos dados; se mudar a geração acima, gere de novo. */
+const PRONTOS = /*@PRONTOS*/{"SELECT strftime('%Y-%m', data) AS mes,\n       ROUND(SUM(valor), 2) AS total\nFROM vendas\nGROUP BY mes\nORDER BY mes;":[{"mes":"2026-05","total":163879},{"mes":"2026-06","total":156941},{"mes":"2026-07","total":168138},{"mes":"2026-08","total":173380},{"mes":"2026-09","total":167821},{"mes":"2026-10","total":200165}],"SELECT cliente,\n       ROUND(SUM(valor), 2) AS total,\n       COUNT(DISTINCT pedido) AS pedidos,\n       ROUND(100.0 * SUM(valor) / (SELECT SUM(valor) FROM vendas), 1) AS participacao_pct\nFROM vendas\nGROUP BY cliente\nORDER BY total DESC\nLIMIT 5;":[{"cliente":"Atacadão Norte","total":345922,"pedidos":25,"participacao_pct":33.6},{"cliente":"Mercado Bom Preço","total":166295,"pedidos":27,"participacao_pct":16.1},{"cliente":"Hotel Planalto","total":122293,"pedidos":27,"participacao_pct":11.9},{"cliente":"Mercadinho Águas Claras","total":105222,"pedidos":23,"participacao_pct":10.2},{"cliente":"Restaurante Sabor do Cerrado","total":89450,"pedidos":25,"participacao_pct":8.7}],"SELECT m.vendedor,\n       m.meta,\n       ROUND(SUM(v.valor), 2) AS vendido,\n       ROUND(100.0 * SUM(v.valor) / m.meta, 1) AS atingido_pct\nFROM metas m\nJOIN vendas v ON v.vendedor = m.vendedor\n             AND strftime('%Y-%m', v.data) = m.mes\nWHERE m.mes = '2026-10'\nGROUP BY m.vendedor, m.meta\nORDER BY atingido_pct DESC;":[{"vendedor":"Carla","meta":35000,"vendido":39848,"atingido_pct":113.9},{"vendedor":"Ana","meta":49000,"vendido":53031,"atingido_pct":108.2},{"vendedor":"Diego","meta":80000,"vendido":77032,"atingido_pct":96.3},{"vendedor":"Bruno","meta":32000,"vendido":30254,"atingido_pct":94.5}],"SELECT produto,\n       ROUND(SUM(CASE WHEN strftime('%Y-%m', data) = '2026-09' THEN valor END), 2) AS setembro,\n       ROUND(SUM(CASE WHEN strftime('%Y-%m', data) = '2026-10' THEN valor END), 2) AS outubro,\n       ROUND(100.0 * (SUM(CASE WHEN strftime('%Y-%m', data) = '2026-10' THEN valor END)\n             / SUM(CASE WHEN strftime('%Y-%m', data) = '2026-09' THEN valor END) - 1), 1) AS variacao_pct\nFROM vendas\nGROUP BY produto\nORDER BY variacao_pct DESC;":[{"produto":"Café 500 g","setembro":42790,"outubro":64526,"variacao_pct":50.8},{"produto":"Óleo 900 ml","setembro":14488,"outubro":16640,"variacao_pct":14.9},{"produto":"Açúcar 5 kg","setembro":38829,"outubro":42399,"variacao_pct":9.2},{"produto":"Arroz 5 kg","setembro":53984,"outubro":57988,"variacao_pct":7.4},{"produto":"Feijão 1 kg","setembro":17730,"outubro":18612,"variacao_pct":5}],"SELECT o.categoria,\n       o.valor AS orcado,\n       ROUND(COALESCE(SUM(d.valor), 0), 2) AS realizado,\n       ROUND(100.0 * COALESCE(SUM(d.valor), 0) / o.valor, 1) AS uso_pct\nFROM orcamento o\nLEFT JOIN despesas d ON d.categoria = o.categoria\n                    AND strftime('%Y-%m', d.data) = o.mes\nWHERE o.mes = '2026-10'\nGROUP BY o.categoria, o.valor\nORDER BY uso_pct DESC;":[{"categoria":"Marketing","orcado":3000,"realizado":5400,"uso_pct":180},{"categoria":"Manutenção da frota","orcado":3000,"realizado":4760,"uso_pct":158.7},{"categoria":"Aluguel","orcado":9500,"realizado":9500,"uso_pct":100},{"categoria":"Software","orcado":1200,"realizado":1150,"uso_pct":95.8},{"categoria":"Combustível","orcado":6000,"realizado":5576.24,"uso_pct":92.9},{"categoria":"Energia","orcado":2200,"realizado":1996.95,"uso_pct":90.8},{"categoria":"Viagens","orcado":2000,"realizado":1200.13,"uso_pct":60}],"SELECT data, fornecedor, descricao, valor,\n       COUNT(*) AS vezes\nFROM despesas\nGROUP BY data, fornecedor, valor\nHAVING COUNT(*) > 1\nORDER BY valor DESC;":[{"data":"2026-10-14","fornecedor":"Oficina Rota Certa","descricao":"Troca de pneus","valor":2380,"vezes":2}],"SELECT regiao,\n       ROUND(SUM(valor), 2) AS total\nFROM vendas\nWHERE strftime('%Y-%m', data) = '2026-10'\nGROUP BY regiao\nORDER BY total DESC;":[{"regiao":"Sobradinho","total":67077},{"regiao":"Plano Piloto","total":53749},{"regiao":"Taguatinga","total":42728},{"regiao":"Águas Claras","total":36611}],"SELECT strftime('%Y-%m', data) AS mes,\n       ROUND(SUM(valor), 2) AS total\nFROM despesas\nWHERE categoria = 'Combustível'\nGROUP BY mes\nORDER BY mes;":[{"mes":"2026-05","total":5684.96},{"mes":"2026-06","total":5570.26},{"mes":"2026-07","total":5605.22},{"mes":"2026-08","total":5595.59},{"mes":"2026-09","total":8777.8},{"mes":"2026-10","total":5576.24}],"SELECT vendedor,\n       COUNT(DISTINCT pedido) AS pedidos,\n       ROUND(SUM(valor) / COUNT(DISTINCT pedido), 2) AS ticket_medio\nFROM vendas\nGROUP BY vendedor\nORDER BY ticket_medio DESC;":[{"vendedor":"Diego","pedidos":49,"ticket_medio":8088.61},{"vendedor":"Ana","pedidos":50,"ticket_medio":5430.34},{"vendedor":"Carla","pedidos":52,"ticket_medio":3961.94},{"vendedor":"Bruno","pedidos":47,"ticket_medio":3328.6}],"SELECT cliente, MAX(data) AS ultima FROM vendas GROUP BY cliente ORDER BY ultima LIMIT 1;":[{"cliente":"Cantina Escola Nova","ultima":"2026-10-15"}]};
+
+const DICT = {
+  vendas: [["pedido", "número do pedido"], ["data", "data da venda (AAAA-MM-DD)"], ["vendedor", "nome do vendedor"], ["cliente", "nome do cliente"], ["regiao", "região administrativa do DF"], ["produto", "produto vendido"], ["quantidade", "unidades"], ["valor", "R$ da linha (quantidade × preço)"]],
+  metas: [["vendedor", "nome do vendedor"], ["mes", "mês (AAAA-MM)"], ["meta", "meta de vendas do mês, em R$"]],
+  despesas: [["id", "número do lançamento"], ["data", "data do lançamento"], ["categoria", "Combustível, Aluguel, Marketing…"], ["fornecedor", "quem recebeu"], ["descricao", "texto do lançamento"], ["valor", "R$"]],
+  orcamento: [["mes", "mês (AAAA-MM)"], ["categoria", "mesma lista de despesas"], ["valor", "R$ orçado para o mês"]]
+};
+
+/* ---------- motor ---------- */
+let db = null, atual = null;
+const money = /^(total|valor|meta|vendido|orcado|realizado|ticket_medio|setembro|outubro)$/;
+function fmtCell(col, v) {
+  if (v == null) return "–";
+  if (typeof v === "number" && money.test(col)) return brl(v);
+  if (typeof v === "number" && /_pct$/.test(col)) return nf(v, 1) + "%";
+  if (col === "mes" && /^\d{4}-\d{2}$/.test(v)) return mesTxt(v);
+  if (col === "data" && /^\d{4}-\d{2}-\d{2}$/.test(v)) return v.split("-").reverse().join("/");
+  return typeof v === "number" ? nf(v, Number.isInteger(v) ? 0 : 2) : v;
+}
+function exec(sql) {
+  if (!db) {
+    const rows = PRONTOS[sql.trim()];
+    if (!rows) throw new Error("O motor SQL não carregou, então agora só as perguntas prontas funcionam. Recarregue a página para rodar SQL editado.");
+    return { cols: rows.length ? Object.keys(rows[0]) : [], rows };
+  }
+  const res = db.exec(sql);
+  if (!res.length) return { cols: [], rows: [] };
+  const { columns, values } = res[0];
+  return { cols: columns, rows: values.map(v => Object.fromEntries(columns.map((c, i) => [c, v[i]]))) };
+}
+
+function mostrar(p, sql, nota) {
+  $("#sqlerr").hidden = true;
+  let out;
+  try {
+    if (!/^\s*(select|with)\b/i.test(sql)) throw new Error("Nesta demo só roda consulta (SELECT). Na versão da empresa, o banco também bloqueia qualquer outra coisa.");
+    out = exec(sql);
+  } catch (e) { $("#sqlerr").textContent = "O SQL deu erro: " + e.message; $("#sqlerr").hidden = false; return; }
+  const { cols, rows } = out;
+  $("#understood").innerHTML = nota || "";
+  const editado = !p || sql.trim() !== p.sql.trim();
+  $("#answer").innerHTML = !rows.length ? "A consulta não trouxe nenhuma linha." : editado ? `Resultado do seu SQL: <b>${rows.length} linha${rows.length > 1 ? "s" : ""}</b>.` : p.ans(rows);
+
+  const ch = $("#chart"), lg = $("#legend");
+  ch.innerHTML = ""; lg.hidden = true;
+  let cfg = !editado && p.chart;
+  if (editado && cols.length === 2 && rows.length > 1 && rows.length <= 12 && typeof rows[0][cols[1]] === "number" && rows.every(r => r[cols[1]] >= 0)) cfg = { t: "h", x: cols[0], y: cols[1] };
+  if (cfg && rows.length) {
+    const fm = v => money.test(cfg.y) ? brlk(v) : /_pct$/.test(cfg.y) ? nf(v, 1) + "%" : nf(v, 1);
+    const lab = r => cfg.x === "mes" ? mesTxt(r[cfg.x]) : String(r[cfg.x]);
+    const tipOf = r => `<b>${esc(lab(r))}</b><br>` + cols.map(c => `${esc(c)}: ${esc(fmtCell(c, r[c]))}`).join("<br>");
+    if (cfg.t === "v") {
+      const mx = rows.reduce((b, r, i) => r[cfg.y] > rows[b][cfg.y] ? i : b, 0);
+      vbar(ch, rows.map(r => ({ label: lab(r), value: r[cfg.y], tip: tipOf(r) })), { fmt: fm, tick: v => brlk(v), labelIdx: cfg.label === "max" ? [mx] : [rows.length - 1], aria: p ? p.q : "" });
+    } else {
+      hbar(ch, rows.map(r => ({ label: lab(r), value: r[cfg.y], ref: cfg.ref ? r[cfg.ref] : undefined, tip: tipOf(r) })), { fmt: fm, valW: 84, aria: p ? p.q : "" });
+    }
+    if (cfg.legend) { lg.innerHTML = `<span><i class="box"></i>${esc(cfg.legend[0])}</span><span><i style="border-top:0;border-left:2px solid var(--fg);height:12px;width:0"></i>${esc(cfg.legend[1])}</span>`; lg.hidden = false; }
+  }
+  const pill = !editado && p.pill;
+  $("#result").innerHTML = rows.length ? `<thead><tr>${cols.map(c => `<th${typeof rows[0][c] === "number" ? ' class="r"' : ""}>${esc(c)}</th>`).join("")}${pill ? "<th>Situação</th>" : ""}</tr></thead><tbody>` +
+    rows.slice(0, 50).map(r => `<tr>${cols.map(c => `<td${typeof r[c] === "number" ? ' class="r"' : ""}>${esc(fmtCell(c, r[c]))}</td>`).join("")}${pill ? (([k, t]) => `<td><span class="pill ${k}">${t}</span></td>`)(pill.f(r[pill.col])) : ""}</tr>`).join("") + "</tbody>" : "";
+}
+
+function escolher(i, nota) {
+  atual = PERG[i];
+  $("#sql").value = atual.sql;
+  $$(".chip", $("#chips")).forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
+  mostrar(atual, atual.sql, nota);
+}
+
+function perguntar(txt) {
+  const t = norm(txt).split(/[^a-z0-9]+/).filter(w => w.length > 2);
+  const sc = PERG.map((p, i) => [i, t.reduce((s, w) => s + (norm(p.kw + " " + p.q).includes(w) ? (w.length > 4 ? 2 : 1) : 0), 0)]).sort((a, b) => b[1] - a[1]);
+  if (!sc[0][1]) {
+    $("#understood").innerHTML = "";
+    $("#answer").innerHTML = "Essa pergunta ainda não está na demo. Na versão de verdade, a IA leria o dicionário de dados e escreveria o SQL. Escolha uma das perguntas abaixo ou escreva o SQL você mesmo.";
+    $("#chart").innerHTML = ""; $("#legend").hidden = true; $("#result").innerHTML = "";
+    return;
+  }
+  escolher(sc[0][0], `Entendi como: <b>${esc(PERG[sc[0][0]].q)}</b>`);
+}
+
+function relatorio() {
+  const m = exec(PERG[0].sql).rows, a = m.at(-1), b = m.at(-2);
+  const met = exec(PERG[2].sql).rows, des = exec(PERG[4].sql).rows.filter(x => x.uso_pct > 100), dup = exec(PERG[5].sql).rows;
+  const sumido = exec(SQL_SUMIDO).rows[0];
+  const li = [
+    `<b>Vendas de outubro: ${brl(a.total)}</b>, ${pct(Math.abs(a.total / b.total - 1), 1)} ${a.total >= b.total ? "acima" : "abaixo"} de setembro.`,
+    `<b>Metas:</b> ${met.map(x => `${esc(x.vendedor)} ${nf(x.atingido_pct, 0)}%`).join(", ")}.`,
+    des.length ? `<b>Despesas acima do orçamento:</b> ${des.map(x => `${esc(x.categoria)} (${brl(x.realizado)} de ${brl(x.orcado)})`).join("; ")}.` : `<b>Despesas:</b> todas dentro do orçamento.`,
+    dup.length ? `<b>Atenção:</b> ${dup.length} possível pagamento duplicado (${esc(dup[0].fornecedor)}, ${brl(dup[0].valor)}).` : `<b>Lançamentos:</b> nenhum duplicado encontrado.`,
+    `<b>Cliente para ligar:</b> ${esc(sumido.cliente)}, última compra em ${sumido.ultima.split("-").reverse().join("/")}.`
+  ];
+  $("#report").innerHTML = li.map(x => `<li>${x}</li>`).join("");
+}
+
+function dicionario() {
+  $("#dict").innerHTML = Object.entries(DICT).map(([t, cs]) => `<div><h4>${t}</h4><dl>${cs.map(([c, d]) => `<dt>${c}</dt><dd>${esc(d)}</dd>`).join("")}</dl></div>`).join("");
+  const dic = Object.entries(DICT).map(([t, cs]) => `${t}(${cs.map(([c, d]) => `${c}: ${d}`).join("; ")})`).join("\n");
+  $("#p-sql").textContent = `Você é analista de dados da [empresa]. Responda perguntas de negócio escrevendo SQL para [SQLite / PostgreSQL].
+
+Tabelas disponíveis (dicionário de dados):
+${dic}
+
+Regras do negócio:
+- Venda conta pela data da venda. Meta e orçamento são mensais.
+- "Mês passado" é relativo a [data de hoje].
+
+Regras de segurança:
+- Use só SELECT. Nunca INSERT, UPDATE, DELETE ou DROP.
+- Use só as tabelas e colunas acima. Se a pergunta pedir algo que não existe, diga.
+- Sempre limite a 100 linhas.
+
+Responda com: 1) o SQL; 2) a resposta em duas frases para um gestor, citando os números.
+
+Pergunta: [pergunta]`;
+}
+
+function csvDe(cols, rows) { return [cols.join(";"), ...rows.map(r => r.map(v => typeof v === "number" && !Number.isInteger(v) ? String(v).replace(".", ",") : v).join(";"))].join("\n"); }
+function copiarCSV(btn, txt) {
+  const fb = () => { $("#csvbox").hidden = false; $("#csvtxt").value = txt; $("#csvtxt").focus(); $("#csvtxt").select(); flash(btn, "Selecione e copie"); };
+  try { navigator.clipboard.writeText(txt).then(() => flash(btn, "Copiado"), fb); } catch (_) { fb(); }
+}
+$("#cp-vendas").onclick = e => copiarCSV(e.currentTarget, csvDe(["pedido", "data", "vendedor", "cliente", "regiao", "produto", "quantidade", "valor"], VENDAS) + "\n\n" + csvDe(["vendedor", "mes", "meta"], METAS));
+$("#cp-desp").onclick = e => copiarCSV(e.currentTarget, csvDe(["id", "data", "categoria", "fornecedor", "descricao", "valor"], DESP) + "\n\n" + csvDe(["mes", "categoria", "orcado"], ORC));
+
+$("#chips").innerHTML = PERG.map((p, i) => `<button type="button" class="chip" data-i="${i}" aria-pressed="false">${esc(p.q)}</button>`).join("");
+dicionario();
+
+function iniciar(SQL) {
+  db = new SQL.Database();
+  db.run(`CREATE TABLE vendas (pedido INTEGER, data TEXT, vendedor TEXT, cliente TEXT, regiao TEXT, produto TEXT, quantidade INTEGER, valor REAL);
+          CREATE TABLE metas (vendedor TEXT, mes TEXT, meta REAL);
+          CREATE TABLE despesas (id INTEGER, data TEXT, categoria TEXT, fornecedor TEXT, descricao TEXT, valor REAL);
+          CREATE TABLE orcamento (mes TEXT, categoria TEXT, valor REAL);`);
+  const ins = (t, n, rows) => { const st = db.prepare(`INSERT INTO ${t} VALUES (${Array(n).fill("?").join(",")})`); rows.forEach(r => st.run(r)); st.free(); };
+  db.run("BEGIN"); ins("vendas", 8, VENDAS); ins("metas", 3, METAS); ins("despesas", 6, DESP); ins("orcamento", 3, ORC); db.run("COMMIT");
+  $("#status").textContent = `SQLite no navegador · ${nf(VENDAS.length)} vendas · ${DESP.length} despesas`;
+  $("#status").className = "status ok";
+  ligar();
+}
+function ligar() {
+  $("#chips").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; $("#q").value = PERG[+b.dataset.i].q; escolher(+b.dataset.i); };
+  $("#form-q").onsubmit = e => { e.preventDefault(); perguntar($("#q").value); };
+  $("#run").onclick = () => mostrar(atual, $("#sql").value, $("#sql").value.trim() !== (atual && atual.sql.trim()) ? "SQL editado por você" : "");
+  relatorio();
+  perguntar($("#q").value);
+}
+function falhou() {
+  db = null;
+  $("#status").textContent = "Motor SQL não carregou · respostas pré-calculadas";
+  $("#status").className = "status";
+  ligar();
+}
+if (typeof initSqlJs === "function") initSqlJs().then(iniciar).catch(falhou); else falhou();
+</script>

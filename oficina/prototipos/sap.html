@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Copiloto SAP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: coluna única de leitura (máx. 1040px). A abertura cita a ideia da pessoa; o protótipo ao vivo é o único bloco tratado como "objeto"; o resto é texto, linhas finas e listas. */
+:root {
+  --bg: #100C18; --surface: #1E1830; --surface-2: #281F3F; --line: #362C52;
+  --fg: #F3F1F8; --muted: #A7A2B8; --faint: #7D7896;
+  --accent: #8800FF; --accent-text: #B97AFF; --on-accent: #FFFFFF;
+  --chart: #9A4DFF; --chart-soft: rgba(154, 77, 255, .16); --grid: #2E2646;
+  --good: #4CC38A; --warn: #F2B544; --bad: #FF7070;
+  --good-bg: rgba(76, 195, 138, .14); --warn-bg: rgba(242, 181, 68, .14); --bad-bg: rgba(255, 112, 112, .14);
+  --code-bg: #0B0812; --ph: #E6C8FF; --ph-bg: rgba(154, 77, 255, .22);
+  --shadow: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 18px 40px -24px rgba(0, 0, 0, .7);
+  --f-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F5FC; --surface: #FFFFFF; --surface-2: #F1ECFA; --line: #E1D9F0;
+    --fg: #17121F; --muted: #5E5770; --faint: #8A83A0;
+    --accent: #8800FF; --accent-text: #6E00D0; --on-accent: #FFFFFF;
+    --chart: #8800FF; --chart-soft: rgba(136, 0, 255, .10); --grid: #ECE6F6;
+    --good: #17804D; --warn: #985F00; --bad: #C42B2B;
+    --good-bg: rgba(23, 128, 77, .10); --warn-bg: rgba(152, 95, 0, .10); --bad-bg: rgba(196, 43, 43, .09);
+    --code-bg: #F5F1FC; --ph: #5B00AD; --ph-bg: rgba(136, 0, 255, .12);
+    --shadow: 0 1px 2px rgba(40, 20, 80, .06), 0 16px 36px -24px rgba(40, 20, 80, .28);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F5FC; --surface: #FFFFFF; --surface-2: #F1ECFA; --line: #E1D9F0;
+  --fg: #17121F; --muted: #5E5770; --faint: #8A83A0;
+  --accent: #8800FF; --accent-text: #6E00D0; --on-accent: #FFFFFF;
+  --chart: #8800FF; --chart-soft: rgba(136, 0, 255, .10); --grid: #ECE6F6;
+  --good: #17804D; --warn: #985F00; --bad: #C42B2B;
+  --good-bg: rgba(23, 128, 77, .10); --warn-bg: rgba(152, 95, 0, .10); --bad-bg: rgba(196, 43, 43, .09);
+  --code-bg: #F5F1FC; --ph: #5B00AD; --ph-bg: rgba(136, 0, 255, .12);
+  --shadow: 0 1px 2px rgba(40, 20, 80, .06), 0 16px 36px -24px rgba(40, 20, 80, .28);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 1rem/1.6 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+img, svg { max-width: 100%; }
+a { color: var(--accent-text); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; border-radius: 4px; }
+::selection { background: var(--ph-bg); }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+h1 { font-size: clamp(2.1rem, 5.6vw, 3.4rem); line-height: 1.04; font-weight: 700; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.85rem); line-height: 1.15; font-weight: 700; }
+h3 { font-size: 1.08rem; line-height: 1.3; font-weight: 600; }
+p { margin: 0; }
+.lede { color: var(--muted); max-width: 64ch; }
+.small { font-size: .875rem; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--f-mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* rótulo com ponto, como no deck */
+.kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 .74rem/1 var(--f-body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent-text); }
+.kicker::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* abertura */
+.hero { display: grid; gap: 22px; padding-bottom: 34px; border-bottom: 1px solid var(--line); }
+.hero h1 .acc { color: var(--accent-text); }
+.idea { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: start; max-width: 760px; }
+.idea .q { font: 700 3.4rem/0.8 var(--f-display); color: var(--accent); margin-top: 4px; }
+.idea blockquote { margin: 0; font: 500 clamp(1.1rem, 2.4vw, 1.35rem)/1.45 var(--f-display); color: var(--fg); }
+.idea cite { grid-column: 2; font-style: normal; font-size: .85rem; color: var(--faint); }
+
+.verdict { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.verdict > div { padding: 16px 18px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.verdict > div + div { border-left: 1px solid var(--line); }
+.verdict .lab { font-size: .78rem; color: var(--muted); }
+.verdict .val { font: 600 1.15rem/1.25 var(--f-display); }
+.verdict .val.yes { color: var(--good); }
+.verdict .sub { font-size: .82rem; color: var(--muted); }
+@media (max-width: 760px) {
+  .verdict { grid-template-columns: 1fr 1fr; }
+  .verdict > div:nth-child(3) { border-left: 0; }
+  .verdict > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--muted); font-size: .85rem; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; }
+.toc a:hover { color: var(--fg); border-color: var(--accent-text); }
+
+/* seções */
+section.block { display: grid; gap: 18px; padding-top: 52px; scroll-margin-top: 16px; }
+.block-head { display: grid; gap: 8px; }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+@media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+
+/* protótipo */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: clamp(16px, 3vw, 26px); display: grid; gap: 20px; min-width: 0; }
+.demo-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.demo-bar .tag { font: 600 .72rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.panel { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel h3 { margin-bottom: 8px; }
+.note { font-size: .82rem; color: var(--muted); }
+.note b { color: var(--fg); font-weight: 600; }
+
+/* KPIs */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.kpi { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.kpi .lab { font-size: .78rem; color: var(--muted); }
+.kpi .val { font: 600 1.45rem/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
+.kpi .sub { font-size: .78rem; color: var(--muted); }
+@media (max-width: 760px) { .kpis { grid-template-columns: 1fr 1fr; } }
+
+/* formulário */
+label.f { display: grid; gap: 6px; font-size: .85rem; color: var(--muted); min-width: 0; }
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  font: inherit; font-size: .95rem; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; width: 100%; min-width: 0;
+}
+textarea { font-family: var(--f-mono); font-size: .8rem; line-height: 1.55; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent-text); outline-offset: 0; border-color: transparent; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+
+.btn { font: 600 .9rem/1 var(--f-body); border-radius: 10px; padding: 10px 14px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: var(--accent-text); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.12); }
+.btn.sm { padding: 7px 10px; font-size: .8rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 .85rem/1.2 var(--f-body); padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; text-align: left; }
+.chip:hover { border-color: var(--accent-text); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* ferramentas (texto, sem logotipo) */
+.tool { display: inline-block; font: 600 .74rem/1 var(--f-body); padding: 5px 8px; border-radius: 6px; background: var(--surface-2); color: var(--fg); border: 1px solid var(--line); white-space: nowrap; }
+.tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.tools-grid > div { display: grid; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line); align-content: start; min-width: 0; }
+.tools-grid .who { display: flex; flex-wrap: wrap; gap: 6px; }
+.tools-grid p { color: var(--muted); }
+.tools-grid p b { color: var(--fg); font-weight: 600; }
+@media (max-width: 760px) { .tools-grid { grid-template-columns: 1fr; } }
+
+/* oficina: linha do tempo com horário */
+.steps { display: grid; gap: 0; }
+.step { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 4px 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+.step .t { font: 500 .95rem/1.3 var(--f-mono); color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.step .t small { display: block; color: var(--faint); font-size: .75rem; margin-top: 2px; }
+.step .c { display: grid; gap: 10px; min-width: 0; }
+.step .c > p { color: var(--muted); }
+.step .c > p b { color: var(--fg); font-weight: 600; }
+@media (max-width: 560px) { .step { grid-template-columns: 1fr; } }
+.deliver { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; padding: 16px 18px; border-radius: 12px; background: var(--chart-soft); }
+.deliver b { font-family: var(--f-display); color: var(--accent-text); }
+
+/* prompt pronto */
+.prompt { border: 1px solid var(--line); border-radius: 12px; background: var(--code-bg); overflow: hidden; min-width: 0; }
+.prompt-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px 9px 14px; border-bottom: 1px solid var(--line); }
+.prompt-head .lbl { font: 600 .7rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text); }
+.prompt-head .who { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.prompt pre { margin: 0; padding: 14px; white-space: pre-wrap; word-break: break-word; font: 400 .82rem/1.65 var(--f-mono); color: var(--fg); max-height: 420px; overflow: auto; }
+.ph { color: var(--ph); background: var(--ph-bg); border-radius: 4px; padding: 0 3px; }
+
+/* roteiro de fases */
+.phases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; counter-reset: fase; }
+.phase { display: grid; gap: 8px; align-content: start; padding: 16px; border-radius: 14px; border: 1px solid var(--line); min-width: 0; }
+.phase .when { font: 500 .78rem/1.2 var(--f-mono); color: var(--accent-text); }
+.phase p { color: var(--muted); font-size: .92rem; }
+.phase .who { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+@media (max-width: 900px) { .phases { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .phases { grid-template-columns: 1fr; } }
+
+/* cuidados */
+.cares { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.cares li { padding: 14px 0 14px 30px; border-top: 1px solid var(--line); position: relative; color: var(--muted); }
+.cares li b { color: var(--fg); font-weight: 600; }
+.cares li::before { content: "!"; position: absolute; left: 0; top: 15px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 700 .72rem/1 var(--f-body); color: var(--warn); background: var(--warn-bg); }
+@media (max-width: 760px) { .cares { grid-template-columns: 1fr; } }
+
+/* status */
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 .78rem/1 var(--f-body); padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill::before { font: 700 .72rem/1 var(--f-body); }
+.pill.good { color: var(--good); background: var(--good-bg); }
+.pill.good::before { content: "✓"; }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+.pill.warn::before { content: "!"; }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.pill.bad::before { content: "×"; }
+
+/* tabelas */
+.scroll { overflow-x: auto; min-width: 0; -webkit-overflow-scrolling: touch; }
+table.tbl { border-collapse: collapse; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: .76rem; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 9px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td.wrap-cell { white-space: normal; min-width: 220px; }
+.tbl th.r, .tbl td.r { text-align: right; }
+.tbl tr:last-child td { border-bottom: 0; }
+
+/* gráficos */
+.chart { width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--f-body); }
+.chart-title { font: 600 .92rem/1.3 var(--f-body); margin-bottom: 2px; }
+.chart-sub { font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .78rem; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 14px; height: 0; border-top: 2px solid var(--muted); vertical-align: middle; margin-right: 6px; }
+.legend i.box { width: 10px; height: 10px; border: 0; border-radius: 3px; background: var(--chart); }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--fg); color: var(--bg); font-size: .8rem; line-height: 1.4; padding: 8px 10px; border-radius: 8px; max-width: 260px; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+.tip b { font-weight: 600; }
+
+/* diagrama de fluxo simples */
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.flow .node { flex: 1 1 130px; min-width: 0; padding: 12px; border-radius: 12px; background: var(--surface-2); display: grid; gap: 4px; align-content: start; }
+.flow .node b { font-family: var(--f-display); font-size: .95rem; }
+.flow .node span { font-size: .8rem; color: var(--muted); }
+.flow .arrow { align-self: center; color: var(--faint); font-family: var(--f-mono); }
+@media (max-width: 760px) { .flow .arrow { display: none; } }
+
+footer.foot { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: .82rem; color: var(--faint); }
+
+.tcode { display: inline-block; font: 500 .8rem/1 var(--f-mono); padding: 4px 7px; border-radius: 6px; background: var(--ph-bg); color: var(--ph); margin: 2px 4px 2px 0; white-space: nowrap; }
+.search { display: grid; gap: 12px; }
+.search input[type="search"] { font-size: 1.05rem; padding: 12px 14px; }
+.res { display: grid; gap: 10px; }
+.err { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); min-width: 0; }
+.err > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; gap: 6px; }
+.err > summary::-webkit-details-marker { display: none; }
+.err > summary .top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.err > summary .m { font-weight: 600; }
+.err > summary .where { font-size: .82rem; color: var(--muted); }
+.err .body { padding: 0 14px 14px; display: grid; gap: 8px; font-size: .92rem; }
+.err .body ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.err .body p { color: var(--muted); }
+.err .body p b { color: var(--fg); font-weight: 600; }
+.badge { font: 600 .7rem/1 var(--f-body); letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
+.warnbox { padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn); font-size: .86rem; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.empty { color: var(--muted); font-size: .92rem; padding: 6px 0; }
+.tab-row { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
+.tab-row button { font: 600 .9rem/1 var(--f-body); padding: 10px 14px; border: 0; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab-row button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="hero">
+  <span class="kicker">IA na Prática · REN Jovens · Ideia da sala</span>
+  <h1>Copiloto <span class="acc">SAP</span> para pesquisa e solução de problemas</h1>
+  <div class="idea">
+    <span class="q" aria-hidden="true">“</span>
+    <blockquote>Otimização de pesquisa e resolução de problemas SAP.</blockquote>
+    <cite>Resposta do formulário de inscrição</cite>
+  </div>
+  <div class="verdict">
+    <div><span class="lab">Dá para fazer?</span><span class="val yes">Sim</span><span class="sub">E rende rápido: o SAP é muito documentado e as IAs conhecem bem</span></div>
+    <div><span class="lab">Primeiro protótipo</span><span class="val">45 minutos</span><span class="sub">Um consultor SAP configurado no Claude ou no ChatGPT</span></div>
+    <div><span class="lab">Base da equipe</span><span class="val">2 a 4 semanas</span><span class="sub">Estimativa, a partir do histórico de chamados</span></div>
+    <div><span class="lab">Precisa programar?</span><span class="val">Para começar, não</span><span class="sub">Para ABAP, bot e integração, sim, com Codex ou Claude Code</span></div>
+  </div>
+  <nav class="toc" aria-label="Nesta página">
+    <a href="#fazer">O que eu faria</a><a href="#prototipo">Protótipo</a><a href="#ias">Que IA faz o quê</a><a href="#oficina">Oficina de 45 min</a><a href="#aplicacao">Até a equipe</a><a href="#cuidados">Cuidados</a>
+  </nav>
+</header>
+
+<section class="block" id="fazer">
+  <div class="block-head">
+    <span class="kicker">O que eu faria</span>
+    <h2>Primeiro ensinar a perguntar, depois montar a base, por último ligar no SAP</h2>
+  </div>
+  <div class="split">
+    <p class="lede">São dois problemas diferentes. <b>Pesquisar</b> é achar a transação, a tabela ou o procedimento certo. <b>Resolver</b> é entender um erro e saber o que fazer. Nos dois casos, a IA acerta muito mais quando recebe o contexto completo: sistema, módulo, transação e a mensagem com classe e número.</p>
+    <p class="lede">O maior ganho costuma estar no histórico de chamados: ele já tem as perguntas e as respostas da empresa. A IA transforma isso numa base de conhecimento. Só depois vale um agente conectado ao SAP, e sempre em modo de leitura.</p>
+  </div>
+</section>
+
+<section class="block" id="prototipo">
+  <div class="block-head">
+    <span class="kicker">Protótipo ao vivo</span>
+    <h2>Busca de erros e transações, e o montador de pergunta</h2>
+    <p class="lede">Uma base de exemplo com erros comuns e as transações mais procuradas. Quando a base não resolve, o montador prepara uma pergunta completa para colar no ChatGPT ou no Claude.</p>
+  </div>
+
+  <div class="demo">
+    <div class="tab-row" role="tablist">
+      <button type="button" role="tab" id="t-busca" aria-selected="true" aria-controls="pn-busca">Buscar na base</button>
+      <button type="button" role="tab" id="t-perg" aria-selected="false" aria-controls="pn-perg">Montar pergunta para a IA</button>
+    </div>
+
+    <div id="pn-busca" role="tabpanel" aria-labelledby="t-busca" class="search">
+      <label class="f" for="q">Descreva o erro ou o que você quer fazer<input id="q" type="search" value="estoque insuficiente na MIGO" autocomplete="off"></label>
+      <div class="chips" id="exemplos"></div>
+      <div class="chips" id="mods" role="group" aria-label="Módulo"></div>
+      <div class="res" id="res-err"></div>
+      <div id="res-tc"></div>
+      <p class="note"><b>Base de exemplo</b> com erros comuns do SAP ECC e do S/4HANA. Texto e número das mensagens podem variar conforme a versão e o idioma de logon: confira no seu sistema. Na versão da empresa, essa base sai do histórico de chamados e dos manuais internos.</p>
+    </div>
+
+    <div id="pn-perg" role="tabpanel" aria-labelledby="t-perg" class="search" hidden>
+      <p class="note">Para ver a classe e o número de uma mensagem, clique na mensagem da barra de status. Na janela de ajuda, o botão de informações técnicas mostra algo como <b>M7 021</b>.</p>
+      <div class="grid-f">
+        <label class="f" for="f-sis">Sistema<select id="f-sis"><option>SAP ECC</option><option selected>S/4HANA (on-premise)</option><option>S/4HANA Cloud</option><option>Não sei</option></select></label>
+        <label class="f" for="f-mod">Módulo<select id="f-mod"><option selected>MM (materiais e compras)</option><option>SD (vendas e faturamento)</option><option>FI (financeiro)</option><option>CO (custos)</option><option>PP (produção)</option><option>PM (manutenção)</option><option>Técnico (Basis, autorização, integração)</option></select></label>
+        <label class="f" for="f-tx">Transação<input id="f-tx" type="text" value="MIGO"></label>
+        <label class="f" for="f-id">Classe e número da mensagem<input id="f-id" type="text" value="M7 021"></label>
+      </div>
+      <label class="f" for="f-msg">Mensagem completa, como aparece na tela<input id="f-msg" type="text" value="Deficit of SL Unrestricted-use 12 UN : 100234 1010 0001"></label>
+      <div class="split">
+        <label class="f" for="f-fazia">O que eu estava fazendo<textarea id="f-fazia" rows="4">Saída de mercadoria para centro de custo (movimento 201) de 12 unidades do material 100234, centro 1010, depósito 0001. A nota do fornecedor CNPJ 12.345.678/0001-90 chegou ontem.</textarea></label>
+        <label class="f" for="f-tentei">O que eu já tentei<textarea id="f-tentei" rows="4">Conferi na MMBE e aparecem 15 unidades no centro, mas não sei em qual depósito.</textarea></label>
+      </div>
+      <div class="warnbox" id="sens" hidden></div>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Pergunta pronta</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p-perg">Copiar</button></span></div><pre id="p-perg"></pre></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="ias">
+  <div class="block-head">
+    <span class="kicker">Que IA faz o quê</span>
+    <h2>Cada ferramenta resolve uma parte</h2>
+  </div>
+  <div class="tools-grid">
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span></span><p><b>Explicam erros e sugerem passos.</b> Traduzem mensagem técnica e dump para a linguagem do negócio. Um projeto com instruções fixas vira o “consultor SAP” da equipe.</p></div>
+    <div><span class="who"><span class="tool">NotebookLM</span></span><p><b>Base de manuais e procedimentos.</b> Suba POPs, treinamentos e manuais internos. Ele responde “como fazemos isso aqui” citando o documento e a página.</p></div>
+    <div><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><span class="tool">planilha</span></span><p><b>Histórico de chamados vira FAQ.</b> Anexe a exportação dos chamados e peça os problemas que mais se repetem, com causa e solução.</p></div>
+    <div><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span><p><b>Código.</b> Relatórios ABAP, CDS views, consultas, scripts que leem dados por OData ou RFC e o bot de suporte.</p></div>
+    <div><span class="who"><span class="tool">Joule (SAP)</span></span><p><b>O copiloto da própria SAP.</b> Funciona dentro de algumas soluções, como o S/4HANA Cloud. Depende da versão e da licença da empresa.</p></div>
+    <div><span class="who"><span class="tool">Pesquisa na web</span></span><p><b>Notas e KBAs.</b> A IA com busca ajuda a achar a nota SAP certa. A nota em si se confere no portal da SAP, com o usuário da empresa.</p></div>
+  </div>
+</section>
+
+<section class="block" id="oficina">
+  <div class="block-head">
+    <span class="kicker">Oficina · Trilha 1 · Estudar, aplicada ao SAP</span>
+    <h2>Atividade de 45 minutos</h2>
+    <p class="lede">Traga 3 problemas reais do seu dia. Não precisa de acesso ao SAP durante a oficina.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="t">10h45<small>10 min</small></div><div class="c">
+      <h3>Liste 3 problemas reais</h3>
+      <p>Os erros que mais aparecem ou as buscas que mais tomam seu tempo. <b>Tire nomes, CPF, CNPJ e valores</b> antes de usar em qualquer IA.</p>
+    </div></div>
+    <div class="step"><div class="t">10h55<small>10 min</small></div><div class="c">
+      <h3>Crie o seu consultor SAP</h3>
+      <p>Um projeto no Claude ou no ChatGPT (ou um GPT personalizado) com as instruções abaixo. Se tiver manual interno liberado, suba no projeto ou num caderno do NotebookLM.</p>
+      <div class="prompt"><div class="prompt-head"><span class="lbl">Instruções do projeto</span><span class="who"><span class="tool">Claude</span><span class="tool">ChatGPT</span><button class="btn sm" type="button" data-copy="p1">Copiar</button></span></div>
+<pre id="p1">Você é um consultor SAP sênior em <span class="ph">[MM, SD e FI/CO]</span>, no <span class="ph">[S/4HANA]</span>. Você atende usuários de negócio da <span class="ph">[empresa]</span>, que não são técnicos.
+
+Regras:
+1. Se faltar, pergunte antes de responder: transação, mensagem completa (classe e número) e o que o usuário estava fazendo.
+2. Responda em passos numerados, com o código da transação entre parênteses.
+3. Separe o que o usuário pode fazer sozinho do que depende de Basis, segurança, controladoria ou consultoria.
+4. Nunca sugira mudar configuração, abrir período ou apagar bloqueio em produção sem aprovação.
+5. Quando a resposta vier dos documentos do projeto, cite o documento. Quando for conhecimento geral, avise que precisa ser confirmado no sistema.
+6. Se não tiver certeza de uma transação ou de uma nota SAP, diga isso em vez de inventar.</pre></div>
+    </div></div>
+    <div class="step"><div class="t">11h05<small>15 min</small></div><div class="c">
+      <h3>Teste com perguntas completas</h3>
+      <p>Use o montador desta página para os 3 problemas. Anote para cada um: <b>acertou, errou ou inventou</b> alguma transação? Ajuste as instruções e teste de novo.</p>
+    </div></div>
+    <div class="step"><div class="t">11h20<small>10 min</small></div><div class="c">
+      <h3>Transforme em FAQ</h3>
+      <p>Peça: <b>“Transforme as 3 soluções numa página de FAQ para a equipe: sintoma, causa, passos e quem chamar.”</b> No Claude, peça como artefato e já tem um link para mostrar.</p>
+    </div></div>
+  </div>
+  <div class="deliver"><b>Entrega às 11h30</b><span>um consultor SAP configurado e uma FAQ com 3 problemas reais resolvidos ou bem encaminhados.</span></div>
+
+  <div class="split" style="margin-top:8px">
+    <div class="prompt"><div class="prompt-head"><span class="lbl">Depois · chamados viram FAQ</span><span class="who"><span class="tool">ChatGPT</span><span class="tool">Claude</span><button class="btn sm" type="button" data-copy="p2">Copiar</button></span></div>
+<pre id="p2">Anexei <span class="ph">[500]</span> chamados de suporte SAP dos últimos <span class="ph">[6 meses]</span>, sem nomes de pessoas. Colunas: data, módulo, descrição do problema, solução aplicada.
+
+1. Agrupe em no máximo 15 problemas recorrentes e mostre quantos chamados cada um teve.
+2. Para cada problema: o sintoma como o usuário descreve, a causa mais comum, os passos de solução e quem resolve.
+3. Diga quais 3 problemas poderiam ser evitados com treinamento ou ajuste de processo.
+
+Entregue primeiro como tabela e depois como FAQ em linguagem simples.</pre></div>
+    <div class="prompt"><div class="prompt-head"><span class="lbl">Para quem programa · ABAP</span><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><button class="btn sm" type="button" data-copy="p3">Copiar</button></span></div>
+<pre id="p3">Escreva um relatório ABAP com ALV que liste itens de pedido de compra com entrada de mercadorias lançada e sem fatura há mais de <span class="ph">[30]</span> dias.
+
+- Tabelas: EKKO, EKPO e o histórico do pedido em EKBE (entrada: VGABE 1; fatura: VGABE 2).
+- Filtros: empresa, centro, fornecedor e data da entrada.
+- Colunas: pedido, item, fornecedor, material, quantidade recebida, quantidade faturada, valor pendente e dias desde a entrada.
+
+Siga o padrão da empresa: <span class="ph">[pacote e prefixo Z]</span>. Explique cada SELECT e diga se precisa de índice.</pre></div>
+  </div>
+</section>
+
+<section class="block" id="aplicacao">
+  <div class="block-head">
+    <span class="kicker">Do protótipo à equipe</span>
+    <h2>Quatro etapas, da pergunta ao agente</h2>
+    <p class="lede">Prazos estimados. As duas primeiras etapas não precisam de TI nem de acesso ao sistema.</p>
+  </div>
+  <div class="phases">
+    <div class="phase"><span class="when">Semana 1</span><h3>Pergunta padrão</h3><p>Todo mundo pergunta do mesmo jeito: sistema, módulo, transação, mensagem e o que já tentou. O consultor pessoal da oficina já resolve boa parte.</p><span class="who"><span class="tool">Claude</span><span class="tool">ChatGPT</span></span></div>
+    <div class="phase"><span class="when">Semanas 2 a 4</span><h3>Base da equipe</h3><p>Histórico de chamados vira FAQ; manuais e POPs vão para um caderno ou projeto compartilhado, no plano corporativo da empresa.</p><span class="who"><span class="tool">NotebookLM</span><span class="tool">Claude</span><span class="tool">ChatGPT</span></span></div>
+    <div class="phase"><span class="when">Meses 2 e 3</span><h3>Agente no suporte</h3><p>No Teams ou no portal de chamados: responde com base na FAQ e, quando não sabe, abre o chamado já com tudo preenchido.</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span></span></div>
+    <div class="phase"><span class="when">Depois</span><h3>Ligado ao SAP</h3><p>Consulta status de pedido, estoque e IDoc por OData ou RFC, só leitura, com aprovação da TI. Ou o Joule, se a empresa tiver a licença.</p><span class="who"><span class="tool">Codex</span><span class="tool">Claude Code</span><span class="tool">Joule</span></span></div>
+  </div>
+</section>
+
+<section class="block" id="cuidados">
+  <div class="block-head">
+    <span class="kicker">Cuidados</span>
+    <h2>O que costuma dar errado</h2>
+  </div>
+  <ul class="cares">
+    <li><b>Dados sensíveis.</b> CPF, CNPJ, valores e nomes de clientes e fornecedores ficam fora de IA em conta pessoal. Use o plano corporativo ou anonimize, como o montador acima sugere.</li>
+    <li><b>A IA inventa transação e nota.</b> Confira no sistema antes de seguir o passo a passo. A regra 6 das instruções ajuda, mas não elimina o risco.</li>
+    <li><b>Produção não é laboratório.</b> Mudança de configuração, abertura de período e exclusão de bloqueio seguem o processo de mudança da empresa.</li>
+    <li><b>Diga a versão.</b> ECC e S/4HANA têm diferenças: no S/4HANA, cliente e fornecedor se cadastram pela BP, por exemplo.</li>
+    <li><b>Prints com dados.</b> Recorte ou borre antes de anexar uma tela do SAP.</li>
+    <li><b>Quem lança responde.</b> A IA sugere; a pessoa que lança no SAP continua responsável pelo lançamento.</li>
+  </ul>
+</section>
+
+<footer class="foot"><span>Oficina IA na Prática · REN Jovens · Brasília, 28/11/2026</span><span>Base de exemplo, para estudo</span></footer>
+</div>
+
+<script>
+/* utilidades comuns às quatro páginas */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const nf = (v, d = 0) => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const brl = v => "R$ " + nf(v, 0);
+const brlk = v => Math.abs(v) >= 1e6 ? "R$ " + nf(v / 1e6, 1) + " mi" : Math.abs(v) >= 1e3 ? "R$ " + nf(v / 1e3, v >= 1e5 ? 0 : 1) + " mil" : "R$ " + nf(v, 0);
+const pct = (v, d = 0) => nf(v * 100, d) + "%";
+
+/* copiar: o texto do elemento indicado em data-copy */
+function flash(btn, msg) {
+  const old = btn.dataset.label || btn.textContent;
+  btn.dataset.label = old;
+  btn.textContent = msg;
+  clearTimeout(btn._t);
+  btn._t = setTimeout(() => { btn.textContent = old; }, 1800);
+}
+function selectEl(el) {
+  if (el.select) { el.focus(); el.select(); return; }
+  const r = document.createRange(); r.selectNodeContents(el);
+  const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  const el = document.getElementById(btn.dataset.copy);
+  if (!el) return;
+  const text = "value" in el && el.tagName !== "PRE" ? el.value : el.innerText;
+  try {
+    navigator.clipboard.writeText(text).then(() => flash(btn, "Copiado"), () => { selectEl(el); flash(btn, "Use Ctrl+C"); });
+  } catch (_) { selectEl(el); flash(btn, "Use Ctrl+C"); }
+});
+
+/* dica flutuante dos gráficos */
+const tip = (() => { const d = document.createElement("div"); d.className = "tip"; d.hidden = true; document.body.appendChild(d); return d; })();
+function showTip(e, html) {
+  tip.innerHTML = html; tip.hidden = false;
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  if (x + w > innerWidth - 8) x = e.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = e.clientY - h - pad;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+function bindTips(el, rows, html) {
+  const on = e => { const h = e.target.closest(".hit"); if (!h) return hideTip(); showTip(e, html(rows[+h.dataset.i])); };
+  el.onpointermove = on; el.onpointerdown = on; el.onpointerleave = hideTip;
+}
+
+function niceStep(max, n = 4) {
+  const raw = max / n, p = Math.pow(10, Math.floor(Math.log10(raw || 1))), f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+const roundRight = (x, y, w, h, r) => { r = Math.min(r, w, h / 2); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; };
+const roundTop = (x, y, w, h, r) => { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+
+/* barras horizontais: rows = [{label, value, ref?, tip?}] */
+function hbar(el, rows, o = {}) {
+  const fmt = o.fmt || (v => nf(v));
+  const draw = () => {
+    const W = Math.max(280, el.clientWidth || 600);
+    const rowH = 34, barH = 18, top = o.refLabel ? 24 : 6, bottom = 4;
+    const labW = Math.min(o.labW || 170, Math.round(W * 0.36));
+    const valW = o.valW || 72, x0 = labW + 10, x1 = W - valW;
+    const max = o.max || Math.max(1, ...rows.map(r => Math.max(r.value, r.ref || 0)), o.ref || 0);
+    const sx = v => x0 + (x1 - x0) * Math.max(0, v) / max;
+    const H = top + rows.length * rowH + bottom;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(o.aria || "")}">`;
+    rows.forEach((r, i) => {
+      const y = top + i * rowH + (rowH - barH) / 2, w = sx(r.value) - x0;
+      const lab = r.label.length > 24 ? r.label.slice(0, 23) + "…" : r.label;
+      s += `<text x="${labW}" y="${y + barH / 2}" text-anchor="end" dominant-baseline="central" font-size="12.5" fill="var(--fg)">${esc(lab)}</text>`;
+      if (w > 0.5) s += `<path d="${roundRight(x0, y, w, barH, 4)}" fill="${r.color || "var(--chart)"}"/>`;
+      if (r.ref != null) { const xr = sx(r.ref); s += `<line x1="${xr}" x2="${xr}" y1="${y - 4}" y2="${y + barH + 4}" stroke="var(--fg)" stroke-width="2" stroke-linecap="round"/>`; }
+      const xv = Math.max(sx(r.value), r.ref != null ? sx(r.ref) : 0) + 8;
+      s += `<text x="${xv}" y="${y + barH / 2}" dominant-baseline="central" font-size="12" fill="var(--muted)" style="font-variant-numeric:tabular-nums">${esc(r.valueLabel || fmt(r.value))}</text>`;
+    });
+    s += `<line x1="${x0}" x2="${x0}" y1="${top - 2}" y2="${H - bottom}" stroke="var(--line)" stroke-width="1"/>`;
+    if (o.ref != null) {
+      const x = sx(o.ref);
+      s += `<line x1="${x}" x2="${x}" y1="${top - 4}" y2="${H - bottom}" stroke="var(--muted)" stroke-width="1"/>`;
+      s += `<text x="${Math.min(x, W - 40)}" y="${top - 12}" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(o.refLabel || "")}</text>`;
+    }
+    rows.forEach((r, i) => { s += `<rect class="hit" data-i="${i}" x="0" y="${top + i * rowH}" width="${W}" height="${rowH}" fill="transparent"/>`; });
+    el.innerHTML = s + "</svg>";
+    bindTips(el, rows, r => r.tip || `<b>${esc(r.label)}</b><br>${esc(fmt(r.value))}`);
+  };
+  draw();
+  if (!el._ro) { let lw = el.clientWidth; el._ro = new ResizeObserver(() => { if (Math.abs(el.clientWidth - lw) > 4) { lw = el.clientWidth; el._draw(); } }); el._ro.observe(el); }
+  el._draw = draw;
+}
+
+/* colunas verticais: rows = [{label, value, tip?}] */
+function vbar(el, rows, o = {}) {
+  const fmt = o.fmt || (v => nf(v)), tick = o.tick || fmt;
+  const draw = () => {
+    const W = Math.max(280, el.clientWidth || 600), H = o.height || 230;
+    const padL = o.padL || 58, padR = 10, padT = 22, padB = 26;
+    const maxV = Math.max(1, ...rows.map(r => r.value)), step = niceStep(maxV, 5), max = Math.ceil(maxV / step) * step;
+    const sy = v => padT + (H - padT - padB) * (1 - v / max);
+    const band = (W - padL - padR) / rows.length, bw = Math.min(o.barW || 24, band * 0.6);
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(o.aria || "")}">`;
+    for (let v = 0; v <= max + 1e-9; v += step) {
+      const y = sy(v);
+      s += `<line x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}" stroke="${v === 0 ? "var(--line)" : "var(--grid)"}" stroke-width="1"/>`;
+      s += `<text x="${padL - 8}" y="${y}" text-anchor="end" dominant-baseline="central" font-size="11" fill="var(--muted)">${esc(tick(v))}</text>`;
+    }
+    const labelIdx = o.labelIdx || [rows.length - 1];
+    rows.forEach((r, i) => {
+      const cx = padL + band * i + band / 2, y = sy(r.value), h = sy(0) - y;
+      if (h > 0.5) s += `<path d="${roundTop(cx - bw / 2, y, bw, h, 4)}" fill="${r.color || "var(--chart)"}"/>`;
+      s += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>`;
+      if (labelIdx.includes(i)) s += `<text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--fg)">${esc(fmt(r.value))}</text>`;
+      s += `<rect class="hit" data-i="${i}" x="${padL + band * i}" y="${padT}" width="${band}" height="${H - padT - padB}" fill="transparent"/>`;
+    });
+    el.innerHTML = s + "</svg>";
+    bindTips(el, rows, r => r.tip || `<b>${esc(r.label)}</b><br>${esc(fmt(r.value))}`);
+  };
+  draw();
+  if (!el._ro) { let lw = el.clientWidth; el._ro = new ResizeObserver(() => { if (Math.abs(el.clientWidth - lw) > 4) { lw = el.clientWidth; el._draw(); } }); el._ro.observe(el); }
+  el._draw = draw;
+}
+
+/* lembrar pequenas preferências do visitante, sem depender disso */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (_) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { } }
+};
+
+
+const ERROS = [
+  { mod: "MM", msg: "Deficit of SL Unrestricted-use (saldo insuficiente em estoque de utilização livre)", id: "M7 021", onde: "MIGO e saída de mercadoria na remessa (VL02N)", kw: "estoque insuficiente saldo falta deficit migo saida baixa", causa: "Não há saldo livre no depósito ou lote informado. Comum quando a entrada ainda não foi lançada, quando o estoque está em qualidade ou bloqueado, ou quando está em outro depósito.", passos: ["Confira o saldo por depósito, lote e tipo de estoque (MMBE).", "Veja as últimas movimentações do material (MB51).", "Se o material está em outro depósito, peça a transferência (MIGO, movimento 311) a quem tem permissão.", "Se a mercadoria chegou e a entrada não foi lançada, a entrada vem primeiro."], equipe: "Almoxarifado ou key user de MM" },
+  { mod: "MM", msg: "Posting only possible in periods AAAA/MM and AAAA/MM (só é possível lançar nos períodos…)", id: "M7 053", onde: "MIGO, MIRO e outros lançamentos de material", kw: "periodo fechado mes fechado lancamento data competencia", causa: "O período de materiais está fechado para a empresa.", passos: ["Veja quais períodos estão abertos (MMRV).", "Não abra o período por conta própria: a abertura (MMPV) segue o calendário de fechamento da controladoria.", "Se o lançamento é do mês anterior, confirme com a controladoria se ainda dá tempo."], equipe: "Controladoria" },
+  { mod: "FI/CO", msg: "Account XXXX requires an assignment to a CO object (a conta exige objeto de custo)", id: "KI 235", onde: "MIRO, FB60 e saídas para consumo", kw: "centro de custo objeto co conta despesa atribuicao ordem", causa: "A conta de despesa exige centro de custo, ordem ou outro objeto de CO, e ele não foi informado na linha.", passos: ["Informe o centro de custo ou a ordem na linha do lançamento.", "Se sempre falta na mesma conta, peça à consultoria de CO para avaliar uma atribuição padrão (OKB9)."], equipe: "Controladoria" },
+  { mod: "Técnico", msg: "You are not authorized… (sem autorização para a transação ou objeto)", id: "Autorização", onde: "Qualquer transação", kw: "sem autorizacao acesso permissao perfil negado", causa: "O seu perfil não tem a autorização para aquela transação, empresa, centro ou tipo de documento.", passos: ["Logo depois do erro, rode a SU53 e tire um print da tela.", "Abra chamado para a equipe de segurança com o print e a tarefa que você precisa fazer.", "Não use o acesso de um colega."], equipe: "Segurança ou Basis" },
+  { mod: "Técnico", msg: "Erro de execução ABAP (tela de dump)", id: "Dump", onde: "Qualquer transação ou relatório", kw: "dump erro de execucao runtime error programa parou tela de erro", causa: "Um programa parou com erro. Pode ser um dado inesperado, um programa customizado com defeito ou falta de memória.", passos: ["Abra a ST22 e ache o dump pelo horário e pelo usuário.", "Anote a categoria do erro, o programa e a seção que explica o que aconteceu.", "Mande para o time de desenvolvimento ou sustentação. A IA ajuda a entender o texto do dump, sem dados sensíveis."], equipe: "Desenvolvimento ABAP ou sustentação" },
+  { mod: "Técnico", msg: "Registro bloqueado por outro usuário (… is locked by user …)", id: "Bloqueio", onde: "Alteração de pedido, material ou ordem", kw: "bloqueado bloqueio outro usuario travado processado por", causa: "Outra pessoa está com o mesmo documento ou cadastro aberto em modo de alteração.", passos: ["Veja quem está com o bloqueio (SM12).", "Peça para a pessoa sair da transação.", "Bloqueio esquecido só deve ser apagado pela equipe Basis."], equipe: "Basis" },
+  { mod: "Técnico", msg: "IDoc com status 51 (documento da aplicação não lançado)", id: "IDoc 51", onde: "Integrações: EDI, pedidos e notas vindos de outro sistema", kw: "idoc integracao edi status 51 interface nao integrou", causa: "O IDoc chegou, mas o SAP não conseguiu criar o documento. Quase sempre é cadastro faltando ou dado inválido.", passos: ["Abra o IDoc (WE02) e leia a mensagem de status.", "Corrija o cadastro ou o dado indicado.", "Reprocesse o IDoc (BD87)."], equipe: "Key user do processo ou equipe de integração" },
+  { mod: "Técnico", msg: "Job em background cancelado", id: "Job", onde: "Relatórios e rotinas agendadas", kw: "job background agendado cancelado rotina noturna nao rodou", causa: "Erro no programa, variante com parâmetro inválido ou usuário do job sem autorização.", passos: ["Ache o job (SM37) e abra o log.", "Confira a variante e o usuário do job.", "Se o log apontar dump, siga para a ST22."], equipe: "Basis ou sustentação" },
+  { mod: "MM", msg: "Saldo da fatura diferente de zero na MIRO", id: "MIRO", onde: "MIRO", kw: "miro fatura saldo diferente nota fiscal fornecedor nao bate", causa: "A fatura não bate com o pedido ou com a entrada: quantidade, preço, imposto ou frete.", passos: ["Compare pedido, entrada e nota fiscal (histórico do pedido na ME23N).", "Confira o código de imposto e os valores de frete ou custos adicionais.", "Se a entrada ainda não foi lançada, ela vem primeiro (MIGO)."], equipe: "Fiscal ou contas a pagar" },
+  { mod: "SD", msg: "Condição de preço obrigatória ausente (ex.: PR00 ou PPR0)", id: "Preço", onde: "VA01 e VA02", kw: "preco condicao pr00 ppr0 ordem de venda sem preco pricing", causa: "Não existe registro de preço válido para aquele cliente, material e data.", passos: ["Consulte os registros de condição do material para a data (VK13).", "Se não houver, peça a criação (VK11) a quem cuida de preços.", "Depois, refaça a determinação de preço na ordem."], equipe: "Comercial ou preços" },
+  { mod: "SD", msg: "Fatura não foi para a contabilidade (erro na determinação de conta)", id: "Contabilização", onde: "VF01, VF02 e VFX3", kw: "fatura faturamento contabilidade determinacao de conta nao contabilizou bloqueada", causa: "Falta a regra que define em qual conta contábil a venda entra, ou o grupo de classificação contábil do cliente ou do material está vazio.", passos: ["Liste as faturas bloqueadas para a contabilidade (VFX3) e leia a mensagem.", "Confira o grupo de classificação contábil no cadastro do cliente e do material.", "Se o cadastro estiver certo, a regra (VKOA) é com a consultoria de SD e FI."], equipe: "Consultoria SD e FI" },
+  { mod: "MM", msg: "Material não cadastrado para o centro", id: "Cadastro", onde: "ME21N, MIGO e VA01", kw: "material nao cadastrado centro ampliar visao organizacao", causa: "O material existe, mas não foi ampliado para o centro, depósito ou organização de vendas usados.", passos: ["Confira as visões do material para o centro (MM03).", "Peça a ampliação ao time de cadastro (a MM50 lista o que pode ser ampliado)."], equipe: "Cadastro de materiais" }
+];
+
+const TCODES = [
+  ["MM", "Ver estoque por centro, depósito e lote", ["MMBE", "MB52"], "estoque saldo quantidade deposito lote"],
+  ["MM", "Histórico de movimentações de um material", ["MB51"], "historico movimento movimentacao entrada saida"],
+  ["MM", "Lançar entrada, saída ou transferência de mercadoria", ["MIGO"], "entrada saida transferencia mercadoria recebimento baixa"],
+  ["MM", "Criar, alterar ou exibir pedido de compra", ["ME21N", "ME22N", "ME23N"], "pedido de compra criar alterar exibir"],
+  ["MM", "Listar pedidos por fornecedor, material ou comprador", ["ME2L", "ME2M", "ME2N"], "listar pedidos fornecedor material lista relatorio compras"],
+  ["MM", "Requisições de compra", ["ME51N", "ME5A"], "requisicao solicitacao compra"],
+  ["MM", "Lançar fatura de fornecedor", ["MIRO"], "fatura nota fiscal fornecedor lancar"],
+  ["MM", "Ver cadastro de material", ["MM03"], "cadastro material visao dados mestre"],
+  ["SD", "Criar, alterar ou exibir ordem de venda", ["VA01", "VA02", "VA03"], "ordem de venda pedido de venda cliente"],
+  ["SD", "Lista de ordens de venda", ["VA05"], "lista ordens de venda relatorio"],
+  ["SD", "Remessa (entrega)", ["VL01N", "VL02N", "VL03N"], "remessa entrega expedicao picking"],
+  ["SD", "Faturamento", ["VF01", "VF02", "VF03"], "fatura faturamento nota de venda"],
+  ["SD", "Consultar ou criar preço (registro de condição)", ["VK13", "VK11"], "preco condicao tabela de preco"],
+  ["FI/CO", "Exibir documento contábil", ["FB03"], "documento contabil lancamento exibir"],
+  ["FI/CO", "Partidas de fornecedor, cliente e razão", ["FBL1N", "FBL5N", "FBL3N"], "partidas em aberto fornecedor cliente razao conta pagar receber"],
+  ["FI/CO", "Abrir e fechar períodos contábeis", ["OB52"], "periodo contabil abrir fechar"],
+  ["FI/CO", "Centro de custo: real × plano", ["S_ALR_87013611"], "centro de custo real plano orcamento despesas relatorio"],
+  ["FI/CO", "Cadastro de cliente e fornecedor no S/4HANA", ["BP"], "business partner cadastro cliente fornecedor"],
+  ["Técnico", "Jobs em background", ["SM37"], "job background agendado"],
+  ["Técnico", "Analisar dump", ["ST22"], "dump erro programa"],
+  ["Técnico", "Ver bloqueios de registro", ["SM12"], "bloqueio travado"],
+  ["Técnico", "Última verificação de autorização que falhou", ["SU53"], "autorizacao acesso permissao"],
+  ["Técnico", "Impressões e spool", ["SP01"], "impressao spool imprimir"],
+  ["Técnico", "Ver e reprocessar IDocs", ["WE02", "BD87"], "idoc integracao reprocessar"],
+  ["Técnico", "Consultar uma tabela e ver sua estrutura", ["SE16N", "SE11"], "tabela consulta campo dados"],
+  ["Técnico", "Procurar uma transação pelo nome no menu", ["SEARCH_SAP_MENU"], "procurar transacao menu achar codigo"]
+];
+
+const EXEMPLOS = ["estoque insuficiente na MIGO", "período fechado", "sem autorização", "fatura não contabilizou", "pedidos de um fornecedor", "IDoc com erro"];
+const MODS = ["Todos", "MM", "SD", "FI/CO", "Técnico"];
+let modSel = "Todos";
+
+const STOP = new Set("a o e de da do das dos na no nas nos em um uma para por com que nao sem ao as os eu meu minha ver".split(" "));
+const toks = s => norm(s).split(/[^a-z0-9_/]+/).filter(t => t.length > 1 && !STOP.has(t));
+function score(qt, hay) {
+  const h = norm(hay); let s = 0;
+  qt.forEach(t => { if (h.includes(t)) s += t.length > 3 ? 2 : 1; else if (t.length > 4 && h.includes(t.slice(0, -1))) s += 1; });
+  return s;
+}
+
+function renderBusca() {
+  const qt = toks($("#q").value);
+  const ok = m => modSel === "Todos" || m === modSel;
+  let errs = ERROS.filter(e => ok(e.mod)).map(e => ({ e, s: qt.length ? score(qt, [e.msg, e.id, e.onde, e.kw, e.causa].join(" ")) : 1 })).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+  let tcs = TCODES.filter(t => ok(t[0])).map(t => ({ t, s: qt.length ? score(qt, t[1] + " " + t[2].join(" ") + " " + t[3]) : 1 })).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+  if (qt.length) { errs = errs.slice(0, 4); tcs = tcs.slice(0, 6); }
+  const tc = s => s.replace(/\(([A-Z0-9_]{2,})(, movimento \d+)?\)/g, (m, c, mv) => `<span class="tcode">${c}</span>${mv ? esc(mv) : ""}`);
+  $("#res-err").innerHTML = errs.length
+    ? `<div class="chart-title">Erros parecidos</div>` + errs.map(({ e }, i) => `<details class="err"${i === 0 && qt.length ? " open" : ""}><summary><span class="top"><span class="badge">${esc(e.mod)}</span><span class="badge">${esc(e.id)}</span></span><span class="m">${esc(e.msg)}</span><span class="where">Onde aparece: ${esc(e.onde)}</span></summary><div class="body"><p><b>Causa provável.</b> ${esc(e.causa)}</p><ol>${e.passos.map(p => `<li>${tc(esc(p))}</li>`).join("")}</ol><p><b>Quem resolve, se não der:</b> ${esc(e.equipe)}</p></div></details>`).join("")
+    : `<p class="empty">Nenhum erro da base parece com isso. Use a aba <b>Montar pergunta para a IA</b>.</p>`;
+  $("#res-tc").innerHTML = tcs.length
+    ? `<div class="chart-title" style="margin-bottom:6px">Transações relacionadas</div><div class="scroll"><table class="tbl"><thead><tr><th>O que fazer</th><th>Transação</th><th>Módulo</th></tr></thead><tbody>${tcs.map(({ t }) => `<tr><td class="wrap-cell">${esc(t[1])}</td><td>${t[2].map(c => `<span class="tcode">${esc(c)}</span>`).join("")}</td><td>${esc(t[0])}</td></tr>`).join("")}</tbody></table></div>`
+    : "";
+}
+
+$("#exemplos").innerHTML = EXEMPLOS.map(x => `<button type="button" class="chip" data-q="${esc(x)}">${esc(x)}</button>`).join("");
+$("#exemplos").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; $("#q").value = b.dataset.q; renderBusca(); };
+$("#mods").innerHTML = MODS.map(m => `<button type="button" class="chip" data-m="${m}" aria-pressed="${m === modSel}">${m}</button>`).join("");
+$("#mods").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; modSel = b.dataset.m; $$(".chip", $("#mods")).forEach(c => c.setAttribute("aria-pressed", String(c === b))); renderBusca(); };
+$("#q").addEventListener("input", renderBusca);
+
+/* montador de pergunta */
+const SENS = [
+  [/\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g, "[CNPJ]", "CNPJ"],
+  [/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, "[CPF]", "CPF"],
+  [/[\w.+-]+@[\w-]+\.[\w.]+/g, "[E-MAIL]", "e-mail"],
+  [/R\$\s?[\d.,]+/g, "[VALOR]", "valor em reais"]
+];
+const CAMPOS = ["#f-tx", "#f-id", "#f-msg", "#f-fazia", "#f-tentei"];
+function achados() {
+  const txt = CAMPOS.map(s => $(s).value).join("\n"), f = [];
+  SENS.forEach(([re, , nome]) => { const n = (txt.match(re) || []).length; if (n) f.push(`${n} ${nome}`); });
+  return f;
+}
+function renderPerg() {
+  const v = s => $(s).value.trim();
+  const f = achados(), box = $("#sens");
+  box.hidden = !f.length;
+  if (f.length) box.innerHTML = `<span>Encontrei dado sensível nos campos: ${esc(f.join(", "))}. Troque antes de colar numa IA fora da conta da empresa.</span><button class="btn sm" type="button" id="anon">Anonimizar</button>`;
+  $("#p-perg").textContent = `Contexto: ${v("#f-sis")}, módulo ${v("#f-mod")}.
+Transação: ${v("#f-tx") || "(não informada)"}.
+Mensagem: "${v("#f-msg") || "(sem mensagem)"}"${v("#f-id") ? ` (classe e número: ${v("#f-id")})` : ""}.
+
+O que eu estava fazendo: ${v("#f-fazia") || "(não informado)"}
+O que já tentei: ${v("#f-tentei") || "nada ainda"}
+
+Quero:
+1. A causa mais provável, em linguagem simples.
+2. O que verificar, em ordem, com o código de cada transação.
+3. O que eu consigo resolver sozinho e o que depende de outra equipe (Basis, segurança, controladoria ou consultoria).
+4. O que eu NÃO devo fazer em produção.
+Se faltar alguma informação, pergunte antes de responder. Se não tiver certeza de uma transação, diga.`;
+}
+document.addEventListener("click", e => {
+  if (e.target.id !== "anon") return;
+  CAMPOS.forEach(s => { let t = $(s).value; SENS.forEach(([re, rep]) => { t = t.replace(re, rep); }); $(s).value = t; });
+  renderPerg();
+});
+[...CAMPOS, "#f-sis", "#f-mod"].forEach(s => $(s).addEventListener("input", renderPerg));
+
+/* abas */
+function aba(id) {
+  ["busca", "perg"].forEach(k => { const on = k === id; $("#t-" + k).setAttribute("aria-selected", String(on)); $("#pn-" + k).hidden = !on; });
+  store.set("sap.aba", id);
+}
+$("#t-busca").onclick = () => aba("busca");
+$("#t-perg").onclick = () => aba("perg");
+
+renderBusca();
+renderPerg();
+aba(store.get("sap.aba", "busca"));
+</script>
+</body>
+</html>

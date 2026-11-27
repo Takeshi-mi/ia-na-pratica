@@ -1,0 +1,41 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s6-under { position: absolute; inset: 0; background: #12061f; }
+    #s6-bg { position: absolute; inset: 0; background: #ffffff; }
+    #s6-head { position: absolute; left: 120px; top: 270px; width: 820px; font-family: "Archivo Black"; font-size: 92px; line-height: 1.05; letter-spacing: -0.02em; color: #12061f; }
+    #s6-head .acc { color: #8800ff; }
+    .s6-tile { position: absolute; width: 240px; }
+    .s6-box { width: 240px; height: 240px; border-radius: 56px; background: #f1e8ff; display: flex; align-items: center; justify-content: center; }
+    .s6-box img { width: 128px; height: 128px; }
+    .s6-name { margin-top: 12px; text-align: center; font-family: "Inter"; font-weight: 700; font-size: 40px; color: #12061f; }
+    #s6-t1 { left: 270px; top: 520px; }
+    #s6-t2 { left: 570px; top: 520px; }
+    #s6-t3 { left: 270px; top: 860px; }
+    #s6-t4 { left: 570px; top: 860px; }
+    #s6-foot { position: absolute; left: 120px; top: 1190px; width: 820px; font-family: "Inter"; font-weight: 700; font-size: 46px; color: #8800ff; }
+    #s6-foot .w { display: inline-block; }
+  </style>
+  <div id="root" data-composition-id="s6" data-width="1080" data-height="1920">
+    <div id="s6-stage" class="clip" data-start="0" data-duration="3.93">
+      <div id="s6-under"></div>
+      <div id="s6-bg"></div>
+      <h2 id="s6-head">Antes, crie<br />sua <span class="acc">conta:</span></h2>
+      <div class="s6-tile" id="s6-t1"><div class="s6-box"><img src="assets/logos/chatgpt.svg" alt="ChatGPT" /></div><p class="s6-name">ChatGPT</p></div>
+      <div class="s6-tile" id="s6-t2"><div class="s6-box"><img src="assets/logos/claude.svg" alt="Claude" /></div><p class="s6-name">Claude</p></div>
+      <div class="s6-tile" id="s6-t3"><div class="s6-box"><img src="assets/logos/gemini.svg" alt="Gemini" /></div><p class="s6-name">Gemini</p></div>
+      <div class="s6-tile" id="s6-t4"><div class="s6-box"><img src="assets/logos/notebooklm.svg" alt="NotebookLM" /></div><p class="s6-name">NotebookLM</p></div>
+      <p id="s6-foot"><span class="w">e</span> <span class="w">responda</span> <span class="w">o</span> <span class="w">desafio</span> <span class="w">no</span> <span class="w">grupo.</span></p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s6-bg", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(120% at 50% 45%)", duration: 0.287, ease: "power3.out" }, 0.0);
+    tl.fromTo("#s6-head", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.164, ease: "power4.out" }, 0.164);
+    ["#s6-t1", "#s6-t2", "#s6-t3", "#s6-t4"].forEach((id, i) => {
+      tl.fromTo(id, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.328, ease: "back.out(1.6)" }, 0.467 + i * 0.491);
+    });
+    tl.fromTo("#s6-foot .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.123, ease: "power4.out", stagger: 0.07 }, 2.0);
+    window.__timelines["s6"] = tl;
+  </script>
+</template>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Dicionário de bolso da IA · IA na Prática</title>
+<link rel="stylesheet" href="fontes/fontes.css" />
+<style>
+  :root { --roxo:#8800FF; --roxo-t:#6B00D6; --tinta:#14091F; --texto:#2B2438; --suave:#6D6780; --lav:#F2EAFF; --lav2:#E4D3FF; --cinza:#8C8697; }
+  @page { size: 4in 7.1111in; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body { font-family: Inter, Arial, sans-serif; color: var(--texto); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pg { width: 4in; height: 7.1111in; position: relative; overflow: hidden; padding: 30px 28px 0; background: #fff; page-break-after: always; break-after: page; }
+  .pg:last-child { page-break-after: auto; break-after: auto; }
+  .kick { font: 700 9.5px Inter, Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--roxo-t); display: flex; align-items: center; gap: 6px; }
+  .kick::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--roxo); }
+  h2 { font: 400 25px/1.06 "Archivo Black", "Arial Black", sans-serif; letter-spacing: -.01em; color: var(--tinta); margin-top: 7px; }
+  .lead { font-size: 12.5px; line-height: 1.4; color: var(--suave); margin-top: 6px; }
+  .t { margin-top: 14px; }
+  .t h3 { font: 700 16.5px Inter, Arial, sans-serif; color: var(--tinta); display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+  .t p { font-size: 13.5px; line-height: 1.42; margin-top: 3px; }
+  .app { font: 500 11.5px/1.35 Inter, Arial, sans-serif; color: var(--suave); margin-top: 4px; }
+  .app b { color: var(--roxo-t); font-weight: 700; }
+  .ex { font-size: 12px; line-height: 1.4; color: #3F1A73; background: var(--lav); border-radius: 8px; padding: 6px 9px; margin-top: 6px; }
+  .ex b { color: var(--roxo-t); }
+  .ex.brief p { font-size: 12px; line-height: 1.38; margin: 0; }
+  .ex.brief p + p { margin-top: 3px; }
+  .rod { position: absolute; left: 28px; right: 28px; bottom: 15px; display: flex; justify-content: space-between; font: 600 8.5px Inter, Arial, sans-serif; color: #A39DB0; letter-spacing: .04em; }
+  .ic { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; flex: none; }
+  .ic img { width: 56%; height: 56%; display: block; }
+
+  /* Capa */
+  .capa { background: var(--roxo); color: #fff; padding: 34px 28px 0; }
+  .capa .ren { width: 150px; height: 88px; background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+  .capa .ren img { width: 126px; }
+  .capa .k { margin-top: 54px; font: 700 10px Inter, Arial, sans-serif; letter-spacing: .16em; color: #E4D3FF; }
+  .capa h1 { margin-top: 10px; font: 400 41px/0.98 "Archivo Black", "Arial Black", sans-serif; letter-spacing: -.015em; color: #fff; }
+  .capa .sub { margin-top: 16px; font-size: 15px; line-height: 1.4; color: #F1E8FF; max-width: 300px; }
+  .capa .sol { position: absolute; width: 330px; height: 330px; border-radius: 50%; background: #9D33FF; right: -110px; bottom: -120px; }
+  .capa .data { position: absolute; left: 28px; bottom: 30px; font: 700 13px Inter, Arial, sans-serif; color: #fff; line-height: 1.4; }
+
+  /* Logos dos modelos */
+  .motores { display: flex; gap: 8px; margin-top: 8px; }
+  .motor { flex: 1; display: flex; align-items: center; gap: 7px; background: var(--lav); border-radius: 10px; padding: 6px 7px; }
+  .motor .tile { width: 26px; height: 26px; border-radius: 7px; background: #fff; display: flex; align-items: center; justify-content: center; flex: none; }
+  .motor .tile img { width: 17px; height: 17px; }
+  .motor b { display: block; font: 700 11.5px Inter, Arial, sans-serif; color: var(--tinta); }
+  .motor span { display: block; font: 500 9px Inter, Arial, sans-serif; color: var(--suave); }
+
+  /* Chat x Agente */
+  .duo { display: flex; gap: 12px; margin-top: 12px; }
+  .duo .c { flex: 1; border-radius: 12px; background: #F6F5F8; padding: 11px 11px 10px; }
+  .duo .c.ag { background: var(--lav); outline: 1.5px solid var(--roxo); }
+  .duo .top { display: flex; align-items: center; gap: 7px; font: 700 11px Inter, Arial, sans-serif; letter-spacing: .12em; }
+  .duo .c p { font-size: 12px; line-height: 1.38; margin-top: 8px; color: var(--texto); min-height: 66px; }
+  .duo .an { display: flex; align-items: center; gap: 6px; margin-top: 6px; font: italic 500 11px Inter, Arial, sans-serif; color: var(--suave); }
+  .duo .an img { width: 14px; height: 14px; }
+
+  /* Harness */
+  .hz { position: relative; height: 205px; margin-top: 12px; border: 1.5px dashed var(--roxo); border-radius: 14px; background: #FBF8FF; }
+  .hz .lb { position: absolute; left: 12px; top: 8px; font: 700 9px Inter, Arial, sans-serif; letter-spacing: .18em; color: var(--roxo-t); }
+  .hz .mod { position: absolute; left: 125px; top: 70px; width: 78px; height: 78px; border-radius: 50%; background: var(--roxo); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 11px Inter, Arial, sans-serif; letter-spacing: .04em; }
+  .hz .mod span { font: 500 9.5px Inter, Arial, sans-serif; letter-spacing: 0; opacity: .9; margin-top: 1px; }
+  .hz .ch { position: absolute; width: 148px; height: 44px; background: #fff; border-radius: 10px; display: flex; align-items: center; gap: 7px; padding: 0 8px; box-shadow: 0 1px 0 #E9E2F5; }
+  .hz .ch div b { display: block; font: 700 11px Inter, Arial, sans-serif; white-space: nowrap; color: var(--tinta); }
+  .hz .ch div span { display: block; font: 500 9px Inter, Arial, sans-serif; white-space: nowrap; color: var(--suave); }
+
+  /* Escada */
+  .esc { display: flex; align-items: flex-end; gap: 8px; height: 186px; margin-top: 12px; }
+  .esc .d { flex: 1; border-radius: 10px; background: #F6F5F8; padding: 8px 7px; display: flex; flex-direction: column; }
+  .esc .d .n { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--roxo); display: flex; align-items: center; justify-content: center; font: 700 11px Inter, Arial, sans-serif; color: var(--tinta); }
+  .esc .d b { margin-top: 7px; font: 700 11.5px/1.2 Inter, Arial, sans-serif; color: var(--tinta); }
+  .esc .d span { margin-top: 3px; font: 500 10px/1.3 Inter, Arial, sans-serif; color: var(--suave); }
+  .esc .d.top { background: var(--roxo); }
+  .esc .d.top .n { background: #fff; border-color: #fff; color: var(--roxo-t); }
+  .esc .d.top b, .esc .d.top span { color: #fff; }
+  .seta { font: 700 11px Inter, Arial, sans-serif; color: var(--roxo-t); margin-top: 8px; }
+
+  /* Ferramentas */
+  .ferr { margin-top: 10px; }
+  .ferr .f { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #EEEAF3; }
+  .ferr .tile { width: 34px; height: 34px; border-radius: 9px; background: var(--lav); display: flex; align-items: center; justify-content: center; flex: none; }
+  .ferr .tile img { width: 21px; height: 21px; }
+  .ferr b { display: block; font: 700 13px Inter, Arial, sans-serif; color: var(--tinta); }
+  .ferr span { display: block; font: 500 11px/1.35 Inter, Arial, sans-serif; color: var(--suave); }
+  .leve { margin-top: 14px; background: var(--tinta); color: #fff; border-radius: 12px; padding: 12px 13px; }
+  .leve h4 { font: 400 15px "Archivo Black", "Arial Black", sans-serif; color: #fff; }
+  .leve li { list-style: none; display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.35; margin-top: 7px; color: #F1E8FF; }
+  .leve li .ic { width: 16px; height: 16px; background: var(--roxo); margin-top: 1px; }
+  .fim { position: absolute; left: 28px; right: 28px; bottom: 32px; display: flex; align-items: center; gap: 10px; }
+  .fim .ren { width: 76px; height: 44px; border: 1px solid #EEEAF3; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+  .fim .ren img { width: 62px; }
+  .fim p { font: 700 11px/1.35 Inter, Arial, sans-serif; color: var(--tinta); }
+  .fim p span { display: block; font-weight: 500; color: var(--suave); }
+</style>
+</head>
+<body>
+
+<!-- 1 · Capa -->
+<section class="pg capa">
+  <div class="ren"><img src="imagens/ren-recorte.png" alt="REN · Rede Nikkei Brasil" /></div>
+  <p class="k">IA NA PRÁTICA · REN JOVENS</p>
+  <h1>Dicionário de bolso da IA</h1>
+  <p class="sub">21 termos para todo mundo chegar no sábado falando a mesma língua.</p>
+  <div class="sol"></div>
+  <p class="data">Sábado, 28/11 · 10h<br />Brasília</p>
+</section>
+
+<!-- 2 · O básico -->
+<section class="pg">
+  <p class="kick">01 · O básico</p>
+  <h2>O que é o quê</h2>
+  <div class="t">
+    <h3>IA generativa</h3>
+    <p>IA que cria coisas novas a partir de um pedido seu: texto, imagem, áudio, vídeo e até código.</p>
+  </div>
+  <div class="t">
+    <h3>Modelo</h3>
+    <p>O “motor” da IA: o cérebro que entende e escreve. O app é o carro; o modelo é o motor. ChatGPT é o app; GPT é o modelo.</p>
+    <div class="motores">
+      <div class="motor"><div class="tile"><img src="imagens/chatgpt.svg" alt="" /></div><div><b>GPT</b><span>OpenAI</span></div></div>
+      <div class="motor"><div class="tile"><img src="imagens/claude.svg" alt="" /></div><div><b>Claude</b><span>Anthropic</span></div></div>
+      <div class="motor"><div class="tile"><img src="imagens/gemini.svg" alt="" /></div><div><b>Gemini</b><span>Google</span></div></div>
+    </div>
+  </div>
+  <div class="t">
+    <h3>Prompt</h3>
+    <p>O pedido que você escreve. Para um agente, escreva como um briefing: o resultado, o contexto, os limites e o que é “pronto”. O caminho, deixe com ele.</p>
+    <div class="ex brief"><p><b>Objetivo:</b> me preparar para a reunião de segunda com o cliente Alfa.</p><p><b>Contexto:</b> use nossos e-mails no Gmail e o contrato no Drive.</p><p><b>Entrega:</b> 1 página com pendências, riscos e 3 perguntas para eu fazer.</p><p><b>Limites:</b> não envie nada a ninguém. Se algo não estiver nos arquivos, diga que não achou.</p></div>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>2/8</span></div>
+</section>
+
+<!-- 3 · Como funciona -->
+<section class="pg">
+  <p class="kick">02 · Como ela funciona</p>
+  <h2>Por trás da resposta</h2>
+  <div class="t">
+    <h3>Contexto</h3>
+    <p>Tudo o que a IA está “vendo” agora: a conversa, os arquivos e as instruções. O que não está no contexto, ela não sabe.</p>
+  </div>
+  <div class="t">
+    <h3>Token</h3>
+    <p>Pedacinho de palavra: é nessa unidade que a IA lê e escreve. É com ela que se mede quanto cabe numa conversa e quanto custa usar.</p>
+  </div>
+  <div class="t">
+    <h3>Alucinação</h3>
+    <p>Quando a IA inventa algo com toda a confiança: um livro, um dado, uma lei.</p>
+    <div class="ex"><b>Regra de ouro:</b> confira tudo o que for importante antes de usar.</div>
+  </div>
+  <div class="t">
+    <h3>Raciocínio</h3>
+    <p>Modo em que a IA “pensa” antes de responder. Demora mais e acerta mais em problemas difíceis, como contas e planejamento.</p>
+    <p class="app"><b>Nos apps:</b> “Pensar”, “Thinking”.</p>
+  </div>
+  <div class="t">
+    <h3>Multimodal</h3>
+    <p>Entende e gera vários formatos: texto, imagem, áudio e vídeo.</p>
+    <div class="ex"><b>Ex.:</b> mandar a foto de um cupom fiscal e pedir “põe isso numa planilha”.</div>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>3/8</span></div>
+</section>
+
+<!-- 4 · Chat x Agente -->
+<section class="pg">
+  <p class="kick">03 · A diferença</p>
+  <h2>Chat × Agente</h2>
+  <p class="lead">O assunto principal do sábado.</p>
+  <div class="duo">
+    <div class="c">
+      <div class="top" style="color: var(--cinza)"><span class="ic" style="width:30px;height:30px;background:var(--cinza)"><img src="imagens/chat-b.svg" alt="" /></span>CHAT</div>
+      <p>Você pergunta, ela responde. Quem executa é você.</p>
+      <div class="an"><img src="imagens/mapa-c.svg" alt="" />É o GPS: mostra o caminho.</div>
+    </div>
+    <div class="c ag">
+      <div class="top" style="color: var(--roxo-t)"><span class="ic" style="width:30px;height:30px;background:var(--roxo)"><img src="imagens/robo-b.svg" alt="" /></span>AGENTE</div>
+      <p>Você dá um objetivo. Ele planeja, usa ferramentas e entrega pronto.</p>
+      <div class="an"><img src="imagens/carro-r.svg" alt="" />É o motorista: te leva lá.</div>
+    </div>
+  </div>
+  <div class="t">
+    <h3>Chat</h3>
+    <p>Conversa de pergunta e resposta. Ótimo para tirar dúvidas e escrever; o resto do trabalho fica com você.</p>
+  </div>
+  <div class="t">
+    <h3>Agente</h3>
+    <p>IA que recebe um objetivo e trabalha sozinha: planeja, usa ferramentas, confere o resultado e entrega pronto.</p>
+  </div>
+  <div class="t">
+    <h3>Modo agente</h3>
+    <p>Recurso que faz o app trabalhar como agente: navegar em sites, preencher formulários, montar arquivos.</p>
+    <p class="app"><b>Nos apps:</b> “Modo agente” no ChatGPT; no Claude, o Claude Code e o Cowork.</p>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>4/8</span></div>
+</section>
+
+<!-- 5 · Harness -->
+<section class="pg">
+  <p class="kick">04 · Por dentro</p>
+  <h2>Agente = modelo + harness</h2>
+  <div class="hz">
+    <span class="lb">HARNESS</span>
+    <div class="ch" style="left:10px; top:24px"><span class="ic" style="width:26px;height:26px;background:var(--roxo)"><img src="imagens/memoria-b.svg" alt="" /></span><div><b>Memória</b><span>lembra do contexto</span></div></div>
+    <div class="ch" style="left:170px; top:24px"><span class="ic" style="width:26px;height:26px;background:var(--roxo)"><img src="imagens/ferramentas-b.svg" alt="" /></span><div><b>Ferramentas</b><span>conectores e web</span></div></div>
+    <div class="mod">MODELO<span>o motor</span></div>
+    <div class="ch" style="left:10px; top:152px"><span class="ic" style="width:26px;height:26px;background:var(--roxo)"><img src="imagens/rotinas-b.svg" alt="" /></span><div><b>Rotinas e skills</b><span>instruções fixas</span></div></div>
+    <div class="ch" style="left:170px; top:152px"><span class="ic" style="width:26px;height:26px;background:var(--roxo)"><img src="imagens/ciclo-b.svg" alt="" /></span><div><b>Ciclo</b><span>faz, confere, corrige</span></div></div>
+  </div>
+  <div class="t">
+    <h3>Harness</h3>
+    <p>Tudo o que fica em volta do modelo para ele trabalhar. A palavra quer dizer “arreio”: o cavalo tem a força, o arreio direciona. Mesmo modelo, harness diferente: resultado diferente.</p>
+  </div>
+  <div class="t">
+    <h3>Ferramentas</h3>
+    <p>Ações que a IA pode executar: buscar na web, ler um arquivo, rodar código, enviar um e-mail.</p>
+  </div>
+  <div class="t">
+    <h3>Memória</h3>
+    <p>O que a IA guarda sobre você de uma conversa para outra. Dá para ver e apagar nas configurações.</p>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>5/8</span></div>
+</section>
+
+<!-- 6 · Conectando -->
+<section class="pg">
+  <p class="kick">05 · Conectando</p>
+  <h2>A IA ligada ao seu mundo</h2>
+  <div class="t">
+    <h3>Conector</h3>
+    <p>Liga a IA às suas contas, como Gmail, Agenda e Drive. Com a sua permissão, ela passa a ler e usar esses dados.</p>
+    <p class="app"><b>Nos apps:</b> “Conectores” ou “Apps”.</p>
+    <div class="ex"><b>Ex.:</b> “Olhe minha agenda da semana e ache 3 horários livres de 1h para uma reunião.”</div>
+  </div>
+  <div class="t">
+    <h3>MCP</h3>
+    <p>Sigla de <i>Model Context Protocol</i>: o padrão que liga agentes a ferramentas e dados. É o “USB‑C da IA”: um plugue que serve em vários apps.</p>
+  </div>
+  <div class="t">
+    <h3>Skill</h3>
+    <p>Uma receita escrita em texto que o agente segue passo a passo. Você ensina uma vez e ele repete sempre do mesmo jeito.</p>
+    <div class="ex"><b>Ex.:</b> uma skill de edição que corta, legenda e põe música no vídeo gravado no celular.</div>
+  </div>
+  <div class="t">
+    <h3>Projeto</h3>
+    <p>Um espaço com material e instruções fixas sobre um tema, para não repetir tudo a cada conversa.</p>
+    <p class="app"><b>Nos apps:</b> “Projetos” no ChatGPT e no Claude; “Gems” no Gemini.</p>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>6/8</span></div>
+</section>
+
+<!-- 7 · A escada -->
+<section class="pg">
+  <p class="kick">06 · A escada</p>
+  <h2>Do chat ao agente</h2>
+  <div class="esc">
+    <div class="d" style="height:92px"><span class="n">1</span><b>Chat</b><span>pergunta e resposta</span></div>
+    <div class="d" style="height:122px"><span class="n">2</span><b>Conectores</b><span>lê e-mail, agenda e Drive</span></div>
+    <div class="d" style="height:152px"><span class="n">3</span><b>Projetos e skills</b><span>memória e instruções</span></div>
+    <div class="d top" style="height:182px"><span class="n">4</span><b>Agente</b><span>recebe um objetivo e executa</span></div>
+  </div>
+  <p class="seta">No sábado, cada um sobe pelo menos um degrau.</p>
+  <div class="t">
+    <h3>Artefato</h3>
+    <p>Algo pronto que a IA entrega para você usar: um documento, uma página, um mini-app.</p>
+    <p class="app"><b>Nos apps:</b> “Artefatos” no Claude; “Canvas” no ChatGPT.</p>
+  </div>
+  <div class="t">
+    <h3>Vibe coding</h3>
+    <p>Criar um app ou site descrevendo o que você quer, em português, sem escrever código. É o que o Lovable faz.</p>
+  </div>
+  <div class="t">
+    <h3>Pesquisa profunda</h3>
+    <p>A IA pesquisa dezenas de fontes sozinha e entrega um relatório com os links.</p>
+    <p class="app"><b>Nos apps:</b> “Deep Research” ou “Pesquisa”.</p>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>7/8</span></div>
+</section>
+
+<!-- 8 · Sábado -->
+<section class="pg">
+  <p class="kick">07 · Sábado</p>
+  <h2>As ferramentas do dia</h2>
+  <div class="ferr">
+    <div class="f"><div class="tile"><img src="imagens/chatgpt.svg" alt="" /></div><div><b>ChatGPT</b><span>Conversa, projetos, conectores e modo agente.</span></div></div>
+    <div class="f"><div class="tile"><img src="imagens/claude.svg" alt="" /></div><div><b>Claude</b><span>Projetos, conectores, artefatos e skills.</span></div></div>
+    <div class="f"><div class="tile"><img src="imagens/gemini.svg" alt="" /></div><div><b>Gemini</b><span>Gems e integração com Gmail, Drive e Agenda.</span></div></div>
+    <div class="f"><div class="tile"><img src="imagens/notebooklm.svg" alt="" /></div><div><b>NotebookLM</b><span>Estuda só com o seu material: resumo em áudio e vídeo, quiz e mapa mental.</span></div></div>
+    <div class="f" style="border-bottom:0"><div class="tile"><img src="imagens/foguete-r.svg" alt="" /></div><div><b>Lovable</b><span>Cria um app ou site a partir de um texto.</span></div></div>
+  </div>
+  <div class="leve">
+    <h4>Para chegar no sábado</h4>
+    <ul>
+      <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Notebook carregado (ou o celular)</li>
+      <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Conta criada nas ferramentas que você quer usar</li>
+      <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Um material de estudo ou uma ideia para trabalhar</li>
+    </ul>
+  </div>
+  <div class="fim">
+    <div class="ren"><img src="imagens/ren-recorte.png" alt="REN" /></div>
+    <p>IA na Prática · REN Jovens<span>Sábado, 28/11 · 10h · Brasília</span></p>
+  </div>
+</section>
+
+</body>
+</html>
