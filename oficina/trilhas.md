@@ -19,14 +19,14 @@ Entrega: plano de estudo de 5 dias e um simulado de 10 questões com gabarito co
 Limites: se algo não estiver no material, diga que não está. Não invente.
 ```
 
-**Entrega às 11h30:** um caderno de estudo e um quiz da sua matéria.
+**Entrega às 11h30:** um plano de estudo e um simulado da sua matéria.
 
 ## 2 · Usar conectores
 
 **Para quem:** quem vive de e-mail, agenda e planilha. **Ferramentas:** ChatGPT ou Claude com conectores.
 
 1. No ChatGPT ou no Claude, ative os conectores do Gmail, Google Agenda e Drive.
-2. Mande o briefing abaixo: ele cruza e-mails e compromissos e prepara as respostas.
+2. Mande o briefing abaixo: ele lê sua caixa de entrada e a agenda e prepara as respostas.
 3. Gostou do resultado? Salve o prompt e transforme em rotina semanal.
 
 ```text

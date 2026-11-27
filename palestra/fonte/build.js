@@ -356,7 +356,7 @@ async function icon(Comp, hex) {
   // Escolha sua trilha (4)
   {
     const s = base("OFICINA · FORMAÇÃO DOS GRUPOS", "Escolha sua trilha", "Sem notebook? As trilhas 1 e 2 funcionam bem no celular", false);
-    const tr = [[I.book, "1 · Estudar melhor", "NotebookLM, ChatGPT ou Claude", "um tutor da sua matéria e um quiz"],
+    const tr = [[I.book, "1 · Estudar melhor", "NotebookLM, ChatGPT ou Claude", "um plano de estudo e um simulado"],
       [I.plug, "2 · Usar conectores", "ChatGPT ou Claude + conectores", "uma rotina que roda toda semana"],
       [I.video, "3 · Criar um vídeo", "NotebookLM, Gemini, CapCut ou Canva", "um vídeo para a aula ou para as redes"],
       [I.rocket, "4 · Construir uma tela", "Lovable ou Claude", "uma página no ar, com link"]];
@@ -395,13 +395,13 @@ async function icon(Comp, hex) {
   trilha("TRILHA 1 · ESTUDAR", "Um tutor que leu toda a sua matéria",
     ["Crie um caderno no NotebookLM e suba PDFs, slides e anotações de uma matéria",
       "Peça um resumo em áudio, um mapa mental e um quiz para testar o que você sabe",
-      "No ChatGPT ou no Claude, crie um projeto com o mesmo material e treine com o prompt ao lado"],
+      "No ChatGPT ou no Claude, crie um projeto com o mesmo material e mande o briefing ao lado"],
     [["Objetivo", "me preparar para a prova de [matéria] da próxima semana."], ["Contexto", "use só o material deste projeto: aulas, slides e anotações."], ["Entrega", "plano de estudo de 5 dias e um simulado de 10 questões com gabarito comentado."], ["Limites", "se algo não estiver no material, diga que não está. Não invente."]],
-    "um caderno de estudo e um quiz da sua matéria", "Exemplo: estudante de medicina revisando fisiologia",
+    "um plano de estudo e um simulado da sua matéria", "Exemplo: estudante de medicina revisando fisiologia",
     "O NotebookLM responde só com base no que você subiu e gera áudio, mapa mental, quiz e flashcards. No ChatGPT há o modo estudo; no Claude, projetos com o material. É o degrau 3 da escada. Mostrar ao vivo com um PDF de aula real.");
   trilha("TRILHA 2 · CONECTAR", "A IA dentro do seu e-mail, agenda e planilhas",
     ["No ChatGPT ou no Claude, ative os conectores do Gmail, Google Agenda e Drive",
-      "Peça uma tarefa que cruza informações: e-mails, compromissos e arquivos",
+      "Mande o briefing ao lado: ele lê sua caixa de entrada e a agenda e prepara as respostas",
       "Gostou do resultado? Salve o prompt e transforme em rotina semanal"],
     [["Objetivo", "deixar minha próxima semana organizada."], ["Contexto", "leia meus e-mails dos últimos 7 dias e minha agenda."], ["Entrega", "o que precisa de resposta, com prazo, e um rascunho de cada resposta no meu tom."], ["Limites", "não envie nem marque nada. Me mostre antes."]],
     "uma rotina semanal que economiza tempo de verdade", "Conecte só contas suas e evite dados sensíveis de terceiros",
@@ -414,7 +414,7 @@ async function icon(Comp, hex) {
     "um vídeo para a aula ou para as redes", "Quer gerar cenas do zero? Teste o Veo no app Gemini",
     "Trilha pensada para a professora e para quem quer conteúdo para redes sociais. O NotebookLM gera um vídeo narrado a partir do material; a geração leva alguns minutos, então começar por ela. Quem quiser ir além testa o Veo no Gemini para gerar cenas.");
   trilha("TRILHA 4 · CONSTRUIR", "Sua primeira tela no ar",
-    ["Escreva em 3 linhas: quem vai usar, que problema resolve e o que a tela precisa ter",
+    ["Preencha o briefing ao lado: quem usa, que problema resolve e o que a tela precisa ter",
       "Cole no Lovable ou peça um artefato ao Claude e veja a primeira versão nascer",
       "Teste, peça um ajuste por vez e publique o link"],
     [["Objetivo", "uma página de [orçamento rápido] para [os clientes do meu restaurante]."], ["Contexto", "hoje isso é feito [no WhatsApp]; quem usa está no celular."], ["Entrega", "uma tela funcionando, em português, com [3 coisas] e dados de exemplo."], ["Limites", "uma tela só, sem login nem banco de dados por enquanto."]],
