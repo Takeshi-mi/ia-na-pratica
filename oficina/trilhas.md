@@ -10,12 +10,13 @@ Os prompts seguem o formato de **briefing** recomendado pelos guias atuais (ver 
 
 1. Crie um caderno no NotebookLM e suba PDFs, slides e anotações de uma matéria.
 2. Peça um resumo em áudio, um mapa mental e um quiz para testar o que você sabe.
-3. No ChatGPT ou no Claude, crie um projeto com o mesmo material e treine com o prompt abaixo.
+3. No ChatGPT ou no Claude, crie um projeto com o mesmo material e mande o briefing abaixo.
 
 ```text
-Você é meu tutor de [matéria]. Use só o material deste projeto. Me faça uma pergunta
-por vez, espere minha resposta e corrija explicando onde errei. Comece pelo básico
-e aumente a dificuldade.
+Objetivo: me preparar para a prova de [matéria] da próxima semana.
+Contexto: use só o material deste projeto: aulas, slides e anotações.
+Entrega: plano de estudo de 5 dias e um simulado de 10 questões com gabarito comentado.
+Limites: se algo não estiver no material, diga que não está. Não invente.
 ```
 
 **Entrega às 11h30:** um caderno de estudo e um quiz da sua matéria.
@@ -25,12 +26,14 @@ e aumente a dificuldade.
 **Para quem:** quem vive de e-mail, agenda e planilha. **Ferramentas:** ChatGPT ou Claude com conectores.
 
 1. No ChatGPT ou no Claude, ative os conectores do Gmail, Google Agenda e Drive.
-2. Peça uma tarefa que cruza informações: e-mails, compromissos e arquivos.
+2. Mande o briefing abaixo: ele cruza e-mails e compromissos e prepara as respostas.
 3. Gostou do resultado? Salve o prompt e transforme em rotina semanal.
 
 ```text
-Leia meus e-mails dos últimos 7 dias e minha agenda da próxima semana. Liste o que
-precisa de resposta, com prazo, e sugira em que horário eu resolvo cada coisa.
+Objetivo: deixar minha próxima semana organizada.
+Contexto: leia meus e-mails dos últimos 7 dias e minha agenda.
+Entrega: o que precisa de resposta, com prazo, e um rascunho de cada resposta no meu tom.
+Limites: não envie nem marque nada. Me mostre antes.
 ```
 
 **Entrega às 11h30:** uma rotina semanal que economiza tempo de verdade. Conecte só contas suas.
@@ -44,8 +47,10 @@ precisa de resposta, com prazo, e sugira em que horário eu resolvo cada coisa.
 3. Baixe o vídeo e, se quiser, dê o toque final no CapCut ou no Canva.
 
 ```text
-Faça um vídeo de até 3 minutos para [alunos do 6º ano / meus seguidores] explicando
-[tema], com linguagem simples, um exemplo do dia a dia e uma pergunta no final.
+Objetivo: um vídeo de até 3 min sobre [tema] para [alunos do 6º ano / meus seguidores].
+Contexto: use só as fontes deste caderno.
+Entrega: linguagem simples, um exemplo do dia a dia e uma pergunta no final.
+Limites: sem jargão; se um termo técnico for inevitável, explique em uma frase.
 ```
 
 **Entrega às 11h30:** um vídeo para a aula ou para as redes. A geração leva alguns minutos, então comece por ela.
@@ -54,14 +59,15 @@ Faça um vídeo de até 3 minutos para [alunos do 6º ano / meus seguidores] exp
 
 **Para quem:** quem tem uma ideia de sistema ou negócio. **Ferramentas:** Lovable ou Claude.
 
-1. Escreva em 3 linhas: quem vai usar, que problema resolve e o que a tela precisa ter.
+1. Preencha o briefing abaixo: quem vai usar, que problema resolve e o que a tela precisa ter.
 2. Cole no Lovable ou peça um artefato ao Claude e veja a primeira versão nascer.
 3. Teste, peça um ajuste por vez e publique o link.
 
 ```text
-Crie uma página simples de [ex.: orçamento rápido para o meu restaurante] para
-[quem usa]. Ela precisa ter [3 coisas]. Visual limpo, em português, funcionando
-no celular. Use dados de exemplo.
+Objetivo: uma página de [orçamento rápido] para [os clientes do meu restaurante].
+Contexto: hoje isso é feito [no WhatsApp]; quem usa está no celular.
+Entrega: uma tela funcionando, em português, com [3 coisas] e dados de exemplo.
+Limites: uma tela só, sem login nem banco de dados por enquanto.
 ```
 
 **Entrega às 11h30:** um link funcionando para mostrar. Não é um MVP: é a primeira tela. Quem já programa pode usar Codex, Claude Code ou Antigravity.

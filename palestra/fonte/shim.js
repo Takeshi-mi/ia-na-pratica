@@ -1,6 +1,7 @@
 // Imita a API do pptxgenjs usada em build.js e grava um HTML com o mesmo layout (em polegadas),
 // para gerar PDF pelo Edge e para conferir o visual.
 const fs = require("fs");
+const o_gap = (o) => (o && o.paraSpaceAfter) || 0;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
 const rgba = (hex, tr = 0) => {
   const n = parseInt(hex, 16);
@@ -29,9 +30,19 @@ class Slide {
     if (o.bold) st.push("font-weight:700");
     if (o.italic) st.push("font-style:italic");
     if (o.charSpacing) st.push(`letter-spacing:${o.charSpacing}pt`);
-    const body = Array.isArray(text)
-      ? text.map((r) => `<span style="${r.options && r.options.color ? `color:#${r.options.color}` : ""}">${esc(r.text)}</span>${r.options && r.options.breakLine ? "<br>" : ""}`).join("")
-      : esc(text);
+    let body;
+    if (Array.isArray(text)) {
+      // agrupa os trechos em parágrafos (quebra em breakLine), com negrito, itálico e cor por trecho
+      const paras = [[]];
+      text.forEach((r) => {
+        const o = r.options || {};
+        const st2 = [o.color ? `color:#${o.color}` : "", o.bold ? "font-weight:700" : "", o.italic ? "font-style:italic" : ""].filter(Boolean).join(";");
+        paras[paras.length - 1].push(`<span style="${st2}">${esc(r.text)}</span>`);
+        if (o.breakLine) paras.push([]);
+      });
+      const gap = o_gap(o);
+      body = paras.filter((p) => p.length).map((p, i, a) => `<div style="margin-bottom:${i < a.length - 1 ? gap : 0}pt">${p.join("")}</div>`).join("");
+    } else body = esc(text);
     this.els.push(`<div style="position:absolute;${st.join(";")}"><div>${body}</div></div>`);
   }
   addImage(o) {

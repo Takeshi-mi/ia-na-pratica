@@ -381,38 +381,43 @@ async function icon(Comp, hex) {
       T(s, String(i + 1), { x: 0.5, y, w: 0.5, h: 0.5, fontSize: 16, bold: true, align: "center", valign: "middle", color: ON });
       T(s, t, { x: 1.2, y: y - 0.02, w: 3.6, h: 0.95, fontSize: 14 });
     });
-    card(s, 5.15, 1.5, 4.35, 2.5);
-    T(s, "PROMPT PRONTO", { x: 5.4, y: 1.7, w: 3.9, h: 0.25, fontSize: 10, bold: true, color: ACCT, charSpacing: 2 });
-    T(s, prompt, { x: 5.4, y: 2.0, w: 3.9, h: 1.9, fontSize: 14, italic: true });
-    T(s, "Entrega às 11h30: " + entrega, { x: 5.15, y: 4.2, w: 4.35, h: 0.55, fontSize: 13, bold: true, color: ACCT });
+    card(s, 5.15, 1.5, 4.35, 2.65);
+    T(s, "PROMPT EM BRIEFING", { x: 5.4, y: 1.7, w: 3.9, h: 0.25, fontSize: 10, bold: true, color: ACCT, charSpacing: 2 });
+    const runs = [];
+    prompt.forEach(([rot, txt], i) => {
+      runs.push({ text: rot + ": ", options: { bold: true, color: ACCT } });
+      runs.push({ text: txt, options: { color: TEXT, breakLine: i < prompt.length - 1 } });
+    });
+    s.addText(runs, { isTextBox: true, x: 5.4, y: 2.0, w: 3.9, h: 2.05, fontFace: FONT, fontSize: 12, color: TEXT, margin: 0, valign: "top", paraSpaceAfter: 5 });
+    T(s, "Entrega às 11h30: " + entrega, { x: 5.15, y: 4.33, w: 4.35, h: 0.55, fontSize: 13, bold: true, color: ACCT });
     s.addNotes(notes);
   };
   trilha("TRILHA 1 · ESTUDAR", "Um tutor que leu toda a sua matéria",
     ["Crie um caderno no NotebookLM e suba PDFs, slides e anotações de uma matéria",
       "Peça um resumo em áudio, um mapa mental e um quiz para testar o que você sabe",
       "No ChatGPT ou no Claude, crie um projeto com o mesmo material e treine com o prompt ao lado"],
-    "Você é meu tutor de [matéria]. Use só o material deste projeto. Me faça uma pergunta por vez, espere minha resposta e corrija explicando onde errei. Comece pelo básico e aumente a dificuldade.",
+    [["Objetivo", "me preparar para a prova de [matéria] da próxima semana."], ["Contexto", "use só o material deste projeto: aulas, slides e anotações."], ["Entrega", "plano de estudo de 5 dias e um simulado de 10 questões com gabarito comentado."], ["Limites", "se algo não estiver no material, diga que não está. Não invente."]],
     "um caderno de estudo e um quiz da sua matéria", "Exemplo: estudante de medicina revisando fisiologia",
     "O NotebookLM responde só com base no que você subiu e gera áudio, mapa mental, quiz e flashcards. No ChatGPT há o modo estudo; no Claude, projetos com o material. É o degrau 3 da escada. Mostrar ao vivo com um PDF de aula real.");
   trilha("TRILHA 2 · CONECTAR", "A IA dentro do seu e-mail, agenda e planilhas",
     ["No ChatGPT ou no Claude, ative os conectores do Gmail, Google Agenda e Drive",
       "Peça uma tarefa que cruza informações: e-mails, compromissos e arquivos",
       "Gostou do resultado? Salve o prompt e transforme em rotina semanal"],
-    "Leia meus e-mails dos últimos 7 dias e minha agenda da próxima semana. Liste o que precisa de resposta, com prazo, e sugira em que horário eu resolvo cada coisa.",
+    [["Objetivo", "deixar minha próxima semana organizada."], ["Contexto", "leia meus e-mails dos últimos 7 dias e minha agenda."], ["Entrega", "o que precisa de resposta, com prazo, e um rascunho de cada resposta no meu tom."], ["Limites", "não envie nem marque nada. Me mostre antes."]],
     "uma rotina semanal que economiza tempo de verdade", "Conecte só contas suas e evite dados sensíveis de terceiros",
     "É o degrau 2 da escada: com conectores a IA lê seu e-mail, agenda e Drive e decide sozinha quando consultar cada um. Para muita gente isso já é o 'uau' do dia. Reforçar privacidade: usar contas próprias.");
   trilha("TRILHA 3 · VÍDEO", "Um vídeo pronto em minutos",
     ["No NotebookLM, crie um caderno e suba o material: PDF, site ou vídeo do YouTube sobre o tema",
       "No Estúdio, gere um resumo em vídeo em português e diga o foco e o público no campo de instruções",
       "Baixe o vídeo e, se quiser, dê o toque final no CapCut ou no Canva"],
-    "Faça um vídeo de até 3 minutos para [alunos do 6º ano / meus seguidores] explicando [tema], com linguagem simples, um exemplo do dia a dia e uma pergunta no final.",
+    [["Objetivo", "um vídeo de até 3 min sobre [tema] para [alunos do 6º ano / meus seguidores]."], ["Contexto", "use só as fontes deste caderno."], ["Entrega", "linguagem simples, um exemplo do dia a dia e uma pergunta no final."], ["Limites", "sem jargão; se um termo técnico for inevitável, explique em uma frase."]],
     "um vídeo para a aula ou para as redes", "Quer gerar cenas do zero? Teste o Veo no app Gemini",
     "Trilha pensada para a professora e para quem quer conteúdo para redes sociais. O NotebookLM gera um vídeo narrado a partir do material; a geração leva alguns minutos, então começar por ela. Quem quiser ir além testa o Veo no Gemini para gerar cenas.");
   trilha("TRILHA 4 · CONSTRUIR", "Sua primeira tela no ar",
     ["Escreva em 3 linhas: quem vai usar, que problema resolve e o que a tela precisa ter",
       "Cole no Lovable ou peça um artefato ao Claude e veja a primeira versão nascer",
       "Teste, peça um ajuste por vez e publique o link"],
-    "Crie uma página simples de [ex.: orçamento rápido para o meu restaurante] para [quem usa]. Ela precisa ter [3 coisas]. Visual limpo, em português, funcionando no celular. Use dados de exemplo.",
+    [["Objetivo", "uma página de [orçamento rápido] para [os clientes do meu restaurante]."], ["Contexto", "hoje isso é feito [no WhatsApp]; quem usa está no celular."], ["Entrega", "uma tela funcionando, em português, com [3 coisas] e dados de exemplo."], ["Limites", "uma tela só, sem login nem banco de dados por enquanto."]],
     "um link funcionando para mostrar", "Não é um MVP: é sua primeira tela. Quem já programa: Codex, Claude Code ou Antigravity",
     "Para quem nunca fez nem um HTML: ver uma tela nascer a partir de um texto e publicar o link. Não é hora de MVP; é a primeira tela. Dica de ouro: pedir um ajuste por vez. Quem já programa pode usar Codex, Claude Code ou Antigravity.");
 
