@@ -24,7 +24,7 @@ O tema é **do chat ao agente**: o que muda quando a IA para de só responder e 
 | [`oficina/`](oficina/) | As 4 trilhas da mão na massa, com passos e prompts, e protótipos de projetos para as ideias do formulário |
 | [`divulgacao/`](divulgacao/) | O teaser em vídeo (21,6 s, vertical), o projeto editável dele e a mensagem de aquecimento do grupo |
 | [`referencias/`](referencias/) | As fontes de cada dado da palestra e os guias de prompt usados |
-| [`skills/`](skills/) | Onde ficam as skills mostradas na palestra |
+| [`skills/`](skills/) | As skills de edição de vídeo mostradas na palestra: a que monta o seu fluxo ([meyje-fluxo-de-edicao](https://github.com/Takeshi-mi/meyje-fluxo-de-edicao)) e o fluxo pronto da MEYJE ([meyje-editor-com-ia](https://github.com/Takeshi-mi/meyje-editor-com-ia)) |
 
 ## Como abrir e editar
 
