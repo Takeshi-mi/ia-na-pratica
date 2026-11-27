@@ -20,7 +20,7 @@ O tema é **do chat ao agente**: o que muda quando a IA para de só responder e 
 | Pasta | Conteúdo |
 | --- | --- |
 | [`palestra/`](palestra/) | O deck "Do chat ao agente" (24 slides, notas de fala) em `.pptx` e `.pdf`, e o gerador em `fonte/` |
-| [`dicionario/`](dicionario/) | O "Dicionário de bolso da IA": 21 termos, PDF no formato do celular para mandar antes do evento |
+| [`dicionario/`](dicionario/) | O "Dicionário de bolso da IA": 23 termos (inclui Git e GitHub, com links para baixar e criar conta), PDF no formato do celular para mandar antes do evento |
 | [`oficina/`](oficina/) | As 4 trilhas da mão na massa, com passos e prompts, e protótipos de projetos para as ideias do formulário |
 | [`divulgacao/`](divulgacao/) | O teaser em vídeo (21,6 s, vertical), o projeto editável dele e a mensagem de aquecimento do grupo |
 | [`referencias/`](referencias/) | As fontes de cada dado da palestra e os guias de prompt usados |

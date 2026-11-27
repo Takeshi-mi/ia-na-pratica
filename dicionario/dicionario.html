@@ -92,6 +92,23 @@
   .fim .ren img { width: 62px; }
   .fim p { font: 700 11px/1.35 Inter, Arial, sans-serif; color: var(--tinta); }
   .fim p span { display: block; font-weight: 500; color: var(--suave); }
+
+  /* Git e GitHub */
+  .lk { color: var(--roxo-t); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+  .ver { position: relative; display: flex; justify-content: space-between; margin-top: 8px; padding: 10px 14px 8px; background: #F6F5F8; border-radius: 10px; }
+  .ver::before { content: ""; position: absolute; left: 44px; right: 44px; top: 19px; height: 2px; background: var(--lav2); }
+  .ver .v { position: relative; display: flex; flex-direction: column; align-items: center; width: 31%; }
+  .ver .d { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--roxo); }
+  .ver .d.on { background: var(--roxo); }
+  .ver .v b { font: 700 11px Inter, Arial, sans-serif; color: var(--tinta); margin-top: 4px; }
+  .ver .v i { font: 500 9.5px Inter, Arial, sans-serif; font-style: normal; color: var(--suave); }
+  .gh { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 9px 12px; background: #F6F5F8; border-radius: 10px; }
+  .gh .n { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 30%; }
+  .gh .tiles { display: flex; gap: 4px; }
+  .gh .tile { width: 30px; height: 30px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; }
+  .gh .tile img { width: 18px; height: 18px; }
+  .gh .n i { font: 600 9.5px/1.25 Inter, Arial, sans-serif; font-style: normal; color: var(--suave); text-align: center; }
+  .gh .seta { font: 700 14px Inter, Arial, sans-serif; color: var(--roxo); }
 </style>
 </head>
 <body>
@@ -101,7 +118,7 @@
   <div class="ren"><img src="imagens/ren-recorte.png" alt="REN · Rede Nikkei Brasil" /></div>
   <p class="k">IA NA PRÁTICA · REN JOVENS</p>
   <h1>Dicionário de bolso da IA</h1>
-  <p class="sub">21 termos para todo mundo chegar no sábado falando a mesma língua.</p>
+  <p class="sub">23 termos para todo mundo chegar no sábado falando a mesma língua.</p>
   <div class="sol"></div>
   <p class="data">Sábado, 28/11 · 10h<br />Brasília</p>
 </section>
@@ -128,7 +145,7 @@
     <p>O pedido que você escreve. Para um agente, escreva como um briefing: o resultado, o contexto, os limites e o que é “pronto”. O caminho, deixe com ele.</p>
     <div class="ex brief"><p><b>Objetivo:</b> me preparar para a reunião de segunda com o cliente Alfa.</p><p><b>Contexto:</b> use nossos e-mails no Gmail e o contrato no Drive.</p><p><b>Entrega:</b> 1 página com pendências, riscos e 3 perguntas para eu fazer.</p><p><b>Limites:</b> não envie nada a ninguém. Se algo não estiver nos arquivos, diga que não achou.</p></div>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>2/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>2/9</span></div>
 </section>
 
 <!-- 3 · Como funciona -->
@@ -158,7 +175,7 @@
     <p>Entende e gera vários formatos: texto, imagem, áudio e vídeo.</p>
     <div class="ex"><b>Ex.:</b> mandar a foto de um cupom fiscal e pedir “põe isso numa planilha”.</div>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>3/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>3/9</span></div>
 </section>
 
 <!-- 4 · Chat x Agente -->
@@ -191,7 +208,7 @@
     <p>Recurso que faz o app trabalhar como agente: navegar em sites, preencher formulários, montar arquivos.</p>
     <p class="app"><b>Nos apps:</b> “Modo agente” no ChatGPT; no Claude, o Claude Code e o Cowork.</p>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>4/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>4/9</span></div>
 </section>
 
 <!-- 5 · Harness -->
@@ -218,7 +235,7 @@
     <h3>Memória</h3>
     <p>O que a IA guarda sobre você de uma conversa para outra. Dá para ver e apagar nas configurações.</p>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>5/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>5/9</span></div>
 </section>
 
 <!-- 6 · Conectando -->
@@ -245,7 +262,7 @@
     <p>Um espaço com material e instruções fixas sobre um tema, para não repetir tudo a cada conversa.</p>
     <p class="app"><b>Nos apps:</b> “Projetos” no ChatGPT e no Claude; “Gems” no Gemini.</p>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>6/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>6/9</span></div>
 </section>
 
 <!-- 7 · A escada -->
@@ -273,12 +290,42 @@
     <p>A IA pesquisa dezenas de fontes sozinha e entrega um relatório com os links.</p>
     <p class="app"><b>Nos apps:</b> “Deep Research” ou “Pesquisa”.</p>
   </div>
-  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>7/8</span></div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>7/9</span></div>
 </section>
 
-<!-- 8 · Sábado -->
+<!-- 8 · Git e GitHub -->
 <section class="pg">
-  <p class="kick">07 · Sábado</p>
+  <p class="kick">07 · Arquivos e versões</p>
+  <h2>Onde moram as skills</h2>
+  <div class="t">
+    <h3>Git</h3>
+    <p>Um programa que guarda o histórico de uma pasta. A cada etapa salva (um “commit”), ele anota o que mudou, quando e por quem. Dá para comparar versões e voltar atrás, inclusive quando quem errou foi o agente.</p>
+    <div class="ver">
+      <div class="v"><span class="d"></span><b>v1</b><i>primeira versão</i></div>
+      <div class="v"><span class="d"></span><b>v2</b><i>+ legendas</i></div>
+      <div class="v"><span class="d on"></span><b>v3</b><i>+ música</i></div>
+    </div>
+    <p class="app"><a class="lk" href="https://git-scm.com/downloads">Baixe o Git ↗</a> · grátis, para Windows, Mac e Linux</p>
+  </div>
+  <div class="t">
+    <h3>GitHub</h3>
+    <p>O site onde essas pastas moram na nuvem. Cada projeto vira um <b>repositório</b>, com um link próprio. Com esse link, você compartilha o projeto, e um agente baixa, lê os arquivos, confere as versões e propõe mudanças, sem ninguém mandar nada por e-mail.</p>
+    <div class="gh">
+      <div class="n"><div class="tile"><img src="imagens/pasta-r.svg" alt="" /></div><i>sua pasta</i></div>
+      <span class="seta">→</span>
+      <div class="n"><div class="tile"><img src="imagens/github.svg" alt="" /></div><i>GitHub:<br />um link</i></div>
+      <span class="seta">→</span>
+      <div class="n"><div class="tiles"><div class="tile"><img src="imagens/robo-r.svg" alt="" /></div><div class="tile"><img src="imagens/pessoa-r.svg" alt="" /></div></div><i>agentes e pessoas</i></div>
+    </div>
+    <div class="ex"><b>Ex.:</b> “Instala esta skill para mim:<br /><a class="lk" style="white-space:nowrap" href="https://github.com/Takeshi-mi/meyje-fluxo-de-edicao">github.com/Takeshi-mi/meyje-fluxo-de-edicao</a>”</div>
+    <p class="app"><a class="lk" href="https://github.com/signup">Crie sua conta grátis ↗</a> · é lá que estão as skills e o material do sábado</p>
+  </div>
+  <div class="rod"><span>DICIONÁRIO DE BOLSO · IA NA PRÁTICA</span><span>8/9</span></div>
+</section>
+
+<!-- 9 · Sábado -->
+<section class="pg">
+  <p class="kick">08 · Sábado</p>
   <h2>As ferramentas do dia</h2>
   <div class="ferr">
     <div class="f"><div class="tile"><img src="imagens/chatgpt.svg" alt="" /></div><div><b>ChatGPT</b><span>Conversa, projetos, conectores e modo agente.</span></div></div>
@@ -293,6 +340,7 @@
       <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Notebook carregado (ou o celular)</li>
       <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Conta criada nas ferramentas que você quer usar</li>
       <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span>Um material de estudo ou uma ideia para trabalhar</li>
+      <li><span class="ic"><img src="imagens/check-b.svg" alt="" /></span><span>Conta no GitHub, para baixar as skills: <a class="lk" style="color:#C9A4FF; white-space:nowrap" href="https://github.com/signup">crie aqui ↗</a></span></li>
     </ul>
   </div>
   <div class="fim">
