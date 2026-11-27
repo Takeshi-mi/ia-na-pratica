@@ -6,7 +6,7 @@
 >
 > Para aproveitar bem os 45 minutos de mão na massa, três coisas antes de sábado:
 >
-> **1. Contas criadas (todas têm plano grátis):** ChatGPT, Claude, Gemini e NotebookLM (entra com a conta Google). Quem quiser construir uma tela: Lovable também.
+> **1. Contas criadas (todas têm plano grátis):** ChatGPT, Claude, Gemini e NotebookLM (entra com a conta Google). Quem quiser construir uma tela: Lovable também, e uma conta no GitHub, para o código que você criar ficar seu.
 >
 > **2. Escolha sua trilha e traga o material:**
 > • *Estudar:* um PDF ou slide de uma matéria
