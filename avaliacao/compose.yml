@@ -1,0 +1,23 @@
+# Sobe atrás do Traefik do servidor (rede redeMage, certificado Let's Encrypt).
+# A senha do painel fica no arquivo .env do servidor (RESULTS_PASSWORD=...), fora do Git.
+services:
+  avaliacao:
+    build: .
+    container_name: avaliacao-ia-na-pratica
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./dados:/dados
+    networks:
+      - redeMage
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=redeMage
+      - traefik.http.routers.avaliacao-ia.rule=Host(`avalia.meyje.com.br`)
+      - traefik.http.routers.avaliacao-ia.entrypoints=websecure
+      - traefik.http.routers.avaliacao-ia.tls.certresolver=letsencryptresolver
+      - traefik.http.services.avaliacao-ia.loadbalancer.server.port=3000
+
+networks:
+  redeMage:
+    external: true

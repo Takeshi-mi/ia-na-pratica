@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Avaliação · IA na Prática</title>
+<meta name="description" content="Conte como foi a oficina IA na Prática, da REN Jovens. Leva um minuto.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  .progresso {
+    position: sticky; top: 0; z-index: 10;
+    height: 4px; background: #111;
+  }
+  .progresso i {
+    display: block; height: 100%; width: 0;
+    background: linear-gradient(90deg, #8800ff, #b57bff);
+    box-shadow: 0 0 12px rgba(136, 0, 255, 0.8);
+    transition: width 0.35s ease;
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 0 16px 64px; }
+
+  .hero { position: relative; padding: 28px 0 32px; min-height: 300px; }
+  .hero .cena { right: -48px; top: -6px; width: 150px; height: 150px; }
+  .hero .lua { width: 22px; height: 22px; left: -34px; top: 118px; }
+  .hero h1 {
+    position: relative;
+    font-size: clamp(38px, 11vw, 56px);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 92px 0 14px;
+    max-width: 9ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--acc-t); }
+  .hero p { position: relative; color: var(--muted); margin: 0; max-width: 30ch; font-size: 17px; }
+
+  .secao { margin-top: 28px; }
+  .secao > h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--acc-t); margin: 0 0 12px;
+  }
+  .secao > h2::before {
+    content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e2c8ff, #8800ff 60%, #3a0070);
+    box-shadow: 0 0 10px rgba(136, 0, 255, 0.8);
+  }
+
+  .pergunta { padding: 18px 16px; margin-bottom: 12px; transition: border-color 0.2s, opacity 0.25s; }
+  .pergunta.falta { border-color: var(--erro); }
+  .pergunta[hidden] { display: none; }
+  .pergunta h3 { font-size: 17px; font-weight: 600; margin: 0 0 4px; line-height: 1.3; }
+  .pergunta h3 .ob { color: var(--acc-t); margin-left: 2px; }
+  .pergunta .dica { font-size: 13px; color: var(--muted); margin: 0 0 4px; }
+  .pergunta .corpo { margin-top: 12px; }
+
+  /* estrelas */
+  .estrelas { display: flex; gap: 6px; }
+  .estrelas button {
+    flex: 1; max-width: 64px; aspect-ratio: 1; border: 0; background: none; padding: 0;
+    display: grid; place-items: center;
+  }
+  .estrelas svg { width: 100%; height: 100%; max-width: 48px; transition: transform 0.15s; }
+  .estrelas svg path { fill: #2b2b2b; stroke: #444; stroke-width: 1; transition: fill 0.15s; }
+  .estrelas button.on svg path { fill: url(#gradEstrela); stroke: #c9a0ff; }
+  .estrelas button:active svg { transform: scale(0.9); }
+  .legenda-nota { font-size: 13px; color: var(--acc-t); min-height: 18px; margin-top: 6px; }
+
+  /* escala 0-10 */
+  .escala { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
+  .escala button, .grade button {
+    height: 44px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surf-2); font-weight: 600; font-size: 15px; padding: 0;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .escala button:active, .grade button:active { transform: scale(0.94); }
+  .escala button.on, .grade button.on {
+    background: var(--acc); border-color: var(--acc-t);
+    box-shadow: 0 0 14px rgba(136, 0, 255, 0.55);
+  }
+  .rotulos { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+  /* opções */
+  .opcoes { display: flex; flex-direction: column; gap: 8px; }
+  .opcoes.lado { flex-direction: row; flex-wrap: wrap; }
+  .opcoes.lado .op { flex: 1 1 0; min-width: 90px; justify-content: center; text-align: center; }
+  .op {
+    display: flex; align-items: center; gap: 12px; text-align: left;
+    min-height: 48px; padding: 10px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surf-2);
+    font-size: 15px; transition: background 0.15s, border-color 0.15s;
+  }
+  .op .marca-op {
+    flex: none; width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid #555; display: grid; place-items: center; transition: all 0.15s;
+  }
+  .multipla .op .marca-op { border-radius: 6px; }
+  .op.on { background: var(--acc-soft); border-color: var(--acc); }
+  .op.on .marca-op { border-color: var(--acc-t); background: var(--acc); }
+  .op.on .marca-op::after {
+    content: ""; width: 6px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0;
+    transform: translateY(-1px) rotate(45deg);
+  }
+  .opcoes.lado .op .marca-op { display: none; }
+
+  /* grade */
+  .grade { display: flex; flex-direction: column; gap: 12px; }
+  .grade .linha span { display: block; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+  .grade .botoes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+
+  /* texto */
+  textarea, input[type="text"] {
+    width: 100%; background: var(--surf-2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; font-size: 16px; outline: none; transition: border-color 0.15s;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  textarea:focus, input[type="text"]:focus { border-color: var(--acc); }
+  ::placeholder { color: #6f6f6f; }
+
+  .enviar {
+    margin-top: 24px; width: 100%; height: 58px; border: 0; border-radius: 14px;
+    background: linear-gradient(135deg, #9a1fff, #8800ff 50%, #6a00c8);
+    font-size: 18px; font-weight: 700; letter-spacing: 0.01em;
+    box-shadow: 0 10px 30px rgba(136, 0, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transition: transform 0.1s, opacity 0.2s;
+  }
+  .enviar:active { transform: translateY(1px) scale(0.99); }
+  .enviar:disabled { opacity: 0.6; }
+  .aviso { color: var(--erro); font-size: 14px; margin-top: 12px; min-height: 20px; text-align: center; }
+  .rodape { text-align: center; color: #6f6f6f; font-size: 12px; margin-top: 28px; }
+  .armadilha { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  /* obrigado */
+  .obrigado { position: relative; text-align: center; padding: 64px 0 40px; }
+  .obrigado .cena { position: relative; margin: 0 auto 40px; width: 150px; height: 150px; }
+  .obrigado h1 { font-size: clamp(34px, 10vw, 48px); font-weight: 800; letter-spacing: -0.03em; margin: 0 0 12px; line-height: 1.05; }
+  .obrigado p { color: var(--muted); margin: 0 auto 8px; max-width: 32ch; }
+  .obrigado .outra { margin-top: 28px; background: none; border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gradEstrela" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d9b8ff"/><stop offset="0.45" stop-color="#a640ff"/><stop offset="1" stop-color="#6a00c8"/>
+    </linearGradient>
+  </defs>
+</svg>
+<div class="progresso" aria-hidden="true"><i id="barra"></i></div>
+
+<main id="app">
+  <header class="hero">
+    <div class="marca">
+      <span class="ren"><img src="ren.png" alt="REN · Rede Nikkei Brasil"></span>
+      <span class="por">REN Jovens</span>
+    </div>
+    <div class="cena" aria-hidden="true">
+      <div class="esfera"></div>
+      <div class="anel"></div>
+      <div class="lua"></div>
+    </div>
+    <h1>Como foi <em>pra você?</em></h1>
+    <p>Avaliação da oficina IA na Prática. Leva 1 minuto e quase tudo é só tocar.</p>
+  </header>
+
+  <form id="form" novalidate>
+    <div id="perguntas"></div>
+    <label class="armadilha" aria-hidden="true">Site <input type="text" name="site" tabindex="-1" autocomplete="off"></label>
+    <button class="enviar" type="submit" id="botao">Enviar avaliação</button>
+    <p class="aviso" id="aviso" role="alert"></p>
+  </form>
+  <p class="rodape">IA na Prática · REN Jovens · Brasília, 28/11/2026</p>
+</main>
+
+<script type="module">
+import { SECOES, PERGUNTAS } from "./perguntas.js";
+
+const respostas = {};
+const estrelaSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>';
+const textoNota = ["", "Ruim", "Fraco", "Bom", "Muito bom", "Excelente"];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function montar() {
+  const raiz = document.getElementById("perguntas");
+  raiz.innerHTML = SECOES.map((s) => `
+    <section class="secao">
+      <h2>${esc(s.titulo)}</h2>
+      ${s.perguntas.map(cartao).join("")}
+    </section>`).join("");
+  for (const p of PERGUNTAS) ligar(p);
+  atualizar();
+}
+
+function cartao(p) {
+  const id = `q-${p.id}`;
+  let corpo = "";
+  if (p.tipo === "estrelas") {
+    corpo = `<div class="estrelas" role="radiogroup" aria-labelledby="${id}-t">${[1, 2, 3, 4, 5]
+      .map((n) => `<button type="button" role="radio" aria-checked="false" aria-label="${n} de 5" data-v="${n}">${estrelaSvg}</button>`)
+      .join("")}</div><div class="legenda-nota" data-legenda></div>`;
+  } else if (p.tipo === "escala") {
+    const nums = [];
+    for (let n = p.min; n <= p.max; n++) nums.push(n);
+    corpo = `<div class="escala" role="radiogroup" aria-labelledby="${id}-t">${nums
+      .map((n) => `<button type="button" role="radio" aria-checked="false" data-v="${n}">${n}</button>`)
+      .join("")}</div><div class="rotulos"><span>${esc(p.rotulos[0])}</span><span>${esc(p.rotulos[1])}</span></div>`;
+  } else if (p.tipo === "unica" || p.tipo === "multipla") {
+    const curtas = p.opcoes.every((o) => o.length <= 12) && p.opcoes.length <= 4;
+    corpo = `<div class="opcoes ${p.tipo} ${curtas ? "lado" : ""}" role="${p.tipo === "unica" ? "radiogroup" : "group"}" aria-labelledby="${id}-t">${p.opcoes
+      .map((o) => `<button type="button" class="op" role="${p.tipo === "unica" ? "radio" : "checkbox"}" aria-checked="false" data-v="${esc(o)}"><span class="marca-op"></span><span>${esc(o)}</span></button>`)
+      .join("")}</div>`;
+  } else if (p.tipo === "grade") {
+    corpo = `<div class="grade">${p.itens
+      .map((item) => `<div class="linha" data-item="${esc(item)}"><span>${esc(item)}</span><div class="botoes" role="radiogroup" aria-label="${esc(item)}">${[1, 2, 3, 4, 5]
+        .map((n) => `<button type="button" role="radio" aria-checked="false" data-v="${n}">${n}</button>`)
+        .join("")}</div></div>`)
+      .join("")}</div>`;
+  } else if (p.tipo === "texto") {
+    corpo = `<textarea id="${id}-c" maxlength="${p.max}" placeholder="${esc(p.placeholder || "")}" aria-labelledby="${id}-t"></textarea>`;
+  } else if (p.tipo === "curto") {
+    corpo = `<input type="text" id="${id}-c" maxlength="${p.max}" placeholder="${esc(p.placeholder || "")}" aria-labelledby="${id}-t" autocomplete="${p.id === "nome" ? "name" : "off"}">`;
+  }
+  return `<div class="pergunta cartao" id="${id}" data-id="${p.id}">
+    <h3 id="${id}-t">${esc(p.titulo)}${p.obrigatoria ? '<span class="ob" aria-label="obrigatória">*</span>' : ""}</h3>
+    ${p.dica ? `<p class="dica">${esc(p.dica)}</p>` : ""}
+    <div class="corpo">${corpo}</div>
+  </div>`;
+}
+
+function marcar(botoes, alvo) {
+  for (const b of botoes) {
+    const on = b === alvo;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-checked", on);
+  }
+}
+
+function ligar(p) {
+  const el = document.getElementById(`q-${p.id}`);
+  if (p.tipo === "estrelas") {
+    const bs = [...el.querySelectorAll("button")];
+    bs.forEach((b) => b.addEventListener("click", () => {
+      const v = Number(b.dataset.v);
+      respostas[p.id] = v;
+      bs.forEach((x) => { const on = Number(x.dataset.v) <= v; x.classList.toggle("on", on); x.setAttribute("aria-checked", x === b); });
+      el.querySelector("[data-legenda]").textContent = textoNota[v];
+      atualizar(p.id);
+    }));
+  } else if (p.tipo === "escala") {
+    const bs = [...el.querySelectorAll("button")];
+    bs.forEach((b) => b.addEventListener("click", () => { respostas[p.id] = Number(b.dataset.v); marcar(bs, b); atualizar(p.id); }));
+  } else if (p.tipo === "unica") {
+    const bs = [...el.querySelectorAll(".op")];
+    bs.forEach((b) => b.addEventListener("click", () => { respostas[p.id] = b.dataset.v; marcar(bs, b); atualizar(p.id); }));
+  } else if (p.tipo === "multipla") {
+    el.querySelectorAll(".op").forEach((b) => b.addEventListener("click", () => {
+      const lista = new Set(respostas[p.id] || []);
+      lista.has(b.dataset.v) ? lista.delete(b.dataset.v) : lista.add(b.dataset.v);
+      const on = lista.has(b.dataset.v);
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-checked", on);
+      respostas[p.id] = [...lista];
+      atualizar(p.id);
+    }));
+  } else if (p.tipo === "grade") {
+    el.querySelectorAll(".linha").forEach((linha) => {
+      const bs = [...linha.querySelectorAll("button")];
+      bs.forEach((b) => b.addEventListener("click", () => {
+        respostas[p.id] = { ...(respostas[p.id] || {}), [linha.dataset.item]: Number(b.dataset.v) };
+        marcar(bs, b);
+        atualizar(p.id);
+      }));
+    });
+  } else {
+    el.querySelector("textarea, input").addEventListener("input", (e) => { respostas[p.id] = e.target.value; atualizar(); });
+  }
+}
+
+function visivel(p) {
+  if (!p.mostrarSe) return true;
+  const [chave, valores] = Object.entries(p.mostrarSe)[0];
+  return valores.includes(respostas[chave]);
+}
+
+function respondida(p) {
+  const v = respostas[p.id];
+  if (v === undefined || v === "") return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === "object") return Object.keys(v).length > 0;
+  return String(v).trim() !== "";
+}
+
+function atualizar(mudou) {
+  for (const p of PERGUNTAS) {
+    const el = document.getElementById(`q-${p.id}`);
+    el.hidden = !visivel(p);
+    if (p.id === mudou && respondida(p)) el.classList.remove("falta");
+  }
+  const contam = PERGUNTAS.filter((p) => visivel(p) && (p.tipo !== "curto" || p.obrigatoria));
+  const feitas = contam.filter(respondida).length;
+  document.getElementById("barra").style.width = `${Math.round((feitas / contam.length) * 100)}%`;
+}
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const aviso = document.getElementById("aviso");
+  aviso.textContent = "";
+  const faltando = PERGUNTAS.filter((p) => p.obrigatoria && visivel(p) && !respondida(p));
+  faltando.forEach((p) => document.getElementById(`q-${p.id}`).classList.add("falta"));
+  if (faltando.length) {
+    aviso.textContent = faltando.length === 1 ? "Falta 1 pergunta marcada com *." : `Faltam ${faltando.length} perguntas marcadas com *.`;
+    document.getElementById(`q-${faltando[0].id}`).scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  const botao = document.getElementById("botao");
+  botao.disabled = true;
+  botao.textContent = "Enviando…";
+  try {
+    const corpo = { ...respostas, site: e.target.site.value };
+    const r = await fetch("/api/respostas", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.erro || "Não deu para enviar.");
+    try { localStorage.setItem("avaliacao-ia-na-pratica", new Date().toISOString()); } catch {}
+    obrigado();
+  } catch (err) {
+    aviso.textContent = `${err.message || "Não deu para enviar."} Confira a internet e tente de novo.`;
+    botao.disabled = false;
+    botao.textContent = "Enviar avaliação";
+  }
+});
+
+function obrigado(jaRespondeu = false) {
+  const primeiroNome = String(respostas.nome || "").trim().split(/\s+/)[0] || "demais";
+  document.getElementById("barra").style.width = "100%";
+  document.getElementById("app").innerHTML = `
+    <section class="obrigado">
+      <div class="cena" aria-hidden="true"><div class="esfera"></div><div class="anel"></div></div>
+      <p class="kicker">IA na Prática · REN Jovens</p>
+      <h1>${jaRespondeu ? "Você já respondeu" : `Valeu, ${esc(primeiroNome)}!`}</h1>
+      <p>${jaRespondeu ? "Sua avaliação já chegou. Obrigado!" : "Sua avaliação chegou. É ela que decide como vai ser a parte 2."}</p>
+      <button class="outra" type="button" id="outra">Enviar outra resposta</button>
+    </section>`;
+  window.scrollTo({ top: 0 });
+  document.getElementById("outra").addEventListener("click", () => location.replace(location.pathname + "?nova=1"));
+}
+
+let jaFoi = null;
+try { jaFoi = localStorage.getItem("avaliacao-ia-na-pratica"); } catch {}
+if (jaFoi && !location.search.includes("nova=1")) obrigado(true);
+else montar();
+</script>
+</body>
+</html>

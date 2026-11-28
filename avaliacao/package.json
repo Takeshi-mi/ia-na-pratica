@@ -1,0 +1,11 @@
+{
+  "name": "avaliacao-ia-na-pratica",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Formulário de avaliação da oficina IA na Prática, com painel de resultados. Sem dependências.",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

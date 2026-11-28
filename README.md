@@ -2,7 +2,7 @@
 
 Material da oficina **IA na Prática**, da REN Jovens (Rede Nikkei Brasil), apresentada por Takeshi Miura em Brasília, no sábado, 28 de novembro de 2026.
 
-O tema é **do chat ao agente**: o que muda quando a IA para de só responder e começa a fazer. O público é quem já usa ChatGPT mas não é da área de tecnologia.
+A palestra **IA na Prática** mostra o que muda quando a IA para de só responder e começa a fazer. O público é quem já usa ChatGPT mas não é da área de tecnologia.
 
 ## Programação
 
@@ -19,11 +19,13 @@ O tema é **do chat ao agente**: o que muda quando a IA para de só responder e 
 
 | Pasta | Conteúdo |
 | --- | --- |
-| [`palestra/`](palestra/) | O deck "Do chat ao agente" (24 slides, notas de fala) em `.pptx` e `.pdf`, e o gerador em `fonte/` |
+| [`palestra/`](palestra/) | O deck da palestra "IA na Prática" (24 slides, notas de fala) em `.pptx` e `.pdf`, e o gerador em `fonte/` |
 | [`dicionario/`](dicionario/) | O "Dicionário de bolso da IA": 23 termos (inclui Git e GitHub, com links para baixar e criar conta), PDF no formato do celular para mandar antes do evento |
 | [`oficina/`](oficina/) | As 4 trilhas da mão na massa, com passos e prompts, e protótipos de projetos para as ideias do formulário |
 | [`divulgacao/`](divulgacao/) | O teaser em vídeo (21,6 s, vertical), o projeto editável dele e a mensagem de aquecimento do grupo |
+| [`cerebro/`](cerebro/) | O kit do cérebro: uma pasta que apresenta você para qualquer IA, preenchida por entrevista e lida no Obsidian ([cerebro.zip](cerebro/cerebro.zip)), com o caminho só pelo chat para quem não usa agente |
 | [`referencias/`](referencias/) | As fontes de cada dado da palestra e os guias de prompt usados |
+| [`avaliacao/`](avaliacao/) | O formulário de avaliação do fim do evento ([avalia.meyje.com.br](https://avalia.meyje.com.br)), o painel de resultados e o QR Code |
 | [`skills/`](skills/) | As skills de edição de vídeo mostradas na palestra: a que monta o seu fluxo ([meyje-fluxo-de-edicao](https://github.com/Takeshi-mi/meyje-fluxo-de-edicao)) e o fluxo pronto da MEYJE ([meyje-editor-com-ia](https://github.com/Takeshi-mi/meyje-editor-com-ia)) |
 
 ## Como abrir e editar

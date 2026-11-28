@@ -6,3 +6,7 @@ renders/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Avaliação: banco e senha ficam só no servidor
+avaliacao/dados/
+avaliacao/.env

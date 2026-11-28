@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<title>Resultados · IA na Prática</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  main { max-width: 1080px; margin: 0 auto; padding: 0 16px 64px; }
+  .topo { position: relative; padding: 28px 0 20px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .topo .cena { right: 0; top: -30px; width: 120px; height: 120px; opacity: 0.9; }
+  .topo h1 { font-size: clamp(30px, 6vw, 44px); font-weight: 800; letter-spacing: -0.03em; margin: 10px 0 4px; line-height: 1.05; }
+  .topo .sub { color: var(--muted); font-size: 14px; margin: 0; }
+  .acoes { position: relative; display: flex; gap: 8px; flex-wrap: wrap; }
+  .acoes a, .acoes button {
+    display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px;
+    border-radius: 10px; border: 1px solid var(--line); background: var(--surf);
+    color: var(--text); text-decoration: none; font-size: 14px; font-weight: 600;
+  }
+  .acoes a.prim { background: var(--acc); border-color: var(--acc-t); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 8px 0 28px; }
+  .kpi { padding: 16px; }
+  .kpi .v { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: var(--acc-t); line-height: 1.1; }
+  .kpi .v small { font-size: 16px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+  .kpi .r { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  h2.secao {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--acc-t); margin: 32px 0 12px;
+  }
+  h2.secao::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e2c8ff, #8800ff 60%, #3a0070); box-shadow: 0 0 10px rgba(136,0,255,.8); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 12px; }
+  .bloco { padding: 18px 16px; }
+  .bloco h3 { font-size: 16px; font-weight: 600; margin: 0 0 2px; line-height: 1.3; }
+  .bloco .n { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+  .bloco .destaque { font-size: 14px; color: var(--muted); margin: -6px 0 14px; }
+  .bloco .destaque b { color: var(--text); font-size: 20px; margin-right: 4px; }
+
+  .barras { display: flex; flex-direction: column; gap: 10px; }
+  .barra .rot { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; margin-bottom: 5px; }
+  .barra .rot span:last-child { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .barra .trilho { height: 10px; border-radius: 6px; background: var(--surf-2); overflow: hidden; }
+  .barra .trilho i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #8800ff, #b57bff); transition: width 0.5s ease; }
+
+  .colunas { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; align-items: end; height: 140px; }
+  .col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; }
+  .col i { width: 100%; border-radius: 5px 5px 2px 2px; min-height: 2px; transition: height 0.5s ease; }
+  .col i.det { background: #5a2a3a; } .col i.neu { background: #4a4a55; } .col i.pro { background: linear-gradient(180deg, #b57bff, #8800ff); }
+  .col b { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .col span { font-size: 12px; color: var(--muted); }
+  .nps-pilha { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 14px 0 6px; background: var(--surf-2); }
+  .nps-pilha i { display: block; height: 100%; }
+  .nps-leg { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .nps-leg span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; background: var(--c); }
+
+  .media { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+  .media .item { font-size: 14px; }
+  .media .nota { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .media .trilho { grid-column: 1 / -1; height: 8px; border-radius: 5px; background: var(--surf-2); overflow: hidden; margin-bottom: 6px; }
+  .media .trilho i { display: block; height: 100%; background: linear-gradient(90deg, #8800ff, #b57bff); }
+
+  .comentarios { display: flex; flex-direction: column; gap: 10px; }
+  .coment { padding: 14px 16px; }
+  .coment p { margin: 0 0 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .coment .quem { font-size: 12px; color: var(--muted); }
+
+  .tabela-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 720px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  td.num { font-variant-numeric: tabular-nums; }
+  td .apagar { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 4px 8px; font-size: 12px; }
+  td .apagar:hover { color: var(--erro); border-color: var(--erro); }
+</style>
+</head>
+<body>
+<main>
+  <header class="topo">
+    <div class="cena" aria-hidden="true"><div class="esfera"></div><div class="anel"></div></div>
+    <div style="position:relative">
+      <div class="marca">
+        <span class="ren"><img src="ren.png" alt="REN · Rede Nikkei Brasil"></span>
+        <span class="kicker">IA na Prática · REN Jovens</span>
+      </div>
+      <h1>Resultados da avaliação</h1>
+      <p class="sub" id="atualizado">Carregando…</p>
+    </div>
+    <div class="acoes">
+      <a href="/" target="_blank" rel="noopener">Abrir formulário</a>
+      <a class="prim" href="/api/respostas.csv">Baixar planilha (CSV)</a>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+  <div id="graficos"></div>
+
+  <h2 class="secao">Comentários</h2>
+  <div class="comentarios" id="comentarios"></div>
+
+  <h2 class="secao">Quem respondeu</h2>
+  <div class="cartao tabela-wrap"><table id="tabela"></table></div>
+</main>
+
+<script type="module">
+import { SECOES, PERGUNTAS } from "./perguntas.js";
+
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+const fmt = (n, d = 1) => n.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const hora = (iso) => new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+const media = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+
+function nps(vals) {
+  const pro = vals.filter((v) => v >= 9).length;
+  const det = vals.filter((v) => v <= 6).length;
+  return { pro, det, neu: vals.length - pro - det, score: vals.length ? Math.round(((pro - det) / vals.length) * 100) : 0 };
+}
+
+function barras(opcoes, contagem, total) {
+  return `<div class="barras">${opcoes.map((o) => {
+    const c = contagem[o] || 0;
+    return `<div class="barra"><div class="rot"><span>${esc(o)}</span><span>${c} · ${pct(c, total)}%</span></div><div class="trilho"><i style="width:${pct(c, total)}%"></i></div></div>`;
+  }).join("")}</div>`;
+}
+
+function bloco(p, rs) {
+  const vals = rs.map((r) => r[p.id]).filter((v) => v !== undefined);
+  const n = vals.length;
+  const cab = `<h3>${esc(p.titulo)}</h3><p class="n">${n} ${n === 1 ? "resposta" : "respostas"}${p.tipo === "multipla" ? " · cada pessoa pode marcar várias" : ""}</p>`;
+  let corpo = "";
+  if (p.tipo === "estrelas") {
+    const cont = {};
+    vals.forEach((v) => (cont[`${v} ★`] = (cont[`${v} ★`] || 0) + 1));
+    corpo = `<p class="destaque"><b>${fmt(media(vals))}</b> de 5 em média</p>` + barras(["5 ★", "4 ★", "3 ★", "2 ★", "1 ★"], cont, n);
+  } else if (p.tipo === "escala") {
+    const cont = Array(p.max - p.min + 1).fill(0);
+    vals.forEach((v) => cont[v - p.min]++);
+    const maior = Math.max(1, ...cont);
+    const s = nps(vals);
+    corpo = `<p class="destaque"><b>${s.score}</b> de NPS · média ${fmt(media(vals))}</p>
+      <div class="colunas">${cont.map((c, i) => {
+        const v = i + p.min;
+        const cls = v >= 9 ? "pro" : v >= 7 ? "neu" : "det";
+        return `<div class="col"><b>${c || ""}</b><i class="${cls}" style="height:${(c / maior) * 100}%"></i><span>${v}</span></div>`;
+      }).join("")}</div>
+      <div class="nps-pilha"><i style="width:${pct(s.det, n)}%;background:#a8405e"></i><i style="width:${pct(s.neu, n)}%;background:#5d5d6a"></i><i style="width:${pct(s.pro, n)}%;background:#8800ff"></i></div>
+      <div class="nps-leg"><span style="--c:#a8405e">Detratores (0–6): ${s.det}</span><span style="--c:#5d5d6a">Neutros (7–8): ${s.neu}</span><span style="--c:#8800ff">Promotores (9–10): ${s.pro}</span></div>`;
+  } else if (p.tipo === "unica" || p.tipo === "multipla") {
+    const cont = {};
+    vals.flat().forEach((v) => (cont[v] = (cont[v] || 0) + 1));
+    const ordem = p.tipo === "multipla" ? [...p.opcoes].sort((a, b) => (cont[b] || 0) - (cont[a] || 0)) : p.opcoes;
+    corpo = barras(ordem, cont, n);
+  } else if (p.tipo === "grade") {
+    corpo = `<div class="media">${p.itens.map((item) => {
+      const xs = vals.map((v) => v[item]).filter(Boolean);
+      const m = media(xs);
+      return `<span class="item">${esc(item)}</span><span class="nota">${xs.length ? fmt(m) : "–"} <small style="color:var(--muted);font-weight:500">/ 5</small></span><div class="trilho"><i style="width:${(m / 5) * 100}%"></i></div>`;
+    }).join("")}</div>`;
+  }
+  return `<div class="bloco cartao">${cab}${corpo}</div>`;
+}
+
+function desenhar(rs) {
+  const n = rs.length;
+  const notas = rs.map((r) => r.nota).filter(Boolean);
+  const s = nps(rs.map((r) => r.nps).filter((v) => v !== undefined));
+  const p2 = rs.filter((r) => r.parte2 === "Com certeza" || r.parte2 === "Talvez").length;
+  const aprendeu = rs.filter((r) => r.aprendeu === "Muita coisa" || r.aprendeu === "Mudou minha forma de ver a IA").length;
+  const naMedida = rs.filter((r) => r.tecnico === "Na medida certa").length;
+  document.getElementById("kpis").innerHTML = [
+    [n, "", "respostas"],
+    [notas.length ? fmt(media(notas)) : "–", "/ 5", "nota média do evento"],
+    [s.score, "", "NPS (de −100 a 100)"],
+    [pct(p2, n), "%", "viriam na parte 2"],
+    [pct(aprendeu, n), "%", "aprenderam muita coisa"],
+    [pct(naMedida, n), "%", "acharam o nível na medida"],
+  ].map(([v, u, r]) => `<div class="kpi cartao"><div class="v">${v}<small>${u}</small></div><div class="r">${r}</div></div>`).join("");
+
+  document.getElementById("graficos").innerHTML = SECOES.map((sec) => {
+    const ps = sec.perguntas.filter((p) => !["texto", "curto"].includes(p.tipo));
+    if (!ps.length) return "";
+    return `<h2 class="secao">${esc(sec.titulo)}</h2><div class="grid">${ps.map((p) => bloco(p, rs)).join("")}</div>`;
+  }).join("");
+
+  const coms = rs.filter((r) => r.comentario).reverse();
+  document.getElementById("comentarios").innerHTML = coms.length
+    ? coms.map((r) => `<div class="coment cartao"><p>${esc(r.comentario)}</p><div class="quem">${esc(r.nome || "Anônimo")} · ${hora(r.criado_em)}${r.nota ? ` · ${r.nota} ★` : ""}</div></div>`).join("")
+    : `<p class="vazio">Nenhum comentário ainda.</p>`;
+
+  document.getElementById("tabela").innerHTML = `<thead><tr><th>#</th><th>Quando</th><th>Nome</th><th>Contato</th><th>Nota</th><th>NPS</th><th>Técnico</th><th>Parte 2</th><th></th></tr></thead><tbody>${
+    [...rs].reverse().map((r) => `<tr><td class="num">${r.id}</td><td>${hora(r.criado_em)}</td><td>${esc(r.nome || "–")}</td><td>${esc(r.contato || "–")}</td><td class="num">${r.nota ?? "–"}</td><td class="num">${r.nps ?? "–"}</td><td>${esc(r.tecnico || "–")}</td><td>${esc(r.parte2 || "–")}</td><td><button class="apagar" data-id="${r.id}" type="button">Apagar</button></td></tr>`).join("")
+    || `<tr><td colspan="9" class="vazio">Ninguém respondeu ainda.</td></tr>`
+  }</tbody>`;
+  document.querySelectorAll(".apagar").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm(`Apagar a resposta #${b.dataset.id}? Não dá para desfazer.`)) return;
+    await fetch(`${location.origin}/api/respostas/${b.dataset.id}`, { method: "DELETE" });
+    carregar();
+  }));
+}
+
+async function carregar() {
+  try {
+    const r = await fetch(`${location.origin}/api/respostas`, { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const { respostas } = await r.json();
+    desenhar(respostas);
+    document.getElementById("atualizado").textContent = `Atualiza sozinho a cada 15 s · última vez às ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+  } catch {
+    document.getElementById("atualizado").textContent = "Não consegui atualizar agora. Tento de novo em 15 s.";
+  }
+}
+carregar();
+setInterval(carregar, 15000);
+</script>
+</body>
+</html>

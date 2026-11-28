@@ -1,0 +1,113 @@
+:root {
+  --ink: #000000;
+  --surf: #121212;
+  --surf-2: #1c1c1c;
+  --line: #2a2a2a;
+  --text: #ffffff;
+  --muted: #b3b3b3;
+  --acc: #8800ff;
+  --acc-t: #b57bff;
+  --acc-soft: rgba(136, 0, 255, 0.16);
+  --ok: #3ddc97;
+  --erro: #ff6b8a;
+  --raio: 16px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--acc-t); outline-offset: 2px; }
+
+.kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--acc-t);
+  text-transform: uppercase;
+}
+
+/* ---------- 3D: esfera roxa com anel em órbita ---------- */
+.cena {
+  position: absolute;
+  pointer-events: none;
+  perspective: 900px;
+}
+.esfera {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85) 0%, rgba(214, 170, 255, 0.55) 9%, rgba(136, 0, 255, 0) 32%),
+    radial-gradient(circle at 70% 78%, rgba(40, 0, 90, 0.95) 0%, rgba(40, 0, 90, 0) 55%),
+    radial-gradient(circle at 45% 45%, #a640ff 0%, #8800ff 42%, #4a0090 78%, #22003f 100%);
+  box-shadow:
+    0 0 60px rgba(136, 0, 255, 0.55),
+    0 0 140px rgba(136, 0, 255, 0.25),
+    inset -18px -24px 50px rgba(0, 0, 0, 0.55);
+  animation: flutua 7s ease-in-out infinite;
+}
+.anel {
+  position: absolute;
+  left: -22%;
+  top: 34%;
+  width: 144%;
+  height: 32%;
+  border-radius: 50%;
+  border: 2px solid rgba(181, 123, 255, 0.75);
+  box-shadow: 0 0 18px rgba(181, 123, 255, 0.45);
+  transform: rotateX(72deg) rotateZ(-14deg);
+  animation: gira 14s linear infinite;
+}
+.lua {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #c9a0ff 25%, #8800ff 70%, #3a0070 100%);
+  box-shadow: 0 0 24px rgba(136, 0, 255, 0.6);
+  animation: flutua 5s ease-in-out infinite reverse;
+}
+@keyframes flutua {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes gira {
+  from { transform: rotateX(72deg) rotateZ(-14deg); }
+  to { transform: rotateX(72deg) rotateZ(346deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .esfera, .anel, .lua { animation: none; }
+}
+
+/* ---------- topo ---------- */
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.marca .ren {
+  background: #fff;
+  border-radius: 10px;
+  padding: 5px 9px;
+  display: inline-flex;
+}
+.marca .ren img { height: 26px; display: block; }
+.marca .por { font-size: 12px; color: var(--muted); }
+
+.cartao {
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: var(--raio);
+}
+.vazio { color: var(--muted); font-size: 14px; }
