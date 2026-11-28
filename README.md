@@ -11,7 +11,7 @@ A palestra **IA na Prática** mostra o que muda quando a IA para de só responde
 | 09h30 | Recepção |
 | 10h00 | Introdução à IA (palestra) |
 | 10h30 | IA no dia a dia e formação dos grupos |
-| 10h45 | Mão na massa: as 4 trilhas, com mentoria |
+| 10h45 | Mão na massa: as 5 trilhas, com mentoria |
 | 11h30 | Apresentações dos grupos |
 | 12h30 | Fechamento e almoço |
 
@@ -19,9 +19,9 @@ A palestra **IA na Prática** mostra o que muda quando a IA para de só responde
 
 | Pasta | Conteúdo |
 | --- | --- |
-| [`palestra/`](palestra/) | O deck da palestra "IA na Prática" (24 slides, notas de fala) em `.pptx` e `.pdf`, e o gerador em `fonte/` |
+| [`palestra/`](palestra/) | O deck apresentado, "IA na Prática" (39 slides), em [PDF](palestra/ia-na-pratica.pdf). O `.pptx` e o gerador em `fonte/` são a primeira versão, de 24 slides, editável no Canva |
 | [`dicionario/`](dicionario/) | O "Dicionário de bolso da IA": 23 termos (inclui Git e GitHub, com links para baixar e criar conta), PDF no formato do celular para mandar antes do evento |
-| [`oficina/`](oficina/) | As 4 trilhas da mão na massa, com passos e prompts, e protótipos de projetos para as ideias do formulário |
+| [`oficina/`](oficina/) | As 5 trilhas da mão na massa (estudar, atendente, marca, cérebro + conectores e vídeo), com passos e prompts, e protótipos de projetos para as ideias do formulário |
 | [`divulgacao/`](divulgacao/) | O teaser em vídeo (21,6 s, vertical), o projeto editável dele e a mensagem de aquecimento do grupo |
 | [`cerebro/`](cerebro/) | O kit do cérebro: uma pasta que apresenta você para qualquer IA, preenchida por entrevista e lida no Obsidian ([cerebro.zip](cerebro/cerebro.zip)), com o caminho só pelo chat para quem não usa agente |
 | [`referencias/`](referencias/) | As fontes de cada dado da palestra e os guias de prompt usados |
@@ -30,7 +30,7 @@ A palestra **IA na Prática** mostra o que muda quando a IA para de só responde
 
 ## Como abrir e editar
 
-- **Deck no Canva:** arraste `palestra/ia-na-pratica.pptx` para a tela inicial do Canva. Ele importa com texto editável.
+- **Deck no Canva:** arraste `palestra/ia-na-pratica.pptx` (a primeira versão, de 24 slides) para a tela inicial do Canva. Ele importa com texto editável.
 - **Deck pelo código:** em `palestra/fonte/`, rode `npm install` e depois `TEMA=roxo node build.js` (fundo preto com o roxo da MEYJE). O tema também aceita `verde` (RuralZap) ou `laranja`. Com `HTML=1`, ele gera um HTML com o mesmo layout, que vira PDF ao imprimir no navegador.
 - **Dicionário:** edite `dicionario/dicionario.html` e imprima em PDF pelo Chrome ou Edge (tamanho de página 4 × 7,11 polegadas, sem margens).
 - **Teaser:** em `divulgacao/teaser/`, rode `npx hyperframes preview` para editar e `npx hyperframes render` para gerar o MP4. O projeto é [HyperFrames](https://hyperframes.heygen.com); os efeitos sonoros precisam ser baixados antes (veja o README da pasta).
