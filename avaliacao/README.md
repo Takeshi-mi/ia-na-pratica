@@ -22,7 +22,7 @@ Abre em http://localhost:3000 e o painel em http://localhost:3000/resultados.
 
 ## Onde está no ar
 
-No servidor de staging (`kvm2`, 92.113.39.20), atrás do Traefik, em `/root/ia-na-pratica-avaliacao`. O DNS `avalia.meyje.com.br` é um CNAME na Cloudflare para `servidor.teste.meyje.com.br`, sem proxy (o certificado é do Let's Encrypt, pelo Traefik).
+No servidor de staging (`kvm2`), atrás do Traefik, em `/root/ia-na-pratica-avaliacao`. O DNS `avalia.meyje.com.br` é um CNAME na Cloudflare para `servidor.teste.meyje.com.br`, sem proxy (o certificado é do Let's Encrypt, pelo Traefik).
 
 Para atualizar depois de mudar algo:
 

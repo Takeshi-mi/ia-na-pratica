@@ -30,7 +30,7 @@ A palestra **IA na Prática** mostra o que muda quando a IA para de só responde
 
 ## Como abrir e editar
 
-- **Deck no Canva:** arraste `palestra/do-chat-ao-agente.pptx` para a tela inicial do Canva. Ele importa com texto editável.
+- **Deck no Canva:** arraste `palestra/ia-na-pratica.pptx` para a tela inicial do Canva. Ele importa com texto editável.
 - **Deck pelo código:** em `palestra/fonte/`, rode `npm install` e depois `TEMA=roxo node build.js` (fundo preto com o roxo da MEYJE). O tema também aceita `verde` (RuralZap) ou `laranja`. Com `HTML=1`, ele gera um HTML com o mesmo layout, que vira PDF ao imprimir no navegador.
 - **Dicionário:** edite `dicionario/dicionario.html` e imprima em PDF pelo Chrome ou Edge (tamanho de página 4 × 7,11 polegadas, sem margens).
 - **Teaser:** em `divulgacao/teaser/`, rode `npx hyperframes preview` para editar e `npx hyperframes render` para gerar o MP4. O projeto é [HyperFrames](https://hyperframes.heygen.com); os efeitos sonoros precisam ser baixados antes (veja o README da pasta).

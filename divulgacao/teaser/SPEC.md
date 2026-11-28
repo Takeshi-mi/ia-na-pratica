@@ -19,7 +19,7 @@ SHOTS:
   4  14.38–16.79 roxo. "Chat responde." · risco branco atravessa · "Agente faz." bate. Sai: whip para cima.
   5  16.79–21.59 tinta. "Sábado você sai de lá com" + janela de caça-níquel: um tutor → um vídeo → uma rotina → um app → "algo pronto." (1 beat cada).
   6  21.59–26.39 branco (íris do centro). "Antes, crie sua conta:" + 4 ladrilhos com pop por beat + "e responda o desafio no grupo."
-  7  26.39–31.20 roxo (enchimento de baixo). "IA NA PRÁTICA" bate com impacto; "Do chat ao agente"; "REN Jovens · Sábado, 28/11 · 10h". Segura 3 s parado.
+  7  26.39–31.20 roxo (enchimento de baixo). "IA NA PRÁTICA" bate com impacto; logo da REN, "REN JOVENS" e "Sábado, 28/11 · 10h · Brasília". Segura 3 s parado.
 SOUND:   música 0.55 com fade-in 0.4 s e fade-out 1.5 s; whoosh em 4.79 e 14.38 (a 16.79 fica sem efeito); pop no ponto (11.97) e nos 4 ladrilhos; riser nos 4 s antes de 26.39 e impacto em 26.39. Nada sintetizado.
 BANNED:  fundo escuro vazio com elemento pequeno no meio; brilho, glow, partículas; gradiente roxo; cartões de vidro; tudo entrando com fade + slide para cima; título que continua se mexendo depois de pousar; logo no canto; três cartões em linha.
 QA:      t=0 (thumbnail legível), 3.5, 8.5, 12.8, 16.2, 20.9, 25.6, 30.0; folha de celular 360 px.

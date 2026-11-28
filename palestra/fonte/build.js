@@ -25,7 +25,7 @@ async function icon(Comp, hex) {
 (async () => {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_16x9"; // 10 x 5.625
-  pres.title = "Do chat ao agente";
+  pres.title = "IA na Prática";
   pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
 
   const T = (slide, text, opts) => slide.addText(text, Object.assign({ isTextBox: true, fontFace: FONT, color: TEXT, margin: 0, valign: "top" }, opts));
@@ -67,8 +67,8 @@ async function icon(Comp, hex) {
   // Capa
   {
     const s = sunSlide();
-    T(s, "IA NA PRÁTICA · REN JOVENS", { x: 0.6, y: 0.85, w: 5.4, h: 0.3, fontSize: 12, bold: true, color: ACCT, charSpacing: 3 });
-    T(s, "Do chat\nao agente", { x: 0.6, y: 1.3, w: 5.6, h: 2.1, fontSize: 60, bold: true, lineSpacingMultiple: 0.9 });
+    T(s, "REN JOVENS · OFICINA", { x: 0.6, y: 0.85, w: 5.4, h: 0.3, fontSize: 12, bold: true, color: ACCT, charSpacing: 3 });
+    T(s, "IA na\nPrática", { x: 0.6, y: 1.3, w: 5.6, h: 2.1, fontSize: 60, bold: true, lineSpacingMultiple: 0.9 });
     T(s, "O que muda quando a IA para de só responder e começa a fazer", { x: 0.6, y: 3.55, w: 4.9, h: 0.75, fontSize: 18, color: MUTED });
     T(s, "Takeshi Miura · Sábado, 28/11/2026 · Brasília", { x: 0.6, y: 4.6, w: 5.2, h: 0.3, fontSize: 12, bold: true });
     s.addNotes("Abertura. Pergunta para a sala: quem aqui usou o ChatGPT essa semana? Agora: quem já pediu para uma IA fazer uma tarefa inteira sozinha, do começo ao fim? A diferença entre essas duas mãos levantadas é o assunto de hoje.");
@@ -216,7 +216,7 @@ async function icon(Comp, hex) {
 
   // A escada
   {
-    const s = base("A ESCADA", "Do chat ao agente, degrau por degrau", null);
+    const s = base("A ESCADA", "Da conversa à execução, degrau por degrau", null);
     [["Chat", "Você pergunta, ele responde", "ChatGPT, Claude e Gemini no modo conversa"],
       ["Conectores", "A IA lê seu e-mail, agenda, Drive e planilhas", "Apps e conectores do ChatGPT e do Claude"],
       ["Projetos e skills", "Memória e instruções fixas para um tema", "Projetos, GPTs, Gems, NotebookLM, Skills"],
@@ -437,6 +437,6 @@ async function icon(Comp, hex) {
     s.addNotes("Roteiro para cada grupo: o problema, o que a IA fez (mostrando na tela) e o que aprendeu. Valorizar o que funcionou, não o que ficou bonito.");
   }
 
-  await pres.writeFile({ fileName: `do-chat-ao-agente-${TEMA}.pptx` });
+  await pres.writeFile({ fileName: `ia-na-pratica-${TEMA}.pptx` });
   console.log("ok", TEMA);
 })();
